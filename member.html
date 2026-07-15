@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0c684f">
+  <meta name="robots" content="noindex,nofollow">
+  <title>DPRO 総合買取・査定 LINE｜査定状況</title>
+  <style>
+    :root {
+      --green-950:#083f34;
+      --green-900:#075342;
+      --green-800:#0a674f;
+      --green-700:#0d7b5d;
+      --green-600:#12956f;
+      --green-100:#dff3eb;
+      --green-50:#eef9f5;
+      --ink:#10251f;
+      --muted:#63756f;
+      --line:#d7e3df;
+      --line-dark:#b9cec7;
+      --surface:#ffffff;
+      --surface-2:#f5f9f7;
+      --bg:#edf4f1;
+      --blue:#2468aa;
+      --blue-soft:#eaf3fc;
+      --amber:#a76300;
+      --amber-soft:#fff4dd;
+      --red:#b22f38;
+      --red-soft:#fff0f1;
+      --shadow:0 16px 45px rgba(16,55,44,.10);
+      --shadow-sm:0 7px 18px rgba(16,55,44,.08);
+      --radius:22px;
+      --radius-sm:14px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(180deg,#f4f8f6 0,#edf4f1 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI",Meiryo,sans-serif;font-size:16px;line-height:1.65}
+    button,input,textarea,select{font:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+    button{cursor:pointer}
+    a{color:inherit}
+    .topbar{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(15px);border-bottom:1px solid rgba(215,227,223,.9)}
+    .topbar-inner{max-width:1120px;margin:auto;min-height:68px;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:11px;min-width:0}
+    .brand-mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,var(--green-800),var(--green-950));color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:var(--shadow-sm);flex:0 0 auto}
+    .brand-name{font-weight:900;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brand-sub{font-size:11px;color:var(--muted);margin-top:-2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .connection{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-weight:800;font-size:12px;white-space:nowrap}
+    .connection-dot{width:8px;height:8px;border-radius:50%;background:#9aa9a4;box-shadow:0 0 0 4px rgba(154,169,164,.12)}
+    .connection.ok .connection-dot{background:#19a878;box-shadow:0 0 0 4px rgba(25,168,120,.13)}
+    .connection.error .connection-dot{background:var(--red);box-shadow:0 0 0 4px rgba(178,47,56,.12)}
+    main{max-width:1120px;margin:0 auto;padding:24px 18px 90px}
+    .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.7fr);gap:16px;margin-bottom:18px}
+    .hero-main{min-height:220px;border-radius:26px;padding:28px 32px;background:linear-gradient(135deg,#0b5c49,#087058 62%,#0d8263);color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero-main::after{content:"査定";position:absolute;right:-10px;bottom:-45px;font-size:130px;font-weight:900;line-height:1;color:rgba(255,255,255,.055);letter-spacing:-15px}
+    .hero-kicker{display:inline-flex;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-weight:800;font-size:12px}
+    .hero h1{font-size:clamp(27px,4vw,42px);line-height:1.28;margin:15px 0 8px;letter-spacing:.01em}
+    .hero p{margin:0;color:rgba(255,255,255,.88)}
+    .hero-points{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+    .hero-point{padding:7px 10px;background:rgba(255,255,255,.13);border-radius:9px;font-size:12px;font-weight:800}
+    .hero-side{border:1px solid var(--line);border-radius:26px;background:#fff;padding:25px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;justify-content:center}
+    .hero-side h2{font-size:17px;margin:0 0 14px}
+    .safety-row{display:flex;gap:11px;margin:11px 0}
+    .safety-icon{width:34px;height:34px;border-radius:10px;background:var(--green-100);display:grid;place-items:center;color:var(--green-800);font-weight:900;flex:0 0 auto}
+    .safety-row strong{display:block;font-size:13px}
+    .safety-row small{display:block;color:var(--muted);font-size:11px;line-height:1.5}
+    .layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:start}
+    .sidebar{position:sticky;top:88px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+    .card + .card{margin-top:14px}
+    .card-head{padding:19px 21px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .card-title{margin:0;font-size:18px;line-height:1.4}
+    .card-sub{font-size:12px;color:var(--muted);margin-top:3px}
+    .card-body{padding:21px}
+    .assessment-list{padding:8px}
+    .assessment-link{width:100%;border:1px solid transparent;background:transparent;border-radius:14px;padding:13px 12px;text-align:left;display:block;margin:2px 0;color:var(--ink)}
+    .assessment-link:hover{background:var(--surface-2)}
+    .assessment-link.active{background:var(--green-50);border-color:#96c9b8}
+    .assessment-no{font-weight:900;font-size:13px}
+    .assessment-title{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:2px 0 6px}
+    .assessment-date{font-size:11px;color:#81908b}
+    .tag-row{display:flex;flex-wrap:wrap;gap:6px}
+    .tag{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:900;line-height:1.3;border:1px solid transparent}
+    .tag.green{background:var(--green-100);color:var(--green-900)}
+    .tag.blue{background:var(--blue-soft);color:var(--blue)}
+    .tag.amber{background:var(--amber-soft);color:var(--amber)}
+    .tag.red{background:var(--red-soft);color:var(--red)}
+    .tag.gray{background:#eef2f0;color:#687873}
+    .main-panel{min-width:0}
+    .access-card{max-width:760px;margin:0 auto}
+    .access-intro{text-align:center;padding:5px 10px 20px}
+    .access-icon{width:70px;height:70px;border-radius:22px;margin:0 auto 13px;background:var(--green-100);display:grid;place-items:center;color:var(--green-800);font-size:34px;font-weight:900}
+    .access-intro h2{font-size:26px;margin:0 0 6px}
+    .access-intro p{margin:0;color:var(--muted)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field.full{grid-column:1/-1}
+    label{font-size:13px;font-weight:900}
+    input,textarea,select{width:100%;border:1px solid var(--line-dark);border-radius:12px;background:#fff;color:var(--ink);padding:12px 13px;outline:none;transition:.18s}
+    input:focus,textarea:focus,select:focus{border-color:var(--green-600);box-shadow:0 0 0 4px rgba(18,149,111,.1)}
+    textarea{min-height:115px;resize:vertical}
+    .field-help{font-size:11px;color:var(--muted)}
+    .btn-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+    .btn{border:1px solid transparent;border-radius:12px;padding:11px 16px;font-weight:900;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;transition:transform .15s,box-shadow .15s,background .15s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:disabled{opacity:.52;cursor:not-allowed;transform:none}
+    .btn-primary{background:linear-gradient(135deg,var(--green-800),var(--green-700));color:#fff;box-shadow:0 7px 16px rgba(10,103,79,.22)}
+    .btn-secondary{background:#fff;color:var(--green-800);border-color:#9bc7b8}
+    .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+    .btn-danger{background:#fff;color:var(--red);border-color:#e5aeb2}
+    .btn-small{min-height:38px;padding:8px 12px;font-size:13px;border-radius:10px}
+    .demo-panel{margin-top:18px;border:1px dashed #8dbdab;background:var(--green-50);border-radius:16px;padding:16px}
+    .demo-panel h3{font-size:14px;margin:0 0 10px}
+    .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .demo-btn{border:1px solid #add2c5;background:#fff;border-radius:11px;padding:11px;text-align:left;font-weight:800;color:var(--ink)}
+    .demo-btn small{display:block;color:var(--muted);font-weight:600;margin-top:2px}
+    .status-card{overflow:hidden}
+    .status-banner{padding:24px;background:linear-gradient(135deg,var(--green-50),#fff);border-bottom:1px solid var(--line)}
+    .status-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+    .status-no{font-size:12px;color:var(--muted);font-weight:800}
+    .status-no strong{font-size:18px;color:var(--ink);display:block;margin-top:2px;letter-spacing:.03em}
+    .status-main{margin-top:14px;display:flex;gap:12px;align-items:flex-start}
+    .status-symbol{width:50px;height:50px;border-radius:16px;background:var(--green-800);color:#fff;display:grid;place-items:center;font-size:23px;font-weight:900;box-shadow:var(--shadow-sm);flex:0 0 auto}
+    .status-main h2{font-size:23px;margin:0 0 3px;line-height:1.4}
+    .status-message{color:var(--muted);margin:0}
+    .progress{padding:19px 22px;background:#fff}
+    .progress-track{display:grid;grid-template-columns:repeat(5,1fr);position:relative;gap:4px}
+    .progress-track::before{content:"";position:absolute;top:15px;left:10%;right:10%;height:3px;background:#dde7e3;z-index:0}
+    .progress-step{position:relative;z-index:1;text-align:center;color:#899792;font-size:11px;font-weight:800}
+    .progress-dot{width:32px;height:32px;border-radius:50%;margin:0 auto 5px;border:3px solid #dce7e3;background:#fff;display:grid;place-items:center;font-size:12px}
+    .progress-step.done,.progress-step.current{color:var(--green-800)}
+    .progress-step.done .progress-dot{background:var(--green-700);border-color:var(--green-700);color:#fff}
+    .progress-step.current .progress-dot{border-color:var(--green-700);box-shadow:0 0 0 5px rgba(13,123,93,.10);color:var(--green-800)}
+    .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+    .summary-box{border:1px solid var(--line);border-radius:13px;background:#fff;padding:11px 12px}
+    .summary-box span{display:block;font-size:11px;color:var(--muted)}
+    .summary-box strong{display:block;font-size:14px;margin-top:1px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 2px 11px}
+    .section-title h2{font-size:20px;margin:0}
+    .section-title p{font-size:12px;color:var(--muted);margin:1px 0 0}
+    .item-card{overflow:hidden;margin-bottom:14px}
+    .item-head{padding:16px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;background:linear-gradient(180deg,#fff,var(--surface-2))}
+    .item-index{width:34px;height:34px;border-radius:11px;background:var(--green-800);color:#fff;display:grid;place-items:center;font-weight:900;flex:0 0 auto}
+    .item-head-left{display:flex;gap:11px;min-width:0}
+    .item-name{font-size:17px;font-weight:900;line-height:1.4}
+    .item-category{font-size:11px;color:var(--muted);margin-top:2px}
+    .item-body{padding:18px}
+    .item-grid{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px}
+    .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;align-content:start}
+    .photo{aspect-ratio:1/1;border-radius:11px;background:#edf2f0;border:1px solid var(--line);overflow:hidden;position:relative}
+    .photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .photo-cover{position:absolute;top:5px;left:5px;border-radius:999px;background:rgba(8,83,66,.9);color:#fff;font-size:9px;padding:2px 6px;font-weight:800}
+    .photo-empty{aspect-ratio:1/1;border:1px dashed var(--line-dark);border-radius:13px;background:var(--surface-2);display:grid;place-items:center;text-align:center;color:var(--muted);font-size:12px;padding:10px}
+    .detail-list{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
+    .detail-row{min-width:0;padding-bottom:7px;border-bottom:1px dashed #dfe8e5}
+    .detail-row.wide{grid-column:1/-1}
+    .detail-row dt{font-size:11px;color:var(--muted);font-weight:800;margin:0}
+    .detail-row dd{font-size:13px;font-weight:700;margin:1px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+    .offer-panel{margin-top:16px;border:1px solid #b7d4ca;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#f4fbf8,#fff)}
+    .offer-head{padding:11px 14px;background:rgba(223,243,235,.7);font-size:12px;font-weight:900;color:var(--green-900);display:flex;justify-content:space-between;gap:8px}
+    .offer-body{padding:14px}
+    .offer-kind{font-size:12px;color:var(--muted);font-weight:800}
+    .offer-amount{font-size:28px;font-weight:950;color:var(--green-900);line-height:1.35;margin:2px 0}
+    .offer-comment{font-size:12px;color:var(--muted);white-space:pre-wrap}
+    .offer-valid{font-size:11px;color:var(--amber);font-weight:800;margin-top:5px}
+    .deal-current{margin-top:10px;border-radius:11px;padding:10px 11px;background:#f1f5f3;font-size:12px;font-weight:800}
+    .item-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .reservation-card .reservation-row{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+    .reservation-card .reservation-row:last-child{border-bottom:0}
+    .reservation-label{color:var(--muted);font-size:12px;font-weight:800}
+    .reservation-value{font-size:14px;font-weight:800}
+    .notice{display:flex;gap:10px;border-radius:13px;padding:12px 14px;font-size:13px;margin:12px 0}
+    .notice.info{background:var(--blue-soft);color:#245c8f;border:1px solid #c1dbf2}
+    .notice.success{background:var(--green-50);color:var(--green-900);border:1px solid #abd4c5}
+    .notice.warning{background:var(--amber-soft);color:#815000;border:1px solid #efd39c}
+    .notice.danger{background:var(--red-soft);color:#8e2730;border:1px solid #efbdc1}
+    .notice-symbol{font-weight:950;flex:0 0 auto}
+    .empty{padding:36px 18px;text-align:center;color:var(--muted)}
+    .empty-symbol{width:58px;height:58px;border-radius:18px;background:#edf3f0;margin:0 auto 10px;display:grid;place-items:center;font-size:28px}
+    .loading{padding:40px;text-align:center;color:var(--muted)}
+    .spinner{width:38px;height:38px;border:4px solid #dfe9e5;border-top-color:var(--green-700);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(4,28,22,.54);display:grid;place-items:center;padding:18px;overflow:auto}
+    .modal{width:min(680px,100%);max-height:calc(100vh - 36px);overflow:auto;background:#fff;border-radius:22px;box-shadow:0 25px 80px rgba(0,0,0,.28)}
+    .modal-head{position:sticky;top:0;background:#fff;z-index:2;border-bottom:1px solid var(--line);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .modal-head h2{font-size:19px;margin:0}
+    .modal-close{width:38px;height:38px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:22px;line-height:1}
+    .modal-body{padding:20px}
+    .modal-foot{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:14px 20px;display:flex;justify-content:flex-end;gap:9px}
+    .radio-list{display:grid;gap:9px}
+    .radio-option{border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+    .radio-option:has(input:checked){border-color:var(--green-600);background:var(--green-50)}
+    .radio-option input{width:auto;margin-top:5px}
+    .radio-option strong{display:block;font-size:14px}
+    .radio-option small{display:block;color:var(--muted);font-size:11px}
+    .upload-list{display:grid;gap:8px;margin-top:10px}
+    .upload-file{display:flex;align-items:center;gap:10px;border:1px solid var(--line);padding:9px;border-radius:11px;font-size:12px}
+    .upload-thumb{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#edf2f0}
+    .upload-file-info{min-width:0;flex:1}
+    .upload-file-name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .upload-progress{height:7px;border-radius:999px;background:#e5ece9;overflow:hidden;margin-top:5px}
+    .upload-progress > div{height:100%;width:0;background:var(--green-600);transition:width .2s}
+    .toast-wrap{position:fixed;z-index:150;right:16px;bottom:18px;display:grid;gap:8px;max-width:min(380px,calc(100vw - 32px))}
+    .toast{padding:12px 15px;border-radius:12px;background:#153e32;color:#fff;box-shadow:var(--shadow);font-size:13px;font-weight:800;animation:toastIn .2s ease-out}
+    .toast.error{background:#8f2831}
+    @keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .footer{text-align:center;color:#71817c;font-size:10px;margin-top:28px}
+    .floating-home{position:fixed;right:18px;bottom:18px;z-index:30;border:1px solid var(--line);background:#fff;border-radius:999px;box-shadow:var(--shadow-sm);padding:10px 14px;text-decoration:none;color:var(--green-800);font-weight:900;font-size:12px}
+    details.advanced{margin-top:17px;border-top:1px solid var(--line);padding-top:12px}
+    details.advanced summary{cursor:pointer;font-size:12px;color:var(--muted);font-weight:800}
+    .hidden{display:none!important}
+    @media(max-width:850px){
+      .hero{grid-template-columns:1fr}.hero-side{display:none}.layout{grid-template-columns:1fr}.sidebar{position:static}.sidebar .card{display:none}.sidebar.show .card{display:block}.summary-grid{grid-template-columns:1fr 1fr}.item-grid{grid-template-columns:150px minmax(0,1fr)}
+    }
+    @media(max-width:620px){
+      body{font-size:15px}.topbar-inner{min-height:60px;padding:8px 12px}.brand-mark{width:38px;height:38px}.brand-name{font-size:14px}.brand-sub{font-size:10px}.connection{padding:6px 8px;font-size:10px}
+      main{padding:14px 10px 80px}.hero-main{min-height:auto;padding:22px 20px;border-radius:20px}.hero h1{font-size:28px}.hero-point{font-size:10px}.card{border-radius:18px}.card-head,.card-body{padding:16px}.status-banner{padding:18px}.status-top{display:block}.status-top .tag-row{margin-top:8px}.status-main h2{font-size:20px}.progress{padding:17px 10px}.progress-step{font-size:9px}.progress-dot{width:28px;height:28px}.summary-grid{grid-template-columns:1fr 1fr}.summary-box:last-child{grid-column:1/-1}.section-title{align-items:flex-end}.item-head{padding:14px}.item-body{padding:14px}.item-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(4,1fr)}.detail-list{grid-template-columns:1fr}.detail-row.wide{grid-column:auto}.offer-amount{font-size:25px}.btn{width:100%}.item-actions .btn{width:auto;flex:1 1 145px}.btn-row .btn{flex:1 1 140px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.demo-grid{grid-template-columns:1fr}.reservation-card .reservation-row{grid-template-columns:1fr;gap:1px}.modal-backdrop{padding:8px;align-items:end}.modal{border-radius:20px 20px 0 0;max-height:92vh;width:100%}.floating-home{right:10px;bottom:10px}.photo-empty{aspect-ratio:4/1}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">D</div>
+        <div style="min-width:0">
+          <div class="brand-name" id="headerShopName">DPRO総合買取センター</div>
+          <div class="brand-sub">査定状況・追加写真・売却希望のご連絡</div>
+        </div>
+      </div>
+      <div class="connection" id="connectionBadge"><span class="connection-dot"></span><span id="connectionText">接続確認中</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-main">
+        <span class="hero-kicker">査定受付後のお客様ページ</span>
+        <h1>査定の進み具合を<br>いつでも確認</h1>
+        <p>商品ごとの査定額、来店予定、追加情報の依頼、売却希望・見送りをまとめて確認できます。</p>
+        <div class="hero-points"><span class="hero-point">✓ 商品ごとに金額を確認</span><span class="hero-point">✓ 追加写真を送信</span><span class="hero-point">✓ 一部商品のみ売却希望</span></div>
+      </div>
+      <div class="hero-side">
+        <h2>大切なお知らせ</h2>
+        <div class="safety-row"><div class="safety-icon">概</div><div><strong>写真査定は概算です</strong><small>正式な金額は、実物確認後に店舗からご案内します。</small></div></div>
+        <div class="safety-row"><div class="safety-icon">契</div><div><strong>売却希望は正式契約ではありません</strong><small>本人確認・契約・支払いは店舗で正式に行います。</small></div></div>
+        <div class="safety-row"><div class="safety-icon">証</div><div><strong>身分証の写真は送らないでください</strong><small>本人確認書類は成約時に店舗で確認します。</small></div></div>
+      </div>
+    </section>
+
+    <div id="pageLoading" class="card loading"><div class="spinner"></div><strong>査定情報を確認しています</strong><div style="font-size:12px;margin-top:4px">しばらくお待ちください。</div></div>
+
+    <section id="accessSection" class="card access-card hidden">
+      <div class="card-body">
+        <div class="access-intro">
+          <div class="access-icon">査</div>
+          <h2>査定状況を開く</h2>
+          <p>査定受付完了画面の「査定状況を確認する」から開くと、自動的に表示されます。</p>
+        </div>
+        <div class="notice info"><span class="notice-symbol">i</span><div>受付時に発行された専用URLには、お客様の査定情報を開くための確認情報が含まれています。URLを第三者へ共有しないでください。</div></div>
+        <div class="btn-row" style="justify-content:center"><a class="btn btn-primary" href="index.html">新しい査定を申し込む</a></div>
+        <div id="demoPanel" class="demo-panel hidden">
+          <h3>営業デモ用：確認するお客様を選択</h3>
+          <div class="demo-grid">
+            <button class="demo-btn" data-line-id="demo_buyback_line_001">佐藤 太郎<small>複数商品・本部査定待ち</small></button>
+            <button class="demo-btn" data-line-id="demo_buyback_line_002">田中 美咲<small>本日来店予定</small></button>
+            <button class="demo-btn" data-line-id="demo_buyback_line_003">山本 一郎<small>商品ごとの一部成約</small></button>
+            <button class="demo-btn" data-line-id="demo_buyback_line_004">鈴木 花子<small>催事会場へ来場予定</small></button>
+            <button class="demo-btn" data-line-id="demo_buyback_line_005">高橋 健<small>見送り・再査定フォロー</small></button>
+          </div>
+        </div>
+        <details class="advanced">
+          <summary>専用URLの確認情報を手動で入力する</summary>
+          <form id="manualAccessForm" style="margin-top:12px">
+            <div class="form-grid">
+              <div class="field full"><label for="manualToken">確認トークン</label><input id="manualToken" autocomplete="off" placeholder="受付完了URLの member_token"></div>
+              <div class="field full"><label for="manualAssessmentId">査定ID（任意）</label><input id="manualAssessmentId" autocomplete="off" placeholder="受付完了URLの assessment_id"></div>
+            </div>
+            <div class="btn-row"><button class="btn btn-secondary" type="submit">査定状況を開く</button></div>
+          </form>
+        </details>
+      </div>
+    </section>
+
+    <section id="portalSection" class="layout hidden">
+      <aside class="sidebar" id="sidebar">
+        <div class="card">
+          <div class="card-head"><div><h2 class="card-title">査定履歴</h2><div class="card-sub" id="customerLabel">お客様の受付一覧</div></div></div>
+          <div class="assessment-list" id="assessmentList"></div>
+        </div>
+      </aside>
+      <div class="main-panel" id="detailPanel"></div>
+    </section>
+
+    <div class="footer"><span id="footerShopName">DPRO総合買取センター</span>　｜　STEP BUYBACK-5 : MEMBER ASSESSMENT PORTAL</div>
+  </main>
+  <a class="floating-home" href="index.html">＋ 新しい査定</a>
+  <div class="toast-wrap" id="toastWrap"></div>
+  <div id="modalRoot"></div>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const VERSION = "BUYBACK-5-MEMBER-ASSESSMENT-PORTAL-20260715";
+    const API_BASE = "https://dpro-buyback-line-api.dpromstk2000.workers.dev";
+    const DEFAULT_SHOP_CODE = "dpro_buyback_demo";
+    const params = new URLSearchParams(location.search);
+    const SHOP_CODE = params.get("shop_code") || DEFAULT_SHOP_CODE;
+    const DEMO_MODE = params.get("demo") === "1";
+    const PREVIEW_MODE = params.get("preview") === "1";
+
+    const state = {
+      config:null,
+      options:[],
+      assessments:[],
+      detail:null,
+      memberToken:params.get("member_token") || "",
+      assessmentId:params.get("assessment_id") || "",
+      lineUserId:params.get("line_user_id") || "",
+      loading:false,
+      modalFiles:[]
+    };
+
+    const $ = id => document.getElementById(id);
+    const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+    const safe = value => value === null || value === undefined || value === "" ? "—" : String(value);
+    const yen = value => value === null || value === undefined || value === "" ? "—" : `${Number(value).toLocaleString("ja-JP")}円`;
+    const fmtDate = value => value ? new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(value)) : "—";
+    const fmtDateTime = value => value ? new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",year:"numeric",month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit"}).format(new Date(value)) : "—";
+    const toLocalDateTime = value => {
+      if (!value) return "";
+      const d = new Date(value);
+      const parts = new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Tokyo",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).format(d);
+      return parts.replace(" ","T");
+    };
+
+    const ASSESSMENT = {
+      received:["受付済み","受付内容を店舗で確認しています。","green"],
+      need_reply:["初回回答準備中","店舗からの最初のご案内を準備しています。","green"],
+      checking_items:["商品確認中","商品情報と写真を確認しています。","blue"],
+      additional_info_needed:["追加情報待ち","店舗からの追加確認があります。商品欄をご確認ください。","amber"],
+      external_appraisal:["本部・外部査定中","本部または外部査定先からの回答を確認しています。","blue"],
+      appointment_scheduled:["来店・相談予定あり","ご予約またはご来場予定を登録しています。","green"],
+      arrived:["ご来店済み","お品物を確認しています。","green"],
+      assessing:["実物査定中","実物を確認して正式な金額を算出しています。","blue"],
+      price_presented:["査定額をご案内済み","商品ごとの査定額をご確認ください。","green"],
+      deal_pending:["ご回答待ち","売却希望・見送り・相談希望を商品ごとに選択できます。","amber"],
+      partially_accepted:["一部商品を売却希望","商品ごとのご希望を店舗で確認しています。","green"],
+      accepted_intent:["売却希望受付済み","正式な契約・本人確認・支払いは店舗で行います。","green"],
+      declined:["今回は見送り","再査定や別商品のご相談も受け付けています。","gray"],
+      returned:["返却済み","お品物の返却が完了しています。","gray"],
+      completed:["対応完了","今回の査定対応は完了しました。","gray"],
+      cancelled:["受付取消","今回の査定受付は取り消されています。","red"]
+    };
+    const EXTERNAL = {
+      not_required:"外部査定なし",not_requested:"未依頼",preparing:"依頼準備中",requested:"回答待ち",
+      additional_info_needed:"追加情報待ち",answered:"回答済み",not_supported:"査定対象外",cancelled:"取消"
+    };
+    const DEAL = {
+      not_yet:"未回答",pending:"回答待ち",partially_accepted_intent:"一部売却希望",accepted_intent:"売却希望",
+      declined:"見送り",contracted_external:"正式契約済み",paid_external:"支払い済み",returned:"返却済み",closed:"完了"
+    };
+    const INTAKE = {photo_line:"写真で事前査定",walk_in:"店頭持ち込み",visit:"来店予約",travel:"出張査定",event:"催事査定",delivery:"宅配査定"};
+    const RESERVATION_TYPE = {visit:"来店予約",travel:"出張査定",event:"催事査定",delivery_consultation:"宅配査定相談"};
+    const RESERVATION_STATUS = {requested:"日程調整中",scheduled:"予定確定",reminded:"案内済み",arrived:"来場済み",completed:"完了",reschedule_requested:"変更希望受付済み",cancelled:"キャンセル",no_show:"未来場"};
+    const DEAL_RESPONSE = {pending:"未回答",accepted_intent:"売却を希望",declined:"今回は見送り",reconsidering:"店舗へ相談したい",not_supported:"査定対象外",returned:"返却済み",completed:"完了"};
+    const PHOTO_KIND = {overall:"全体",front:"正面",back:"背面",model:"型番",serial:"製造番号",damage:"傷・汚れ",accessory:"付属品",operation:"動作",other:"その他"};
+    const INDIVIDUAL_CATEGORIES = new Set(["brand_goods","watches","cameras","smart_devices","alcohol","musical_instruments","tools"]);
+    const QUANTITY_LABELS = {precious_metals:"点数",jewelry:"点数",vouchers:"枚数",stamps_coins:"おおよその点数",hobby_other:"数量"};
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    async function init(){
+      bindStatic();
+      try{
+        await loadBase();
+        setConnection(true,"接続済み");
+        if(PREVIEW_MODE){
+          loadPreview();
+        }else if(state.lineUserId){
+          await loadByLineUser(state.lineUserId,state.assessmentId);
+        }else if(state.memberToken){
+          await loadByToken(state.memberToken,state.assessmentId);
+        }else{
+          showAccess();
+        }
+      }catch(error){
+        console.error(error);
+        setConnection(false,"接続エラー");
+        showAccess(error.message || "査定情報を取得できませんでした。");
+      }
+    }
+
+    function bindStatic(){
+      document.querySelectorAll(".demo-btn").forEach(btn=>btn.addEventListener("click",()=>{
+        const url=new URL(location.href);url.search="";url.searchParams.set("shop_code",SHOP_CODE);url.searchParams.set("line_user_id",btn.dataset.lineId);url.searchParams.set("demo","1");location.href=url.toString();
+      }));
+      $("manualAccessForm").addEventListener("submit",e=>{
+        e.preventDefault();
+        const token=$("manualToken").value.trim();
+        if(!token){toast("確認トークンを入力してください。","error");return;}
+        const url=new URL(location.href);url.search="";url.searchParams.set("shop_code",SHOP_CODE);url.searchParams.set("member_token",token);
+        const id=$("manualAssessmentId").value.trim();if(id)url.searchParams.set("assessment_id",id);location.href=url.toString();
+      });
+    }
+
+    async function loadBase(){
+      const [config,options]=await Promise.all([
+        apiGet("/api/public/config",{shop_code:SHOP_CODE}),
+        apiGet("/api/public/assessment-options",{shop_code:SHOP_CODE})
+      ]);
+      state.config=config;
+      state.options=options.categories||[];
+      const shopName=config.shop?.shop_name||"DPRO総合買取センター";
+      $("headerShopName").textContent=shopName;
+      $("footerShopName").textContent=shopName;
+      document.title=`${shopName}｜査定状況`;
+    }
+
+    async function loadByLineUser(lineUserId,preferredId){
+      setPageLoading("査定履歴を読み込んでいます");
+      const data=await apiGet("/api/member/assessments",{shop_code:SHOP_CODE,line_user_id:lineUserId});
+      state.assessments=data.assessments||[];
+      if(!state.assessments.length) throw new Error("このLINEアカウントの査定履歴はありません。");
+      $("customerLabel").textContent=`${data.customer?.customer_name||"お客様"} 様`;
+      const target=state.assessments.find(a=>a.id===preferredId)||state.assessments[0];
+      state.memberToken=target.member_token;
+      state.assessmentId=target.id;
+      await loadDetail(target.member_token,target.id,false);
+    }
+
+    async function loadByToken(token,assessmentId){
+      setPageLoading("査定情報を読み込んでいます");
+      const list=await apiGet("/api/member/assessments",{shop_code:SHOP_CODE,member_token:token});
+      state.assessments=list.assessments||[];
+      const target=state.assessments.find(a=>!assessmentId||a.id===assessmentId)||state.assessments[0];
+      if(!target)throw new Error("査定情報を確認できませんでした。専用URLをもう一度開いてください。");
+      state.memberToken=target.member_token;
+      state.assessmentId=target.id;
+      await loadDetail(target.member_token,target.id,false);
+    }
+
+    async function loadDetail(token,id,pushUrl=true){
+      state.loading=true;
+      renderAssessmentList();
+      $("detailPanel").innerHTML=`<div class="card loading"><div class="spinner"></div><strong>査定詳細を読み込んでいます</strong></div>`;
+      showPortal();
+      try{
+        const data=await apiGet("/api/member/assessment-detail",{shop_code:SHOP_CODE,member_token:token,assessment_id:id});
+        state.detail=data;state.memberToken=token;state.assessmentId=id;
+        $("customerLabel").textContent=`${data.customer?.customer_name||"お客様"} 様`;
+        renderAssessmentList();renderDetail();
+        if(pushUrl)updateUrl();
+      }finally{state.loading=false;}
+    }
+
+    function updateUrl(){
+      const url=new URL(location.href);
+      url.searchParams.set("shop_code",SHOP_CODE);
+      url.searchParams.set("member_token",state.memberToken);
+      url.searchParams.set("assessment_id",state.assessmentId);
+      if(DEMO_MODE)url.searchParams.set("demo","1");
+      history.replaceState({},"",url);
+    }
+
+    function showAccess(message=""){
+      $("pageLoading").classList.add("hidden");
+      $("portalSection").classList.add("hidden");
+      $("accessSection").classList.remove("hidden");
+      $("demoPanel").classList.toggle("hidden",!DEMO_MODE);
+      if(message){
+        const intro=$("accessSection").querySelector(".access-intro");
+        intro.insertAdjacentHTML("afterend",`<div class="notice danger"><span class="notice-symbol">!</span><div>${escapeHtml(message)}</div></div>`);
+      }
+    }
+    function showPortal(){
+      $("pageLoading").classList.add("hidden");$("accessSection").classList.add("hidden");$("portalSection").classList.remove("hidden");
+    }
+    function setPageLoading(text){$("pageLoading").classList.remove("hidden");$("pageLoading").innerHTML=`<div class="spinner"></div><strong>${escapeHtml(text)}</strong><div style="font-size:12px;margin-top:4px">しばらくお待ちください。</div>`;}
+    function setConnection(ok,text){$("connectionBadge").classList.toggle("ok",ok);$("connectionBadge").classList.toggle("error",!ok);$("connectionText").textContent=text;}
+
+    function renderAssessmentList(){
+      if(!state.assessments.length){$("assessmentList").innerHTML=`<div class="empty">査定履歴はありません。</div>`;return;}
+      $("assessmentList").innerHTML=state.assessments.map(a=>{
+        const info=ASSESSMENT[a.assessment_status]||[a.assessment_status,"","gray"];
+        return `<button class="assessment-link ${a.id===state.assessmentId?"active":""}" data-id="${escapeHtml(a.id)}" data-token="${escapeHtml(a.member_token)}"><div class="assessment-no">${escapeHtml(a.assessment_no)}</div><div class="assessment-title">${escapeHtml(a.request_title||INTAKE[a.intake_channel_code]||"査定受付")}</div><div class="tag-row"><span class="tag ${info[2]}">${escapeHtml(info[0])}</span></div><div class="assessment-date">受付 ${escapeHtml(fmtDate(a.received_at))}</div></button>`;
+      }).join("");
+      $("assessmentList").querySelectorAll(".assessment-link").forEach(btn=>btn.addEventListener("click",()=>loadDetail(btn.dataset.token,btn.dataset.id,true).catch(handleError)));
+    }
+
+    function renderDetail(){
+      const d=state.detail;if(!d)return;
+      const a=d.assessment;
+      const info=ASSESSMENT[a.assessment_status]||[a.assessment_status,"査定状況を確認しています。","gray"];
+      const progress=currentProgress(a.assessment_status);
+      const currentReservations=(d.reservations||[]).filter(r=>!["cancelled","completed","no_show"].includes(r.reservation_status));
+      const offeredItems=(d.items||[]).filter(item=>currentOffer(item));
+      $("detailPanel").innerHTML=`
+        <section class="card status-card">
+          <div class="status-banner">
+            <div class="status-top">
+              <div class="status-no"><span>査定受付番号</span><strong>${escapeHtml(a.assessment_no)}</strong></div>
+              <div class="tag-row"><span class="tag ${info[2]}">${escapeHtml(info[0])}</span><span class="tag gray">${escapeHtml(INTAKE[a.intake_channel_code]||a.intake_channel_code)}</span></div>
+            </div>
+            <div class="status-main"><div class="status-symbol">${statusSymbol(a.assessment_status)}</div><div><h2>${escapeHtml(info[0])}</h2><p class="status-message">${escapeHtml(info[1])}</p></div></div>
+            <div class="summary-grid"><div class="summary-box"><span>受付日</span><strong>${escapeHtml(fmtDateTime(a.received_at))}</strong></div><div class="summary-box"><span>本部・外部査定</span><strong>${escapeHtml(EXTERNAL[a.external_appraisal_status]||a.external_appraisal_status)}</strong></div><div class="summary-box"><span>売却希望状況</span><strong>${escapeHtml(DEAL[a.deal_status]||a.deal_status)}</strong></div></div>
+          </div>
+          <div class="progress"><div class="progress-track">${["受付","商品確認","実物確認","金額案内","ご回答・完了"].map((label,i)=>`<div class="progress-step ${i<progress?"done":i===progress?"current":""}"><div class="progress-dot">${i<progress?"✓":i+1}</div>${label}</div>`).join("")}</div></div>
+        </section>
+
+        ${currentReservations.length?renderReservations(currentReservations):""}
+
+        <div class="section-title"><div><h2>査定商品</h2><p>${d.items.length}商品を受付しています。商品ごとに金額やご希望を確認できます。</p></div><button class="btn btn-secondary btn-small" id="addItemBtn">＋ 商品を追加</button></div>
+        <div id="itemsWrap">${d.items.map((item,i)=>renderItem(item,i)).join("")}</div>
+
+        ${offeredItems.length>1?`<section class="card"><div class="card-head"><div><h2 class="card-title">複数商品をまとめて回答</h2><div class="card-sub">査定額が表示されている${offeredItems.length}商品へ同じ回答を送れます。</div></div></div><div class="card-body"><div class="notice warning"><span class="notice-symbol">!</span><div>「売却を希望する」は正式な売買契約ではありません。店舗で実物確認・本人確認・正式契約を行います。</div></div><div class="btn-row"><button class="btn btn-primary" id="bulkAcceptBtn">対象商品をまとめて売却希望</button><button class="btn btn-secondary" id="bulkConsultBtn">まとめて相談したい</button><button class="btn btn-ghost" id="bulkDeclineBtn">まとめて見送る</button></div></div></section>`:""}
+
+        <div class="section-title"><div><h2>店舗へ連絡</h2><p>商品の補足、来店前の質問、査定についての相談を送れます。</p></div></div>
+        <section class="card"><div class="card-body"><div class="btn-row"><button class="btn btn-secondary" id="generalMessageBtn">追加情報・質問を送る</button><button class="btn btn-danger" id="withdrawBtn">査定相談を取り下げたい</button></div><div class="notice info"><span class="notice-symbol">i</span><div>急ぎのご連絡は店舗へお電話ください。マイページからの送信後、店舗スタッフが内容を確認します。</div></div></div></section>
+      `;
+      bindDetailActions(offeredItems,currentReservations);
+      loadVisiblePhotos();
+    }
+
+    function renderReservations(rows){
+      return `<div class="section-title"><div><h2>来店・相談予定</h2><p>現在登録されている予定です。</p></div></div><section class="card reservation-card"><div class="card-body">${rows.map(r=>`<div class="reservation-row"><div class="reservation-label">${escapeHtml(RESERVATION_TYPE[r.reservation_type]||r.reservation_type)}</div><div class="reservation-value">${r.scheduled_start_at?escapeHtml(fmtDateTime(r.scheduled_start_at)):escapeHtml(r.requested_time_text||"店舗から日程をご連絡します")} <span class="tag ${r.reservation_status==="scheduled"?"green":"amber"}">${escapeHtml(RESERVATION_STATUS[r.reservation_status]||r.reservation_status)}</span>${r.address?`<div style="font-size:12px;color:var(--muted);margin-top:4px">${escapeHtml(r.address)}</div>`:""}<div class="btn-row"><button class="btn btn-secondary btn-small reservation-change" data-id="${escapeHtml(r.id)}">日時変更を相談</button><button class="btn btn-danger btn-small reservation-cancel" data-id="${escapeHtml(r.id)}">予約をキャンセル</button></div></div></div>`).join("")}</div></section>`;
+    }
+
+    function renderItem(item,index){
+      const offer=currentOffer(item);
+      const deal=(item.deal_responses||[]).find(r=>r.is_current)||(item.deal_responses||[])[0];
+      const title=[item.brand||item.maker,item.item_name||item.category_name].filter(Boolean).join(" ")||item.category_name;
+      const rows=[];
+      if(item.brand)rows.push(["ブランド",item.brand]);if(item.maker)rows.push(["メーカー",item.maker]);if(item.model_no)rows.push(["型番・モデル",item.model_no]);if(item.serial_no)rows.push(["製造番号",item.serial_no]);if(item.purchase_period)rows.push(["購入時期",item.purchase_period]);if(item.quantity&&Number(item.quantity)>1)rows.push([QUANTITY_LABELS[item.category_code]||"数量",item.quantity]);if(item.condition_summary)rows.push(["状態",item.condition_summary,"wide"]);if(item.accessories)rows.push(["付属品",item.accessories,"wide"]);if(item.customer_note)rows.push(["お客様メモ",item.customer_note,"wide"]);
+      for(const f of item.field_values||[]){const value=f.value_text??f.value_number??(f.value_boolean===true?"はい":f.value_boolean===false?"いいえ":null)??f.value_date??(Array.isArray(f.value_json)?f.value_json.join("、"):f.value_json);if(value!==null&&value!==undefined&&value!=="")rows.push([f.field_label||f.field_code,String(value)]);}
+      return `<article class="card item-card" data-item-id="${escapeHtml(item.id)}">
+        <div class="item-head"><div class="item-head-left"><div class="item-index">${index+1}</div><div style="min-width:0"><div class="item-name">${escapeHtml(title)}</div><div class="item-category">${escapeHtml(item.category_name)}${item.quantity>1?`・${escapeHtml(item.quantity)}点`:""}</div></div></div><span class="tag ${itemStatusColor(item.item_result_status)}">${escapeHtml(itemStatusLabel(item.item_result_status))}</span></div>
+        <div class="item-body"><div class="item-grid"><div>${renderPhotos(item)}<button class="btn btn-secondary btn-small" style="width:100%;margin-top:8px" data-photo-upload="${escapeHtml(item.id)}">＋ 写真を追加</button></div><div><dl class="detail-list">${rows.length?rows.map(r=>`<div class="detail-row ${r[2]||""}"><dt>${escapeHtml(r[0])}</dt><dd>${escapeHtml(r[1])}</dd></div>`).join(""):`<div class="detail-row wide"><dt>商品情報</dt><dd>店舗で確認中です。</dd></div>`}</dl>${offer?renderOffer(offer,deal):`<div class="notice info" style="margin-top:15px"><span class="notice-symbol">i</span><div>査定額は店舗で確認後、この商品欄に表示されます。</div></div>`}<div class="item-actions"><button class="btn btn-secondary btn-small" data-info-item="${escapeHtml(item.id)}">商品情報を補足</button>${offer?`<button class="btn btn-primary btn-small" data-deal-item="${escapeHtml(item.id)}">売却希望・見送りを回答</button>`:""}</div></div></div></div>
+      </article>`;
+    }
+
+    function renderPhotos(item){
+      const photos=item.photos||[];
+      if(!photos.length)return `<div class="photo-empty">写真はまだ登録されていません。<br>「写真を追加」から送信できます。</div>`;
+      return `<div class="photo-grid">${photos.slice(0,6).map(p=>{const url=new URL(API_BASE+(p.read?.endpoint||"/api/member/photo"));const ps=p.read?.params||{shop_code:SHOP_CODE,assessment_id:state.assessmentId,item_id:item.id,photo_id:p.id,member_token:state.memberToken};Object.entries(ps).forEach(([k,v])=>url.searchParams.set(k,v));return `<div class="photo"><img loading="lazy" alt="${escapeHtml(PHOTO_KIND[p.photo_kind]||"商品写真")}" src="${escapeHtml(url.toString())}">${p.is_cover?`<span class="photo-cover">代表</span>`:""}</div>`;}).join("")}</div>`;
+    }
+
+    function renderOffer(offer,deal){
+      const isFormal=offer.result_type==="formal_offer";
+      let amount="";
+      if(offer.fixed_amount!==null&&offer.fixed_amount!==undefined)amount=yen(offer.fixed_amount);
+      else if(offer.lower_amount!==null&&offer.upper_amount!==null)amount=`${yen(offer.lower_amount)} ～ ${yen(offer.upper_amount)}`;
+      else amount=yen(offer.lower_amount??offer.upper_amount);
+      return `<div class="offer-panel"><div class="offer-head"><span>${isFormal?"実物確認後の正式提示額":"写真をもとにした概算査定"}</span><span>${offer.presented_at?escapeHtml(fmtDate(offer.presented_at)):""}</span></div><div class="offer-body"><div class="offer-kind">${isFormal?"正式提示額":"概算査定額"}</div><div class="offer-amount">${escapeHtml(amount)}</div>${offer.customer_comment?`<div class="offer-comment">${escapeHtml(offer.customer_comment)}</div>`:""}${offer.offer_conditions?`<div class="offer-comment">条件：${escapeHtml(offer.offer_conditions)}</div>`:""}${offer.valid_until?`<div class="offer-valid">有効期限：${escapeHtml(fmtDate(offer.valid_until))}</div>`:""}${!isFormal?`<div class="notice warning"><span class="notice-symbol">!</span><div>写真査定は概算です。正式な金額は実物確認後に決まります。</div></div>`:""}${deal?`<div class="deal-current">現在のご回答：${escapeHtml(DEAL_RESPONSE[deal.response_status]||deal.response_status)}${deal.reason_text?`<br><span style="font-weight:600;color:var(--muted)">${escapeHtml(deal.reason_text)}</span>`:""}</div>`:""}</div></div>`;
+    }
+
+    function bindDetailActions(offeredItems,reservations){
+      $("addItemBtn")?.addEventListener("click",openAddItemModal);
+      document.querySelectorAll("[data-info-item]").forEach(btn=>btn.addEventListener("click",()=>openMessageModal(btn.dataset.infoItem)));
+      document.querySelectorAll("[data-photo-upload]").forEach(btn=>btn.addEventListener("click",()=>openPhotoModal(btn.dataset.photoUpload)));
+      document.querySelectorAll("[data-deal-item]").forEach(btn=>btn.addEventListener("click",()=>openDealModal([btn.dataset.dealItem])));
+      document.querySelectorAll(".reservation-change").forEach(btn=>btn.addEventListener("click",()=>openChangeModal(reservations.find(r=>r.id===btn.dataset.id))));
+      document.querySelectorAll(".reservation-cancel").forEach(btn=>btn.addEventListener("click",()=>openCancelModal(reservations.find(r=>r.id===btn.dataset.id))));
+      $("bulkAcceptBtn")?.addEventListener("click",()=>openDealModal(offeredItems.map(i=>i.id),"accepted_intent"));
+      $("bulkConsultBtn")?.addEventListener("click",()=>openDealModal(offeredItems.map(i=>i.id),"reconsidering"));
+      $("bulkDeclineBtn")?.addEventListener("click",()=>openDealModal(offeredItems.map(i=>i.id),"declined"));
+      $("generalMessageBtn")?.addEventListener("click",()=>openMessageModal(null));
+      $("withdrawBtn")?.addEventListener("click",()=>openCancelModal(null,true));
+    }
+
+    function openMessageModal(itemId){
+      const item=itemId?state.detail.items.find(i=>i.id===itemId):null;
+      openModal(item ? `${item.item_name||item.category_name}の情報を補足` : "店舗へ追加情報・質問を送る",`
+        <div class="notice info"><span class="notice-symbol">i</span><div>${item?"傷や付属品、型番など、査定に必要な補足を送信できます。":"店舗スタッフが確認後、ご登録の連絡方法で回答します。"}</div></div>
+        <div class="field"><label for="messageText">送信内容</label><textarea id="messageText" maxlength="5000" placeholder="例：型番が分かりました。箱も見つかりました。来店時に必要なものを教えてください。"></textarea><div class="field-help">身分証番号、口座番号、クレジットカード情報は入力しないでください。</div></div>`,async()=>{
+          const message=$("messageText").value.trim();if(!message)throw new Error("送信内容を入力してください。");
+          await apiPost("/api/member/additional-info",{shop_code:SHOP_CODE,member_token:state.memberToken,assessment_id:state.assessmentId,item_id:itemId||undefined,message});
+          toast("追加情報を送信しました。");await reloadDetail();
+        });
+    }
+
+    function openPhotoModal(itemId){
+      const item=state.detail.items.find(i=>i.id===itemId);
+      const max=Number(state.config?.settings?.max_photos_per_item||6);
+      const remain=Math.max(0,max-(item.photos?.length||0));
+      if(remain<=0){toast(`この商品は写真を最大${max}枚登録済みです。`,"error");return;}
+      state.modalFiles=[];
+      openModal(`${item.item_name||item.category_name}へ写真を追加`,`
+        <div class="notice warning"><span class="notice-symbol">!</span><div><strong>身分証の写真は送信しないでください。</strong><br>商品の全体、型番、傷、付属品が分かる写真を追加してください。</div></div>
+        <div class="field"><label for="photoKind">写真の種類</label><select id="photoKind">${Object.entries(PHOTO_KIND).map(([v,l])=>`<option value="${v}">${l}</option>`).join("")}</select></div>
+        <div class="field" style="margin-top:12px"><label for="photoFiles">写真を選択（あと${remain}枚）</label><input id="photoFiles" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple><div class="field-help">JPEG・PNG・WebP。送信前に端末内で容量を調整します。</div></div>
+        <div class="upload-list" id="uploadList"></div>`,async()=>{
+          if(!state.modalFiles.length)throw new Error("写真を選択してください。");
+          if(state.modalFiles.length>remain)throw new Error(`追加できる写真はあと${remain}枚です。`);
+          await uploadPhotos(itemId,state.modalFiles,$("photoKind").value);
+          toast("写真を追加しました。");await reloadDetail();
+        },()=>{
+          $("photoFiles").addEventListener("change",async e=>{
+            const files=[...e.target.files].slice(0,remain);
+            state.modalFiles=files;renderUploadList(files);
+          });
+        });
+    }
+
+    function renderUploadList(files){
+      $("uploadList").innerHTML=files.map((file,i)=>`<div class="upload-file"><img class="upload-thumb" id="uploadThumb${i}" alt=""><div class="upload-file-info"><div class="upload-file-name">${escapeHtml(file.name)}</div><div>${Math.ceil(file.size/1024).toLocaleString()}KB</div><div class="upload-progress"><div id="uploadBar${i}"></div></div></div></div>`).join("");
+      files.forEach((file,i)=>{const reader=new FileReader();reader.onload=()=>{$("uploadThumb"+i).src=reader.result};reader.readAsDataURL(file);});
+    }
+
+    async function uploadPhotos(itemId,files,kind){
+      const limit=Number(state.config?.settings?.photo_file_size_limit||1500000);
+      for(let i=0;i<files.length;i++){
+        const compressed=await compressImage(files[i],limit);
+        const ticket=await apiPost("/api/public/photo-upload-ticket",{shop_code:SHOP_CODE,assessment_id:state.assessmentId,member_token:state.memberToken,item_id:itemId,mime_type:compressed.type,file_size_bytes:compressed.size,original_file_name:compressed.name,photo_kind:kind,is_cover:false});
+        const form=new FormData();form.append("ticket",ticket.upload_ticket);form.append("file",compressed,compressed.name);
+        const response=await fetch(API_BASE+ticket.upload_endpoint,{method:"POST",body:form});
+        if(!response.ok){const err=await response.json().catch(()=>({}));throw new Error(apiErrorMessage(err));}
+        const bar=$("uploadBar"+i);if(bar)bar.style.width="100%";
+      }
+    }
+
+    async function compressImage(file,limit){
+      if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw new Error("JPEG・PNG・WebP形式の写真を選択してください。");
+      if(file.size<=limit)return file;
+      const bitmap=await loadBitmap(file);
+      let width=bitmap.width,height=bitmap.height;
+      const maxSide=1800;
+      if(Math.max(width,height)>maxSide){const ratio=maxSide/Math.max(width,height);width=Math.round(width*ratio);height=Math.round(height*ratio);}
+      const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;const ctx=canvas.getContext("2d");ctx.drawImage(bitmap,0,0,width,height);if(bitmap.close)bitmap.close();
+      let quality=.86,blob=null;
+      for(let n=0;n<7;n++){blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",quality));if(blob&&blob.size<=limit)break;quality-=.1;}
+      if(!blob)throw new Error("写真を処理できませんでした。");
+      return new File([blob],file.name.replace(/\.[^.]+$/,"")+".jpg",{type:"image/jpeg",lastModified:Date.now()});
+    }
+    async function loadBitmap(file){
+      if("createImageBitmap" in window)return createImageBitmap(file,{imageOrientation:"from-image"}).catch(()=>createImageBitmap(file));
+      return new Promise((resolve,reject)=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("写真を読み込めませんでした。"))};img.src=url;});
+    }
+
+    function openDealModal(itemIds,preset=""){
+      const items=state.detail.items.filter(i=>itemIds.includes(i.id));
+      openModal(items.length > 1 ? `${items.length}商品へまとめて回答` : "売却希望・見送りを回答",`
+        <div class="notice warning"><span class="notice-symbol">!</span><div>売却希望の送信だけでは正式契約になりません。店舗で実物確認・本人確認・正式契約を行います。</div></div>
+        <div class="radio-list">
+          ${dealRadio("accepted_intent","この金額で売却を希望する","店舗へ売却希望を伝えます。正式手続きは店舗で行います。",preset)}
+          ${dealRadio("reconsidering","店舗へ相談したい","金額や条件について店舗からの連絡を希望します。",preset)}
+          ${dealRadio("declined","今回は見送る","今回は売却せず、商品を手元に残します。",preset)}
+        </div>
+        <div class="field" style="margin-top:14px"><label for="dealReason">理由・ご希望（任意）</label><textarea id="dealReason" maxlength="1000" placeholder="例：希望金額との差、来店できる日時、相談したい内容"></textarea></div>
+        <div class="field"><label for="dealMessage">店舗へのメッセージ（任意）</label><textarea id="dealMessage" maxlength="3000" placeholder="店舗へ伝えたい内容"></textarea></div>`,async()=>{
+          const selected=document.querySelector('input[name="dealResponse"]:checked');if(!selected)throw new Error("ご希望を選択してください。");
+          const payload={shop_code:SHOP_CODE,member_token:state.memberToken,assessment_id:state.assessmentId,response_status:selected.value,reason_text:$("dealReason").value.trim(),customer_message:$("dealMessage").value.trim()};
+          if(itemIds.length===1){payload.item_id=itemIds[0];await apiPost("/api/member/item-deal-response",payload);}else{payload.item_ids=itemIds;await apiPost("/api/member/deal-response",payload);}
+          toast("ご希望を店舗へ送信しました。");await reloadDetail();
+        });
+    }
+    function dealRadio(value,title,desc,preset){return `<label class="radio-option"><input type="radio" name="dealResponse" value="${value}" ${preset===value?"checked":""}><span><strong>${title}</strong><small>${desc}</small></span></label>`;}
+
+    function openChangeModal(reservation){
+      openModal("日時変更を相談",`
+        <div class="notice info"><span class="notice-symbol">i</span><div>現在の予定：${escapeHtml(reservation?.scheduled_start_at?fmtDateTime(reservation.scheduled_start_at):reservation?.requested_time_text||"日程調整中")}</div></div>
+        <div class="form-grid"><div class="field"><label for="changeDate">希望日（任意）</label><input id="changeDate" type="date"></div><div class="field"><label for="changeTime">希望時間（任意）</label><input id="changeTime" type="time" step="1800"></div><div class="field full"><label for="changeReason">変更理由・その他の希望</label><textarea id="changeReason" maxlength="3000" placeholder="例：午後3時以降を希望します。別の日でも可能です。"></textarea></div></div>`,async()=>{
+          const date=$("changeDate").value,time=$("changeTime").value,reason=$("changeReason").value.trim();if(!date&&!time&&!reason)throw new Error("変更希望を入力してください。");
+          let start;if(date&&time)start=`${date}T${time}:00+09:00`;
+          const end=start?new Date(new Date(start).getTime()+30*60000).toISOString():undefined;
+          await apiPost("/api/member/change-request",{shop_code:SHOP_CODE,member_token:state.memberToken,assessment_id:state.assessmentId,reservation_id:reservation?.id,requested_start_at:start,requested_end_at:end,requested_time_text:[date,time].filter(Boolean).join(" "),reason});
+          toast("変更希望を送信しました。");await reloadDetail();
+        });
+    }
+
+    function openCancelModal(reservation,wholeAssessment=false){
+      openModal(wholeAssessment?"査定相談を取り下げたい":"予約をキャンセル",`
+        <div class="notice danger"><span class="notice-symbol">!</span><div>${wholeAssessment?"査定相談の取り下げ希望を店舗へ送ります。商品データは店舗確認後に処理されます。":"この予約のキャンセル希望を店舗へ送信します。"}</div></div>
+        <div class="field"><label for="cancelReason">理由</label><textarea id="cancelReason" maxlength="3000" placeholder="理由をご入力ください"></textarea></div>`,async()=>{
+          const reason=$("cancelReason").value.trim();if(!reason)throw new Error("理由を入力してください。");
+          await apiPost("/api/member/cancel-request",{shop_code:SHOP_CODE,member_token:state.memberToken,assessment_id:state.assessmentId,reservation_id:reservation?.id,reason});
+          toast(wholeAssessment?"取り下げ希望を送信しました。":"キャンセル希望を送信しました。");await reloadDetail();
+        });
+    }
+
+    function openAddItemModal(){
+      const max=Number(state.config?.settings?.max_items_per_assessment||10);
+      if(state.detail.items.length>=max){toast(`査定商品は最大${max}商品です。`,"error");return;}
+      openModal("査定商品を追加",`
+        <div class="notice info"><span class="notice-symbol">i</span><div>すでに受付済みの査定案件へ、別の商品を追加します。追加後に商品写真も登録できます。</div></div>
+        <div class="form-grid">
+          <div class="field full"><label for="addCategory">商品カテゴリー</label><select id="addCategory"><option value="">選択してください</option>${state.options.map(c=>`<option value="${escapeHtml(c.category_code)}">${escapeHtml(c.icon_text||"")} ${escapeHtml(c.category_name)}</option>`).join("")}</select></div>
+          <div class="field" id="addQuantityField"><label for="addQuantity">数量</label><input id="addQuantity" type="number" min="1" max="9999" value="1"></div>
+          <div class="field"><label for="addItemName">商品名・品物の種類</label><input id="addItemName" maxlength="500" placeholder="例：バッグ、腕時計、ネックレス"></div>
+          <div class="field"><label for="addBrand">ブランド</label><input id="addBrand" maxlength="300"></div>
+          <div class="field"><label for="addMaker">メーカー</label><input id="addMaker" maxlength="300"></div>
+          <div class="field"><label for="addModel">型番・モデル</label><input id="addModel" maxlength="300"></div>
+          <div class="field"><label for="addSerial">製造番号</label><input id="addSerial" maxlength="300"></div>
+          <div class="field full"><label for="addCondition">状態</label><textarea id="addCondition" maxlength="3000" placeholder="傷、汚れ、動作状況など"></textarea></div>
+          <div class="field full"><label for="addAccessories">付属品</label><textarea id="addAccessories" maxlength="3000" placeholder="箱、保証書、保存袋、余りコマなど"></textarea></div>
+        </div>
+        <div id="dynamicFields" class="form-grid" style="margin-top:14px"></div>`,async()=>{
+          const code=$("addCategory").value;const category=state.options.find(c=>c.category_code===code);if(!category)throw new Error("商品カテゴリーを選択してください。");
+          const fields={};
+          for(const f of category.fields||[]){const input=document.querySelector(`[data-dynamic="${CSS.escape(f.field_code)}"]`);if(!input)continue;let value;if(f.input_type==="checkbox")value=input.checked;else if(f.input_type==="multiselect")value=[...input.selectedOptions].map(o=>o.value);else value=input.value.trim();if(f.is_required&&(value===""||(Array.isArray(value)&&!value.length)))throw new Error(`${f.field_label}を入力してください。`);if(value!==""&&value!==false)fields[f.field_code]=value;}
+          const payload={shop_code:SHOP_CODE,member_token:state.memberToken,assessment_id:state.assessmentId,item:{category_code:code,quantity:INDIVIDUAL_CATEGORIES.has(code)?1:Number($("addQuantity").value||1),item_name:$("addItemName").value.trim(),brand:$("addBrand").value.trim(),maker:$("addMaker").value.trim(),model_no:$("addModel").value.trim(),serial_no:$("addSerial").value.trim(),condition_summary:$("addCondition").value.trim(),accessories:$("addAccessories").value.trim(),fields}};
+          const result=await apiPost("/api/member/items/add",payload);toast("査定商品を追加しました。");await reloadDetail();setTimeout(()=>openPhotoModal(result.item.id),250);
+        },()=>{$("addCategory").addEventListener("change",renderAddDynamicFields);});
+    }
+
+    function renderAddDynamicFields(){
+      const category=state.options.find(c=>c.category_code===$("addCategory").value);
+      if(!category){$("dynamicFields").innerHTML="";return;}
+      $("addQuantityField").classList.toggle("hidden",INDIVIDUAL_CATEGORIES.has(category.category_code));
+      $("addQuantityField").querySelector("label").textContent=QUANTITY_LABELS[category.category_code]||"数量";
+      $("dynamicFields").innerHTML=(category.fields||[]).map(renderDynamicInput).join("");
+    }
+
+    function renderDynamicInput(f){
+      const req=f.is_required?` <span style="color:var(--red)">必須</span>`:"";const attr=`data-dynamic="${escapeHtml(f.field_code)}" ${f.is_required?"required":""}`;const options=normalizeOptions(f.option_values);
+      let input;
+      if(f.input_type==="textarea")input=`<textarea ${attr} maxlength="${f.max_length||3000}" placeholder="${escapeHtml(f.placeholder||"")}"></textarea>`;
+      else if(["select","radio"].includes(f.input_type))input=`<select ${attr}><option value="">選択してください</option>${options.map(o=>`<option value="${escapeHtml(o.value)}">${escapeHtml(o.label)}</option>`).join("")}</select>`;
+      else if(f.input_type==="multiselect")input=`<select ${attr} multiple size="${Math.min(5,Math.max(3,options.length))}">${options.map(o=>`<option value="${escapeHtml(o.value)}">${escapeHtml(o.label)}</option>`).join("")}</select>`;
+      else if(f.input_type==="checkbox")input=`<label style="display:flex;align-items:center;gap:8px;font-weight:700"><input ${attr} type="checkbox" style="width:auto"> 該当する</label>`;
+      else input=`<input ${attr} type="${f.input_type==="number"?"number":f.input_type==="date"?"date":"text"}" maxlength="${f.max_length||500}" placeholder="${escapeHtml(f.placeholder||"")}" ${f.min_number!==null&&f.min_number!==undefined?`min="${f.min_number}"`:""} ${f.max_number!==null&&f.max_number!==undefined?`max="${f.max_number}"`:""}>`;
+      return `<div class="field ${f.input_type==="textarea"?"full":""}"><label>${escapeHtml(f.field_label)}${req}</label>${input}${f.help_text?`<div class="field-help">${escapeHtml(f.help_text)}</div>`:""}</div>`;
+    }
+    function normalizeOptions(value){if(!Array.isArray(value))return[];return value.map(v=>typeof v==="object"?{value:String(v.value??v.code??v.label??""),label:String(v.label??v.value??v.code??"")}:{value:String(v),label:String(v)});}
+
+    function openModal(title,body,onSubmit,onOpen){
+      closeModal();
+      $("modalRoot").innerHTML=`<div class="modal-backdrop" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true"><div class="modal-head"><h2>${escapeHtml(title)}</h2><button class="modal-close" type="button" id="modalClose">×</button></div><form id="modalForm"><div class="modal-body">${body}</div><div class="modal-foot"><button class="btn btn-ghost btn-small" type="button" id="modalCancel">閉じる</button><button class="btn btn-primary btn-small" type="submit" id="modalSubmit">送信する</button></div></form></div></div>`;
+      document.body.style.overflow="hidden";
+      $("modalClose").addEventListener("click",closeModal);$("modalCancel").addEventListener("click",closeModal);
+      $("modalBackdrop").addEventListener("click",e=>{if(e.target===$("modalBackdrop"))closeModal();});
+      $("modalForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("modalSubmit");btn.disabled=true;const old=btn.textContent;btn.textContent="送信中...";try{await onSubmit();closeModal();}catch(err){toast(err.message||"送信できませんでした。","error");}finally{if(btn){btn.disabled=false;btn.textContent=old;}}});
+      if(onOpen)requestAnimationFrame(onOpen);
+    }
+    function closeModal(){$("modalRoot").innerHTML="";document.body.style.overflow="";state.modalFiles=[];}
+
+    async function reloadDetail(){await loadDetail(state.memberToken,state.assessmentId,false);}
+    function currentOffer(item){const current=(item.results||[]).filter(r=>r.is_current!==false);return current.find(r=>r.result_type==="formal_offer")||current.find(r=>r.result_type==="photo_estimate")||null;}
+    function itemStatusLabel(s){return ({pending:"確認待ち",checking:"確認中",external_appraisal:"本部査定中",offer_ready:"金額案内済み",accepted_intent:"売却希望",declined:"見送り",not_supported:"査定対象外",returned:"返却済み",completed:"完了"})[s]||s||"確認中";}
+    function itemStatusColor(s){if(["accepted_intent","offer_ready","completed"].includes(s))return"green";if(["external_appraisal","checking"].includes(s))return"blue";if(["declined","returned"].includes(s))return"gray";if(s==="not_supported")return"red";return"amber";}
+    function currentProgress(status){if(["received","need_reply"].includes(status))return 0;if(["checking_items","additional_info_needed","external_appraisal"].includes(status))return 1;if(["appointment_scheduled","arrived","assessing"].includes(status))return 2;if(["price_presented","deal_pending"].includes(status))return 3;return 4;}
+    function statusSymbol(status){if(["completed","accepted_intent"].includes(status))return"✓";if(status==="declined")return"↺";if(status==="cancelled")return"×";if(["price_presented","deal_pending","partially_accepted"].includes(status))return"¥";if(["appointment_scheduled","arrived"].includes(status))return"予";return"査";}
+    function loadVisiblePhotos(){document.querySelectorAll(".photo img").forEach(img=>img.addEventListener("error",()=>{img.closest(".photo").innerHTML=`<div class="photo-empty" style="height:100%;border:0">写真を表示できません</div>`;}));}
+
+    async function apiGet(path,query={}){const url=new URL(API_BASE+path);Object.entries(query).forEach(([k,v])=>{if(v!==undefined&&v!==null&&v!=="")url.searchParams.set(k,v)});const res=await fetch(url,{headers:{Accept:"application/json"}});return parseResponse(res);}
+    async function apiPost(path,body){const res=await fetch(API_BASE+path,{method:"POST",headers:{"Content-Type":"application/json","X-Idempotency-Key":crypto.randomUUID()},body:JSON.stringify(body)});return parseResponse(res);}
+    async function parseResponse(res){const data=await res.json().catch(()=>({}));if(!res.ok||data.ok===false)throw new Error(apiErrorMessage(data));return data;}
+    function apiErrorMessage(data){const map={customer_not_found:"査定履歴が見つかりませんでした。",not_found:"査定情報が見つかりませんでした。",assessment_closed:"この査定は完了しているため変更できません。",photo_limit:"写真の登録上限に達しています。",item_limit:"商品の登録上限に達しています。",validation_error:"入力内容をご確認ください。",rate_limited:"操作が続いています。少し待ってからお試しください。"};return map[data.error]||data.message||"処理を完了できませんでした。";}
+    function handleError(error){console.error(error);toast(error.message||"処理を完了できませんでした。","error");}
+    function toast(message,type="success"){const node=document.createElement("div");node.className=`toast ${type==="error"?"error":""}`;node.textContent=message;$("toastWrap").appendChild(node);setTimeout(()=>node.remove(),4200);}
+
+    function loadPreview(){
+      state.assessments=[{id:"preview-assessment",assessment_no:"BUYBACK-PREVIEW-001",member_token:"preview-token",intake_channel_code:"photo_line",assessment_status:"deal_pending",external_appraisal_status:"answered",deal_status:"pending",request_title:"ブランドバッグと腕時計の写真査定",received_at:new Date().toISOString()}];
+      state.assessmentId="preview-assessment";state.memberToken="preview-token";
+      state.detail={shop:state.config.shop,customer:{customer_no:"BUY-C-PREVIEW",customer_name:"買取 デモ太郎",phone:"080-0000-2804",preferred_contact_method:"line"},assessment:{...state.assessments[0],follow_status:"waiting_customer",updated_at:new Date().toISOString()},items:[{id:"preview-item-1",category_code:"brand_goods",category_name:"ブランドバッグ・財布・小物",sort_order:1,quantity:1,brand:"LOUIS VUITTON",item_name:"モノグラム バッグ",model_no:"M51130",condition_summary:"角スレと内側に使用感があります。",accessories:"保存袋あり",item_result_status:"offer_ready",photos:[],field_values:[],results:[{id:"r1",item_id:"preview-item-1",result_type:"photo_estimate",lower_amount:45000,upper_amount:60000,currency_code:"JPY",customer_comment:"写真をもとにした概算です。実物の状態により変動します。",valid_until:new Date(Date.now()+7*86400000).toISOString(),presented_at:new Date().toISOString(),is_current:true}],deal_responses:[]},{id:"preview-item-2",category_code:"watches",category_name:"腕時計",sort_order:2,quantity:1,brand:"OMEGA",item_name:"シーマスター",model_no:"2531.80",condition_summary:"現在動作中。ベゼルとブレスに小傷あり。",accessories:"箱・余りコマあり",item_result_status:"offer_ready",photos:[],field_values:[],results:[{id:"r2",item_id:"preview-item-2",result_type:"photo_estimate",lower_amount:120000,upper_amount:155000,currency_code:"JPY",customer_comment:"写真をもとにした概算です。",valid_until:new Date(Date.now()+7*86400000).toISOString(),presented_at:new Date().toISOString(),is_current:true}],deal_responses:[]}],reservations:[],external_appraisals:[{provider_type:"headquarters",external_appraisal_status:"answered",answered_at:new Date().toISOString()}]};
+      $("customerLabel").textContent="買取 デモ太郎 様";renderAssessmentList();renderDetail();showPortal();setConnection(true,"プレビュー");
+    }
+  })();
+  </script>
+</body>
+</html>
