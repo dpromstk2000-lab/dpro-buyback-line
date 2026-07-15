@@ -380,6 +380,33 @@
     }
     .icon-button.danger { color: var(--danger); border-color: #efc3c3; background: var(--danger-soft); }
     .item-body { padding: 16px; }
+    .quantity-guidance {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px 14px;
+      border: 1px solid #bfd9d1;
+      border-radius: 14px;
+      background: #eef8f5;
+      color: #174f41;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .quantity-guidance strong { display: block; margin-bottom: 2px; font-size: 14px; }
+    .quantity-fixed-badge {
+      flex: 0 0 auto;
+      display: inline-grid;
+      place-items: center;
+      min-width: 48px;
+      min-height: 34px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 900;
+      white-space: nowrap;
+    }
     .add-item-button {
       width: 100%;
       min-height: 58px;
@@ -822,7 +849,7 @@
 
     <footer>
       <div id="footerShop">DPRO 総合買取・査定 LINE</div>
-      <div>STEP BUYBACK-4 · CUSTOMER APPRAISAL INTAKE</div>
+      <div>STEP BUYBACK-4-R1 · CATEGORY QUANTITY RULES</div>
     </footer>
   </main>
 
@@ -842,11 +869,22 @@
   <script>
     "use strict";
 
-    const VERSION = "BUYBACK-4-CUSTOMER-INTAKE-20260715";
+    const VERSION = "BUYBACK-4-R1-CATEGORY-QUANTITY-RULES-20260715";
     const DEFAULT_API_BASE = "https://dpro-buyback-line-api.dpromstk2000.workers.dev";
     const DEFAULT_SHOP_CODE = "dpro_buyback_demo";
     const STEP_TITLES = ["受付方法", "お客様情報", "査定商品", "商品詳細", "商品写真", "希望内容", "連絡事項", "入力確認", "受付完了"];
     const CHANNEL_ICONS = { photo_line: "📷", walk_in: "🏪", visit: "📅", travel: "🚙", event: "🏢", delivery: "📦" };
+    const INDIVIDUAL_ITEM_CATEGORIES = new Set([
+      "brand_goods", "watches", "cameras", "smart_devices",
+      "alcohol", "musical_instruments", "tools"
+    ]);
+    const GROUPED_QUANTITY_META = {
+      precious_metals: { label: "点数", unit: "点", help: "同じ種類をまとめて査定する場合の点数です。品物ごとに査定額を分けたい場合は、下の「査定商品を追加」から分けて登録してください。" },
+      jewelry: { label: "点数", unit: "点", help: "同じ種類をまとめて査定する場合の点数です。品物ごとに査定額を分けたい場合は、1点ずつ商品を追加してください。" },
+      vouchers: { label: "枚数", unit: "枚", help: "同じ種類・同じ額面をまとめて査定する場合の枚数です。種類や額面が異なる場合は商品を分けてください。" },
+      stamps_coins: { label: "おおよその点数", unit: "点", help: "切手アルバムや古銭セットなど、まとめ査定のおおよその点数です。詳しい枚数・冊数は次の画面で入力できます。" },
+      hobby_other: { label: "数量", unit: "点", help: "同じ商品をまとめて査定する場合の数量です。異なる商品は「査定商品を追加」から分けて登録してください。" }
+    };
     const params = new URLSearchParams(location.search);
     const API_BASE = (params.get("api") || DEFAULT_API_BASE).replace(/\/$/, "");
     const SHOP_CODE = params.get("shop_code") || DEFAULT_SHOP_CODE;
@@ -1024,6 +1062,52 @@
       };
     }
 
+    function quantityMode(categoryCode) {
+      if (INDIVIDUAL_ITEM_CATEGORIES.has(categoryCode)) return "individual";
+      if (GROUPED_QUANTITY_META[categoryCode]) return "grouped";
+      return "individual";
+    }
+
+    function quantityMeta(categoryCode) {
+      return GROUPED_QUANTITY_META[categoryCode] || { label: "数量", unit: "点", help: "複数ある場合は、品物ごとに商品を追加してください。" };
+    }
+
+    function syncQuantityField(item) {
+      if (!item) return;
+      const quantity = Math.max(1, Math.min(9999, Math.trunc(Number(item.quantity || 1))));
+      item.quantity = quantity;
+      if (item.category_code === "vouchers" || item.category_code === "hobby_other") {
+        item.fields.count = quantity;
+      }
+    }
+
+    function shouldHideDynamicQuantityField(categoryCode, fieldCode) {
+      return (categoryCode === "vouchers" || categoryCode === "hobby_other") && fieldCode === "count";
+    }
+
+    function renderQuantityArea(item, category) {
+      if (!category) return "";
+      if (quantityMode(category.category_code) === "individual") {
+        item.quantity = 1;
+        syncQuantityField(item);
+        return `<div class="quantity-guidance"><span class="quantity-fixed-badge">1商品</span><div><strong>このカテゴリーは1商品ずつ登録します</strong>複数ある場合は、下の「査定商品を追加」から1点ずつ追加してください。写真・査定額・成約結果を商品ごとに正しく管理できます。</div></div>`;
+      }
+      syncQuantityField(item);
+      const meta = quantityMeta(category.category_code);
+      return `<div class="field"><label for="quantity-${item.client_id}">${escapeHtml(meta.label)}<span class="required">必須</span></label><input id="quantity-${item.client_id}" data-item-quantity="${item.client_id}" type="number" inputmode="numeric" min="1" max="9999" value="${Number(item.quantity || 1)}"><span class="field-help">${escapeHtml(meta.help)}</span></div>`;
+    }
+
+    function quantitySummary(item) {
+      const category = state.categoryMap.get(item.category_code);
+      if (!category || quantityMode(category.category_code) === "individual") return "1点（個別商品）";
+      const meta = quantityMeta(category.category_code);
+      return `${Number(item.quantity || 1)}${meta.unit}`;
+    }
+
+    function totalItemQuantity() {
+      return state.items.reduce((sum, item) => sum + Math.max(1, Number(item.quantity || 1)), 0);
+    }
+
     function addItem() {
       const max = Number(state.config.settings.max_items_per_assessment || 10);
       if (state.items.length >= max) return toast(`1回の受付は最大${max}点までです。`, "error");
@@ -1047,15 +1131,21 @@
     function renderCategoryItems() {
       el("itemCategoryList").innerHTML = state.items.map((item, index) => {
         const category = state.categoryMap.get(item.category_code);
+        if (category && quantityMode(category.category_code) === "individual") item.quantity = 1;
+        syncQuantityField(item);
         const options = state.categories.filter(c => categoryAllowed(c)).map(c => `<option value="${escapeHtml(c.category_code)}" ${c.category_code === item.category_code ? "selected" : ""}>${escapeHtml(c.icon_text || "📦")} ${escapeHtml(c.category_name)}</option>`).join("");
         return `<article id="category-${item.client_id}" class="item-card">
           <div class="item-head"><div class="item-index">${index + 1}</div><div class="item-title"><strong>商品 ${index + 1}</strong><span>${escapeHtml(category?.category_name || "カテゴリー未選択")}</span></div>${state.items.length > 1 ? `<button type="button" class="icon-button danger" data-remove-item="${item.client_id}">削除</button>` : ""}</div>
-          <div class="item-body"><div class="form-grid"><div class="field full"><label for="categorySelect-${item.client_id}">商品カテゴリー<span class="required">必須</span></label><select id="categorySelect-${item.client_id}" data-category-select="${item.client_id}"><option value="">選択してください</option>${options}</select>${category?.customer_notice ? `<span class="field-help">${escapeHtml(category.customer_notice)}</span>` : ""}</div><div class="field"><label for="quantity-${item.client_id}">数量<span class="required">必須</span></label><input id="quantity-${item.client_id}" data-item-quantity="${item.client_id}" type="number" inputmode="numeric" min="1" max="9999" value="${Number(item.quantity || 1)}"></div></div></div>
+          <div class="item-body"><div class="form-grid"><div class="field full"><label for="categorySelect-${item.client_id}">商品カテゴリー<span class="required">必須</span></label><select id="categorySelect-${item.client_id}" data-category-select="${item.client_id}"><option value="">選択してください</option>${options}</select>${category?.customer_notice ? `<span class="field-help">${escapeHtml(category.customer_notice)}</span>` : ""}</div>${renderQuantityArea(item, category)}</div></div>
         </article>`;
       }).join("");
       el("itemCategoryList").querySelectorAll("[data-remove-item]").forEach(button => button.addEventListener("click", () => removeItem(button.dataset.removeItem)));
       el("itemCategoryList").querySelectorAll("[data-category-select]").forEach(select => select.addEventListener("change", () => updateCategory(select.dataset.categorySelect, select.value)));
-      el("itemCategoryList").querySelectorAll("[data-item-quantity]").forEach(input => input.addEventListener("input", () => { findItem(input.dataset.itemQuantity).quantity = Number(input.value || 1); }));
+      el("itemCategoryList").querySelectorAll("[data-item-quantity]").forEach(input => input.addEventListener("input", () => {
+        const item = findItem(input.dataset.itemQuantity);
+        item.quantity = Number(input.value || 1);
+        syncQuantityField(item);
+      }));
       el("addItemBtn").hidden = state.items.length >= Number(state.config.settings.max_items_per_assessment || 10);
     }
 
@@ -1063,11 +1153,13 @@
       const item = findItem(clientId);
       if (item.category_code !== categoryCode) {
         item.category_code = categoryCode;
+        item.quantity = 1;
         item.fields = {};
         item.condition_summary = "";
         item.customer_note = "";
         cleanupPhotos(item);
         item.photos = [];
+        syncQuantityField(item);
       }
       renderCategoryItems();
       renderDetailItems();
@@ -1078,7 +1170,8 @@
       el("itemDetailList").innerHTML = state.items.map((item, index) => {
         const category = state.categoryMap.get(item.category_code);
         if (!category) return `<div class="notice danger"><span>!</span><div>商品${index + 1}のカテゴリーを選択してください。</div></div>`;
-        const dynamic = category.fields.map(field => renderDynamicField(item, field)).join("");
+        syncQuantityField(item);
+        const dynamic = category.fields.filter(field => !shouldHideDynamicQuantityField(category.category_code, field.field_code)).map(field => renderDynamicField(item, field)).join("");
         return `<article class="item-card">
           <div class="item-head"><div class="item-index">${index + 1}</div><div class="item-title"><strong>${escapeHtml(category.icon_text || "📦")} ${escapeHtml(category.category_name)}</strong><span>分かる範囲で入力してください</span></div></div>
           <div class="item-body"><div class="form-grid">${dynamic}
@@ -1361,8 +1454,29 @@
         if (email.value && !email.validity.valid) { markInvalid(email); valid = false; }
       }
       if (step === 3) {
-        for (const item of state.items) if (!item.category_code) { const select = el(`categorySelect-${item.client_id}`); markInvalid(select); valid = false; }
-        if (!valid) message = "すべての商品カテゴリーを選択してください。";
+        for (const item of state.items) {
+          if (!item.category_code) {
+            const select = el(`categorySelect-${item.client_id}`);
+            markInvalid(select);
+            valid = false;
+            continue;
+          }
+          const category = state.categoryMap.get(item.category_code);
+          if (quantityMode(category.category_code) === "individual") {
+            item.quantity = 1;
+          } else {
+            const quantityInput = el(`quantity-${item.client_id}`);
+            const quantity = Number(quantityInput?.value || item.quantity || 1);
+            if (!Number.isInteger(quantity) || quantity < 1 || quantity > 9999) {
+              markInvalid(quantityInput);
+              valid = false;
+            } else {
+              item.quantity = quantity;
+              syncQuantityField(item);
+            }
+          }
+        }
+        if (!valid) message = "すべての商品カテゴリーと数量を確認してください。";
       }
       if (step === 4) {
         for (const item of state.items) {
@@ -1407,15 +1521,17 @@
       const customer = collectCustomer();
       const schedule = collectSchedule();
       const channel = availableChannels().find(c => c.channel_code === state.channel);
+      const totalQuantity = totalItemQuantity();
+      const itemCountText = totalQuantity === state.items.length ? `${state.items.length}点` : `${state.items.length}商品グループ（合計${totalQuantity}点）`;
       el("confirmSummary").innerHTML = `
-        <dl class="summary-grid"><dt>受付方法</dt><dd>${escapeHtml(channel?.channel_name || state.channel)}</dd><dt>お名前</dt><dd>${escapeHtml(customer.customer_name)}</dd><dt>電話番号</dt><dd>${escapeHtml(customer.phone)}</dd><dt>連絡方法</dt><dd>${escapeHtml(contactMethodLabel(customer.preferred_contact_method))}</dd><dt>商品数</dt><dd>${state.items.length}点</dd><dt>希望内容</dt><dd>${escapeHtml(schedule.summary || "査定結果の連絡を希望")}</dd></dl>
+        <dl class="summary-grid"><dt>受付方法</dt><dd>${escapeHtml(channel?.channel_name || state.channel)}</dd><dt>お名前</dt><dd>${escapeHtml(customer.customer_name)}</dd><dt>電話番号</dt><dd>${escapeHtml(customer.phone)}</dd><dt>連絡方法</dt><dd>${escapeHtml(contactMethodLabel(customer.preferred_contact_method))}</dd><dt>査定商品</dt><dd>${escapeHtml(itemCountText)}</dd><dt>希望内容</dt><dd>${escapeHtml(schedule.summary || "査定結果の連絡を希望")}</dd></dl>
         <div class="summary-items">${state.items.map((item,index) => {
           const category = state.categoryMap.get(item.category_code);
-          const detail = Object.entries(item.fields).filter(([,v]) => v !== "" && v != null && (!Array.isArray(v) || v.length)).slice(0,5).map(([code,value]) => {
+          const detail = Object.entries(item.fields).filter(([code,v]) => !shouldHideDynamicQuantityField(category.category_code, code) && v !== "" && v != null && (!Array.isArray(v) || v.length)).slice(0,5).map(([code,value]) => {
             const label = category.fields.find(f => f.field_code === code)?.field_label || code;
             return `${label}：${Array.isArray(value) ? value.join("、") : String(value)}`;
           });
-          return `<div class="summary-item"><h3>商品${index + 1}｜${escapeHtml(category.category_name)}</h3><p>数量：${Number(item.quantity || 1)}</p>${detail.map(v => `<p>${escapeHtml(v)}</p>`).join("")}<p>写真：${item.photos.length}枚</p></div>`;
+          return `<div class="summary-item"><h3>商品${index + 1}｜${escapeHtml(category.category_name)}</h3><p>数量：${escapeHtml(quantitySummary(item))}</p>${detail.map(v => `<p>${escapeHtml(v)}</p>`).join("")}<p>写真：${item.photos.length}枚</p></div>`;
         }).join("")}</div>`;
     }
 
@@ -1473,6 +1589,8 @@
 
     function itemPayload(item, index) {
       const category = state.categoryMap.get(item.category_code);
+      if (quantityMode(item.category_code) === "individual") item.quantity = 1;
+      syncQuantityField(item);
       const fields = { ...item.fields };
       const pick = (...codes) => { for (const code of codes) if (fields[code] !== undefined && fields[code] !== "") return String(fields[code]); return ""; };
       const inferredName = pick("item_name","product_model","model_name","instrument_type","tool_type","camera_type","item_type","voucher_type","brand_name") || category.short_name || category.category_name;
