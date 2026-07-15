@@ -60,7 +60,7 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
   <div class="hero-main">
     <span class="hero-tag">STEP BUYBACK-9</span>
     <h1>営業前の状態を<br>1画面で確認</h1>
-    <p>Worker API・Supabase・デモデータ・電話番号正規化・公開画面のバージョン・手動操作確認をまとめて判定します。</p>
+    <p>Worker API・Supabase・公開中設定と登録マスター・デモデータ・電話番号正規化・公開画面・手動操作をまとめて判定します。</p>
     <div class="hero-tags"><span class="hero-tag">✓ 自動APIチェック</span><span class="hero-tag">✓ デモデータ再準備</span><span class="hero-tag">✓ 手動チェック8項目</span></div>
   </div>
   <div class="hero-side">
@@ -72,6 +72,7 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
     <div class="version-line"><span class="version-label">オーナーPC</span><span class="version-value">BUYBACK-6-R1</span></div>
     <div class="version-line"><span class="version-label">査定スタッフ</span><span class="version-value">BUYBACK-7-R1</span></div>
     <div class="version-line"><span class="version-label">店頭iPad</span><span class="version-value">BUYBACK-8-R1</span></div>
+    <div class="version-line"><span class="version-label">システム確認</span><span class="version-value">BUYBACK-9-R1</span></div>
   </div>
 </section>
 
@@ -131,8 +132,10 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
         <tbody>
           <tr><td>店舗</td><td id="dataShop">—</td></tr>
           <tr><td>スタッフ</td><td id="dataStaff">—</td></tr>
-          <tr><td>カテゴリー</td><td id="dataCategories">—</td></tr>
-          <tr><td>動的項目</td><td id="dataFields">—</td></tr>
+          <tr><td>公開カテゴリー</td><td id="dataCategories">—</td></tr>
+          <tr><td>公開動的項目</td><td id="dataFields">—</td></tr>
+          <tr><td>登録カテゴリー</td><td id="dataMasterCategories">—</td></tr>
+          <tr><td>登録動的項目</td><td id="dataMasterFields">—</td></tr>
           <tr><td>顧客</td><td id="dataCustomers">—</td></tr>
           <tr><td>査定案件</td><td id="dataAssessments">—</td></tr>
           <tr><td>タスク</td><td id="dataTasks">—</td></tr>
@@ -164,29 +167,35 @@ button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
 </section>
 </div>
 
-<div class="footer">STEP BUYBACK-9・SYSTEM CHECK / DEMO PREPARE / MANUAL 8 CHECKS</div>
+<div class="footer">STEP BUYBACK-9-R1・PUBLIC / MASTER CATEGORY CHECK FIX</div>
 </main>
 <div id="toastWrap" class="toast-wrap"></div>
 
 <script>
 'use strict';
-const VERSION='BUYBACK-9-SYSTEM-CHECK-20260715';
+const VERSION='BUYBACK-9-R1-PUBLIC-MASTER-CATEGORY-CHECK-FIX-20260715';
 const API_BASE='https://dpro-buyback-line-api.dpromstk2000.workers.dev';
 const SHOP_CODE='dpro_buyback_demo';
 const STORAGE={token:'dpro_buyback_system_check_token',code:'dpro_buyback_system_check_code',manual:'dpro_buyback_system_check_manual_v1'};
 const EXPECTED={
  worker:'BUYBACK-3-WORKER-API-COMPLETE-20260715',
  schema:'BUYBACK-2-R1-SUPABASE-TASK-TYPE-FIX-20260715',
- staffMin:3,categories:12,fields:76,customersMin:6,assessmentsMin:5
+ staffMin:3,
+ publicCategories:11,
+ publicFields:71,
+ masterCategories:12,
+ masterFields:76,
+ customersMin:6,
+ assessmentsMin:5
 };
 const checks=[
  {id:'health',group:'public',name:'Worker Health',detail:'API・DB・機能フラグ',run:checkHealth},
  {id:'public_config',group:'public',name:'公開店舗設定',detail:'店舗情報・営業時間・受付方法',run:checkPublicConfig},
- {id:'assessment_options',group:'public',name:'査定カテゴリー',detail:'12カテゴリー・カテゴリー別項目',run:checkAssessmentOptions},
+ {id:'assessment_options',group:'public',name:'公開中の査定カテゴリー',detail:'酒類を除く公開中11カテゴリー・71項目',run:checkAssessmentOptions},
  {id:'admin_login',group:'admin',name:'管理セッション',detail:'管理コード認証・短時間トークン',run:checkAdminSession},
- {id:'system_check',group:'admin',name:'Supabase一括確認',detail:'件数・機能・電話番号正規化',run:checkAdminSystem},
+ {id:'system_check',group:'admin',name:'Supabase公開設定確認',detail:'公開中カテゴリー・件数・電話番号正規化',run:checkAdminSystem},
  {id:'dashboard',group:'admin',name:'管理ダッシュボード',detail:'集計・案件・優先タスク',run:checkDashboard},
- {id:'settings',group:'admin',name:'店舗設定API',detail:'スタッフ・カテゴリー・営業時間',run:checkSettings},
+ {id:'settings',group:'admin',name:'店舗設定マスター',detail:'登録カテゴリー12・動的項目76・営業時間',run:checkSettings},
  {id:'assessments',group:'admin',name:'査定案件一覧',detail:'デモ案件5件以上',run:checkAssessments},
  {id:'day',group:'admin',name:'今日の予定',detail:'来店・催事・当日タスク',run:checkDay},
  {id:'search',group:'admin',name:'顧客・案件検索',detail:'受付番号による検索',run:checkSearch},
@@ -196,7 +205,7 @@ const checks=[
  {id:'page_owner',group:'pages',name:'owner.html',detail:'オーナーPC管理画面',run:()=>checkPage('owner.html','BUYBACK-6-R1-AMOUNT-DATE-SAFETY-20260715')},
  {id:'page_staff',group:'pages',name:'staff.html',detail:'査定スタッフ業務画面',run:()=>checkPage('staff.html','BUYBACK-7-R1-STAFF-NEXT-ACTION-DATETIME-FIX-20260715')},
  {id:'page_ipad',group:'pages',name:'owner-ipad.html',detail:'店頭受付・撮影・査定進行',run:()=>checkPage('owner-ipad.html','BUYBACK-8-R1-IPAD-CATEGORY-SELECTION-FIX-20260715')},
- {id:'page_system',group:'pages',name:'system-check.html',detail:'現在のシステムチェック画面',run:()=>checkPage('system-check.html','BUYBACK-9-SYSTEM-CHECK-20260715')}
+ {id:'page_system',group:'pages',name:'system-check.html',detail:'現在のシステムチェック画面',run:()=>checkPage('system-check.html','BUYBACK-9-R1-PUBLIC-MASTER-CATEGORY-CHECK-FIX-20260715')}
 ];
 const pages=[
  {title:'お客様用査定受付',file:'index.html',url:'index.html?demo=1&v=buyback-9'},
@@ -218,7 +227,7 @@ const manualItems=[
  {id:'phone',title:'電話番号検索',note:'090-1111-2222・全角・+81形式で同一顧客を検索',url:'owner.html?demo=1&v=buyback-9'},
  {id:'responsive',title:'スマホ・PC・iPad表示',note:'文字切れ・重なり・小さすぎるボタンがないことを確認',url:'index.html?demo=1&v=buyback-9'}
 ];
-const state={token:'',adminCode:'',results:{},health:null,system:null,raw:{},running:false};
+const state={token:'',adminCode:'',results:{},health:null,system:null,settingsSummary:null,raw:{},running:false};
 document.addEventListener('DOMContentLoaded',init);
 
 function init(){
@@ -311,8 +320,8 @@ async function checkPublicConfig(){
 }
 async function checkAssessmentOptions(){
  const d=await api('/api/public/assessment-options',{admin:false});const cats=d.categories||[],fields=cats.reduce((n,c)=>n+(c.fields?.length||0),0);
- const ok=cats.length===EXPECTED.categories&&fields>=EXPECTED.fields;
- return {status:ok?'pass':'warn',detail:`カテゴリー ${cats.length}件 ／ 動的項目 ${fields}件`,raw:{category_count:cats.length,field_count:fields,categories:cats.map(x=>x.category_code)}};
+ const ok=cats.length===EXPECTED.publicCategories&&fields===EXPECTED.publicFields;
+ return {status:ok?'pass':'warn',detail:`公開中 ${cats.length}カテゴリー ／ ${fields}項目（酒類は店舗設定で初期OFF）`,raw:{public_category_count:cats.length,public_field_count:fields,categories:cats.map(x=>x.category_code)}};
 }
 async function checkAdminSession(){
  if(!state.token)throw new Error('管理セッションがありません。');
@@ -321,8 +330,8 @@ async function checkAdminSession(){
 async function checkAdminSystem(){
  const d=await api('/api/admin/system-check');state.system=d;updateDataTable(d.database);
  const db=d.database||{},phone=d.checks?.phone_normalize;
- const ok=db.staff_count>=EXPECTED.staffMin&&db.category_count===EXPECTED.categories&&db.category_field_count>=EXPECTED.fields&&db.customer_count>=EXPECTED.customersMin&&db.assessment_count>=EXPECTED.assessmentsMin&&d.checks?.required_category_count_ok&&d.checks?.staff_available&&phone?.all_equal===true;
- return {status:ok?'pass':'warn',detail:`スタッフ ${db.staff_count}・カテゴリー ${db.category_count}・顧客 ${db.customer_count}・案件 ${db.assessment_count}`,raw:d};
+ const ok=db.staff_count>=EXPECTED.staffMin&&db.category_count===EXPECTED.publicCategories&&db.category_field_count===EXPECTED.publicFields&&db.customer_count>=EXPECTED.customersMin&&db.assessment_count>=EXPECTED.assessmentsMin&&d.checks?.required_category_count_ok&&d.checks?.staff_available&&phone?.all_equal===true;
+ return {status:ok?'pass':'warn',detail:`スタッフ ${db.staff_count}・公開カテゴリー ${db.category_count}・公開項目 ${db.category_field_count}・顧客 ${db.customer_count}・案件 ${db.assessment_count}`,raw:d};
 }
 async function checkDashboard(){
  const d=await api('/api/admin/dashboard');const ok=!!d.counts&&(d.recent_assessments||[]).length>=5&&(d.staff||[]).length>=3;
@@ -330,8 +339,10 @@ async function checkDashboard(){
 }
 async function checkSettings(){
  const d=await api('/api/admin/settings');const fieldCount=(d.categories||[]).reduce((n,c)=>n+(c.fields?.length||0),0);
- const ok=(d.staff||[]).length>=3&&(d.categories||[]).length===12&&(d.business_hours||[]).length>=7;
- return {status:ok?'pass':'warn',detail:`スタッフ ${(d.staff||[]).length}・カテゴリー ${(d.categories||[]).length}・動的項目 ${fieldCount}`,raw:{staff:d.staff?.length,categories:d.categories?.length,fields:fieldCount,hours:d.business_hours?.length}};
+ state.settingsSummary={staff:(d.staff||[]).length,categories:(d.categories||[]).length,fields:fieldCount,hours:(d.business_hours||[]).length};
+ updateDataTable(state.system?.database||{});
+ const ok=state.settingsSummary.staff>=EXPECTED.staffMin&&state.settingsSummary.categories===EXPECTED.masterCategories&&state.settingsSummary.fields===EXPECTED.masterFields&&state.settingsSummary.hours>=7;
+ return {status:ok?'pass':'warn',detail:`登録カテゴリー ${state.settingsSummary.categories}・登録項目 ${state.settingsSummary.fields}・営業時間 ${state.settingsSummary.hours}日`,raw:state.settingsSummary};
 }
 async function checkAssessments(){
  const d=await api('/api/admin/assessments',{query:{limit:50}}),rows=d.assessments||[];const nos=new Set(rows.map(x=>x.assessment_no));
@@ -365,8 +376,11 @@ async function prepareDemo(){
  finally{btn.disabled=false;top.disabled=false;btn.textContent='デモ準備を実行'}
 }
 function updateDataTable(db={}){
- const set=(id,v)=>document.getElementById(id).textContent=v??'—';
- set('dataShop',db.shop_name||db.shop_code);set('dataStaff',db.staff_count);set('dataCategories',db.category_count);set('dataFields',db.category_field_count);set('dataCustomers',db.customer_count);set('dataAssessments',db.assessment_count);set('dataTasks',db.task_count);set('dataPhotos',db.photo_count);
+ const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v??'—'};
+ set('dataShop',db.shop_name||db.shop_code);set('dataStaff',db.staff_count);
+ set('dataCategories',db.category_count);set('dataFields',db.category_field_count);
+ set('dataMasterCategories',state.settingsSummary?.categories);set('dataMasterFields',state.settingsSummary?.fields);
+ set('dataCustomers',db.customer_count);set('dataAssessments',db.assessment_count);set('dataTasks',db.task_count);set('dataPhotos',db.photo_count);
 }
 function updateAutoSummary(){
  const all=checks.length,done=Object.keys(state.results).length,pass=Object.values(state.results).filter(x=>x.status==='pass').length,fail=Object.values(state.results).filter(x=>x.status==='fail').length,warn=Object.values(state.results).filter(x=>x.status==='warn').length;
@@ -377,7 +391,7 @@ function updateAutoSummary(){
  setSummary('sumApi',api.done===api.total&&api.fail===0?'OK':`${api.pass}/${api.total}`,api.fail?'接続エラー':api.warn?'要確認':'Worker接続',api.fail?'fail':api.warn?'warn':api.done===api.total?'pass':'');
  setSummary('sumDb',db.done===db.total&&db.fail===0?'OK':`${db.pass}/${db.total}`,db.fail?'DB/APIエラー':db.warn?'件数を確認':'Supabase構造',db.fail?'fail':db.warn?'warn':db.done===db.total?'pass':'');
  const dataOk=state.system?.database?.customer_count>=EXPECTED.customersMin&&state.system?.database?.assessment_count>=EXPECTED.assessmentsMin;
- setSummary('sumData',dataOk?'OK':'—',dataOk?`顧客 ${state.system.database.customer_count}・案件 ${state.system.database.assessment_count}`:'デモ準備後に確認',dataOk?'pass':'');
+ setSummary('sumData',dataOk?'OK':'—',dataOk?`顧客 ${state.system.database.customer_count}・案件 ${state.system.database.assessment_count}・公開カテゴリ ${state.system.database.category_count}`:'デモ準備後に確認',dataOk?'pass':'');
  setSummary('sumPages',pagesState.done===pagesState.total&&pagesState.fail===0?'OK':`${pagesState.pass}/${pagesState.total}`,pagesState.fail?'公開版不一致':'採用版ファイル',pagesState.fail?'fail':pagesState.warn?'warn':pagesState.done===pagesState.total?'pass':'');
  updateJudgment();
 }
