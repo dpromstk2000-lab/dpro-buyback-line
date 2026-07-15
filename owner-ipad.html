@@ -172,7 +172,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
   <div class="card"><div class="card-body"><div class="search-row"><input id="globalSearch" class="input" placeholder="検索語を入力" onkeydown="if(event.key==='Enter')runGlobalSearch()"><button class="btn primary" onclick="runGlobalSearch()">検索</button></div></div></div>
   <div class="grid two-col" style="margin-top:14px"><div class="card"><div class="card-head"><h2>査定案件</h2></div><div id="searchAssessments" class="card-body"></div></div><div class="card"><div class="card-head"><h2>顧客</h2></div><div id="searchCustomers" class="card-body"></div></div></div>
 </section>
-<div class="version">STEP BUYBACK-8・OWNER IPAD COUNTER WORKSPACE</div>
+<div class="version">STEP BUYBACK-8-R1・CATEGORY SELECTION FIX</div>
 </main>
 
 <nav class="bottom-nav">
@@ -189,7 +189,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
 
 <script>
 'use strict';
-const VERSION='BUYBACK-8-OWNER-IPAD-COUNTER-20260715';
+const VERSION='BUYBACK-8-R1-IPAD-CATEGORY-SELECTION-FIX-20260715';
 const API_BASE='https://dpro-buyback-line-api.dpromstk2000.workers.dev';
 const SHOP_CODE='dpro_buyback_demo';
 const STORAGE={token:'dpro_buyback_ipad_token',code:'dpro_buyback_ipad_code',staff:'dpro_buyback_ipad_staff'};
@@ -272,22 +272,51 @@ function goIntakeStep(step){
  if(step===3)renderConfirm();window.scrollTo({top:0,behavior:'smooth'});
 }
 function validateCustomer(){if(!val('customerName').trim()){toast('お名前を入力してください。','warn');return false}if(!val('phone').trim()){toast('電話番号を入力してください。','warn');return false}return true}
-function validateItems(){if(!state.items.length){toast('査定商品を追加してください。','warn');return false}for(let i=0;i<state.items.length;i++){const x=state.items[i];if(!val('cat-'+x.id)){toast(`商品${i+1}のカテゴリーを選択してください。`,'warn');return false}}return true}
-function addItem(){
- const max=Number(state.settings?.settings?.max_items_per_assessment||10);if(state.items.length>=max){toast(`1案件の商品上限は${max}点です。`,'warn');return}
- state.items.push({id:crypto.randomUUID(),photos:[]});renderItems();
+function validateItems(){syncAllItemInputs();if(!state.items.length){toast('査定商品を追加してください。','warn');return false}for(let i=0;i<state.items.length;i++){const x=state.items[i];if(!val('cat-'+x.id)){toast(`商品${i+1}のカテゴリーを選択してください。`,'warn');return false}}return true}
+function newIntakeItem(values={}){
+ return {
+  id:crypto.randomUUID(),
+  photos:[],
+  categoryCode:values.categoryCode||'',
+  itemName:values.itemName||'',
+  brand:values.brand||'',
+  modelNo:values.modelNo||'',
+  condition:values.condition||''
+ };
 }
-function removeItem(id){if(state.items.length<=1){toast('商品は1点以上必要です。','warn');return}const x=state.items.find(a=>a.id===id);x?.photos.forEach(p=>URL.revokeObjectURL(p.url));state.items=state.items.filter(a=>a.id!==id);renderItems()}
+function addItem(){
+ syncAllItemInputs();
+ const max=Number(state.settings?.settings?.max_items_per_assessment||10);if(state.items.length>=max){toast(`1案件の商品上限は${max}点です。`,'warn');return}
+ state.items.push(newIntakeItem());renderItems();
+}
+function removeItem(id){
+ if(state.items.length<=1){toast('商品は1点以上必要です。','warn');return}
+ syncAllItemInputs();
+ const x=state.items.find(a=>a.id===id);x?.photos.forEach(p=>URL.revokeObjectURL(p.url));state.items=state.items.filter(a=>a.id!==id);renderItems()
+}
+function syncItemField(id,field,value){const x=state.items.find(a=>a.id===id);if(x)x[field]=value}
+function syncAllItemInputs(){
+ state.items.forEach(x=>{
+  const category=document.getElementById('cat-'+x.id),name=document.getElementById('name-'+x.id),brand=document.getElementById('brand-'+x.id),model=document.getElementById('model-'+x.id),condition=document.getElementById('condition-'+x.id);
+  if(category)x.categoryCode=category.value;if(name)x.itemName=name.value;if(brand)x.brand=brand.value;if(model)x.modelNo=model.value;if(condition)x.condition=condition.value;
+ })
+}
 function renderItems(){
- const area=document.getElementById('itemsArea');area.innerHTML=state.items.map((x,i)=>`<article class="item-card"><div class="item-head"><strong>商品 ${i+1}</strong>${state.items.length>1?`<button class="btn small danger" onclick="removeItem('${x.id}')">削除</button>`:''}</div><div class="item-body"><div class="form-grid"><div class="field"><label>カテゴリー *</label><select id="cat-${x.id}" class="select">${state.categories.map(c=>`<option value="${c.category_code}">${esc(c.icon_text||'')} ${esc(c.category_name)}</option>`).join('')}</select></div><div class="field"><label>商品名</label><input id="name-${x.id}" class="input" placeholder="例：モノグラムバッグ"></div><div class="field"><label>ブランド・メーカー</label><input id="brand-${x.id}" class="input"></div><div class="field"><label>型番・モデル</label><input id="model-${x.id}" class="input"></div><div class="field full"><label>状態・傷・付属品</label><textarea id="condition-${x.id}" class="textarea" placeholder="角スレ、動作状態、箱・保証書など"></textarea></div></div><div class="photo-tools"><label class="btn soft" for="camera-${x.id}">📷 カメラで撮影</label><input id="camera-${x.id}" class="photo-input" type="file" accept="image/*" capture="environment" multiple onchange="selectPhotos('${x.id}',this.files)"><label class="btn" for="files-${x.id}">写真を選択</label><input id="files-${x.id}" class="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="selectPhotos('${x.id}',this.files)"><span class="meta">身分証は撮影しないでください</span></div><div id="photos-${x.id}" class="photo-grid">${renderSelectedPhotos(x)}</div></div></article>`).join('');
+ const area=document.getElementById('itemsArea');area.innerHTML=state.items.map((x,i)=>`<article class="item-card"><div class="item-head"><strong>商品 ${i+1}</strong>${state.items.length>1?`<button class="btn small danger" onclick="removeItem('${x.id}')">削除</button>`:''}</div><div class="item-body"><div class="form-grid"><div class="field"><label>カテゴリー *</label><select id="cat-${x.id}" class="select" onchange="syncItemField('${x.id}','categoryCode',this.value)"><option value="" ${!x.categoryCode?'selected':''} disabled>カテゴリーを選択してください</option>${state.categories.map(c=>`<option value="${c.category_code}" ${x.categoryCode===c.category_code?'selected':''}>${esc(c.icon_text||'')} ${esc(c.category_name)}</option>`).join('')}</select></div><div class="field"><label>商品名</label><input id="name-${x.id}" class="input" placeholder="例：モノグラムバッグ" value="${esc(x.itemName)}" oninput="syncItemField('${x.id}','itemName',this.value)"></div><div class="field"><label>ブランド・メーカー</label><input id="brand-${x.id}" class="input" value="${esc(x.brand)}" oninput="syncItemField('${x.id}','brand',this.value)"></div><div class="field"><label>型番・モデル</label><input id="model-${x.id}" class="input" value="${esc(x.modelNo)}" oninput="syncItemField('${x.id}','modelNo',this.value)"></div><div class="field full"><label>状態・傷・付属品</label><textarea id="condition-${x.id}" class="textarea" placeholder="角スレ、動作状態、箱・保証書など" oninput="syncItemField('${x.id}','condition',this.value)">${esc(x.condition)}</textarea></div></div><div class="photo-tools"><label class="btn soft" for="camera-${x.id}">📷 カメラで撮影</label><input id="camera-${x.id}" class="photo-input" type="file" accept="image/*" capture="environment" multiple onchange="selectPhotos('${x.id}',this.files)"><label class="btn" for="files-${x.id}">写真を選択</label><input id="files-${x.id}" class="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="selectPhotos('${x.id}',this.files)"><span class="meta">身分証は撮影しないでください</span></div><div id="photos-${x.id}" class="photo-grid">${renderSelectedPhotos(x)}</div></div></article>`).join('');
 }
 function selectPhotos(id,fileList){
+ syncAllItemInputs();
  const x=state.items.find(a=>a.id===id),max=Number(state.settings?.settings?.max_photos_per_item||6);if(!x)return;
- [...fileList].forEach(file=>{if(x.photos.length>=max)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){toast(`${file.name}は対応していない形式です。`,'warn');return}x.photos.push({file,url:URL.createObjectURL(file)})});renderItems();
+ [...fileList].forEach(file=>{if(x.photos.length>=max)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){toast(`${file.name}は対応していない形式です。`,'warn');return}x.photos.push({file,url:URL.createObjectURL(file)})});
+ renderPhotoGrid(id);
 }
-function removeSelectedPhoto(itemId,index){const x=state.items.find(a=>a.id===itemId);if(!x)return;URL.revokeObjectURL(x.photos[index].url);x.photos.splice(index,1);renderItems()}
-function renderSelectedPhotos(x){return x.photos.length?x.photos.map((p,i)=>`<div class="photo"><img src="${p.url}" alt="商品写真"><button onclick="removeSelectedPhoto('${x.id}',${i})">×</button></div>`).join(''):'<div class="empty" style="grid-column:1/-1;padding:18px 10px">写真は任意です</div>'}
-function itemPayload(x,i){return {category_code:val('cat-'+x.id),sort_order:i+1,quantity:1,item_name:val('name-'+x.id),brand:val('brand-'+x.id),model_no:val('model-'+x.id),condition_summary:val('condition-'+x.id)}}
+function removeSelectedPhoto(itemId,index){const x=state.items.find(a=>a.id===itemId);if(!x)return;URL.revokeObjectURL(x.photos[index].url);x.photos.splice(index,1);renderPhotoGrid(itemId)}
+function renderPhotoGrid(itemId){const x=state.items.find(a=>a.id===itemId),area=document.getElementById('photos-'+itemId);if(x&&area)area.innerHTML=renderSelectedPhotos(x)}
+function renderSelectedPhotos(x){return x.photos.length?x.photos.map((p,i)=>`<div class="photo"><img src="${p.url}" alt="商品写真"><button type="button" onclick="removeSelectedPhoto('${x.id}',${i})">×</button></div>`).join(''):'<div class="empty" style="grid-column:1/-1;padding:18px 10px">写真は任意です</div>'}
+function itemPayload(x,i){
+ syncAllItemInputs();
+ return {category_code:x.categoryCode||val('cat-'+x.id),sort_order:i+1,quantity:1,item_name:x.itemName||val('name-'+x.id),brand:x.brand||val('brand-'+x.id),model_no:x.modelNo||val('model-'+x.id),condition_summary:x.condition||val('condition-'+x.id)}
+}
 function renderConfirm(){
  const items=state.items.map((x,i)=>itemPayload(x,i));document.getElementById('intakeConfirm').innerHTML=`<div class="summary"><strong>${esc(val('customerName'))} 様</strong><br><small>${esc(val('phone'))} ／ ${esc(labels.channel[val('intakeChannel')]||val('intakeChannel'))}</small></div>${items.map((x,i)=>`<div class="summary"><strong>商品 ${i+1}：${esc(x.item_name||categoryName(x.category_code))}</strong><br><small>${esc(categoryName(x.category_code))} ／ ${esc(x.brand||'ブランド未入力')} ／ 写真 ${state.items[i].photos.length}枚</small></div>`).join('')}<div class="summary"><strong>担当者</strong><br><small>${esc(currentStaff()?.staff_name||'未担当')}</small></div>`;
 }
@@ -309,7 +338,20 @@ async function compressImage(file){
  if(file.size<=1400000)return file;const bitmap=await createImageBitmap(file),max=1800,scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height)),canvas=document.createElement('canvas');canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);const blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',.82));bitmap.close?.();return new File([blob],file.name.replace(/\.\w+$/,'.jpg'),{type:'image/jpeg'});
 }
 function fillDemo(){
- clearSelectedCustomer();document.getElementById('customerName').value='店頭受付 デモ太郎';document.getElementById('customerKana').value='テントウウケツケ デモタロウ';document.getElementById('phone').value='080-0000-2808';document.getElementById('contactMethod').value='phone';document.getElementById('intakeChannel').value='walk_in';document.getElementById('requestTitle').value='ブランドバッグと腕時計の店頭査定';state.items.forEach(x=>x.photos.forEach(p=>URL.revokeObjectURL(p.url)));state.items=[{id:crypto.randomUUID(),photos:[]},{id:crypto.randomUUID(),photos:[]}];renderItems();setTimeout(()=>{const a=state.items[0].id,b=state.items[1].id;document.getElementById('name-'+a).value='モノグラムバッグ';document.getElementById('brand-'+a).value='LOUIS VUITTON';document.getElementById('condition-'+a).value='角スレあり、保存袋あり';document.getElementById('name-'+b).value='シーマスター';document.getElementById('brand-'+b).value='OMEGA';document.getElementById('condition-'+b).value='動作中、箱あり';},0);goIntakeStep(1)
+ clearSelectedCustomer();
+ document.getElementById('customerName').value='店頭受付 デモ太郎';
+ document.getElementById('customerKana').value='テントウウケツケ デモタロウ';
+ document.getElementById('phone').value='080-0000-2808';
+ document.getElementById('contactMethod').value='phone';
+ document.getElementById('intakeChannel').value='walk_in';
+ document.getElementById('requestTitle').value='ブランドバッグと腕時計の店頭査定';
+ state.items.forEach(x=>x.photos.forEach(p=>URL.revokeObjectURL(p.url)));
+ state.items=[
+  newIntakeItem({categoryCode:'brand_goods',itemName:'モノグラムバッグ',brand:'LOUIS VUITTON',condition:'角スレあり、保存袋あり'}),
+  newIntakeItem({categoryCode:'watches',itemName:'シーマスター',brand:'OMEGA',condition:'動作中、箱あり'})
+ ];
+ renderItems();
+ goIntakeStep(1)
 }
 function openLastAssessment(){if(state.lastAssessment)openAssessment(state.lastAssessment.id)}
 async function loadQueue(force=false){
