@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="DPRO 総合買取・査定 LINE 査定スタッフ用業務画面">
+<title>DPRO 総合買取・査定 LINE｜査定スタッフ</title>
+<style>
+:root{
+  --green:#0b6b55;--green-dark:#075344;--green-soft:#e4f3ed;--mint:#f2f8f5;
+  --ink:#17231f;--muted:#66756f;--line:#d5e2dc;--bg:#edf4f1;--card:#fff;
+  --amber:#a56300;--amber-soft:#fff0d8;--red:#b9323b;--red-soft:#fde5e7;
+  --blue:#2467a8;--blue-soft:#e5f0fb;--shadow:0 12px 30px rgba(18,65,52,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",Meiryo,sans-serif;font-size:16px;line-height:1.55}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.topbar{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:40}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}.brandmark{width:40px;height:40px;border-radius:11px;background:var(--green-dark);color:#fff;display:grid;place-items:center;font-weight:950;font-size:20px;box-shadow:0 5px 13px rgba(0,80,60,.25)}
+.brand-title{font-size:17px;font-weight:950}.brand-sub{font-size:12px;color:var(--muted)}
+.top-actions{display:flex;align-items:center;gap:8px}.connection{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;background:#fff}.dot{width:8px;height:8px;border-radius:50%;background:#18a778;box-shadow:0 0 0 4px #e1f5ed}.dot.off{background:#c44348;box-shadow:0 0 0 4px #fde7e8}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;min-height:42px;padding:9px 14px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:hover{background:#f8fbfa}.btn.primary{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 7px 15px rgba(11,107,85,.18)}.btn.primary:hover{background:var(--green-dark)}.btn.soft{background:var(--green-soft);border-color:#bfddd1;color:var(--green-dark)}.btn.danger{color:var(--red);border-color:#efbec2;background:#fff}.btn.small{min-height:34px;padding:6px 10px;font-size:13px}.btn[disabled]{opacity:.55;cursor:not-allowed}
+.staff-select{min-width:190px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;font-weight:800}
+.navbar{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:68px;z-index:35;padding:8px 20px;display:flex;gap:7px;overflow-x:auto}.nav-btn{border:0;background:transparent;border-radius:10px;padding:10px 15px;font-weight:850;color:#43534d;white-space:nowrap}.nav-btn.active{background:var(--green-soft);color:var(--green-dark)}.nav-badge{display:inline-grid;place-items:center;min-width:22px;height:21px;border-radius:999px;background:#e7eeeb;font-size:11px;padding:0 6px;margin-left:5px}
+.main{max-width:1500px;margin:auto;padding:24px 24px 70px}.view{display:none}.view.active{display:block}.view-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:17px}.view-title{font-size:28px;letter-spacing:-.03em;margin:0}.view-note{margin:4px 0 0;color:var(--muted);font-size:14px}.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.grid{display:grid;gap:15px}.count-grid{grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:18px}.count-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:16px 17px;box-shadow:0 6px 18px rgba(19,59,49,.06);min-height:108px;text-align:left;position:relative;overflow:hidden}.count-card:after{content:"";position:absolute;width:72px;height:72px;border-radius:50%;background:var(--green-soft);right:-23px;bottom:-28px}.count-label{font-size:13px;color:var(--muted);font-weight:850}.count-value{font-size:31px;font-weight:950;line-height:1.25;margin-top:6px;color:var(--green-dark)}.count-sub{font-size:12px;color:var(--muted);margin-top:3px}.count-card.warn .count-value{color:var(--amber)}.count-card.danger .count-value{color:var(--red)}
+.two-col{grid-template-columns:minmax(0,1.35fr) minmax(340px,.65fr)}.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(19,59,49,.07)}.card-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:9px}.card-head h2,.card-head h3{margin:0;font-size:17px}.card-body{padding:16px 17px}.empty{text-align:center;color:var(--muted);padding:35px 16px;border:1px dashed #cbdcd5;border-radius:12px;background:#fafcfb}.muted{color:var(--muted)}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:end;background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 15px;margin-bottom:15px;box-shadow:0 6px 16px rgba(19,59,49,.05)}.field{display:flex;flex-direction:column;gap:5px;min-width:130px}.field.grow{flex:1;min-width:230px}.field label{font-size:12px;font-weight:850;color:#50615a}.input,.select,.textarea{width:100%;border:1px solid #c9d9d2;border-radius:9px;padding:10px 11px;background:#fff;color:var(--ink);outline:none;min-height:42px}.input:focus,.select:focus,.textarea:focus{border-color:#50a78e;box-shadow:0 0 0 3px #e0f3ec}.textarea{min-height:88px;resize:vertical}.input:disabled{background:#eef2f0;color:#89958f}
+.board{display:grid;grid-template-columns:repeat(4,minmax(260px,1fr));gap:13px;overflow-x:auto;padding-bottom:8px}.lane{background:#eaf2ef;border:1px solid #cfddd7;border-radius:15px;min-width:270px;min-height:350px}.lane-head{padding:13px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cfddd7}.lane-head h3{margin:0;font-size:15px}.lane-count{min-width:28px;height:25px;border-radius:999px;background:#fff;display:grid;place-items:center;font-weight:900;font-size:12px}.lane-body{padding:10px;display:flex;flex-direction:column;gap:9px}
+.case-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;box-shadow:0 4px 13px rgba(19,59,49,.05)}.case-card:hover{border-color:#6cad99;transform:translateY(-1px)}.case-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.case-no{font-size:11px;color:var(--muted);font-weight:850}.case-name{font-size:15px;font-weight:950;margin-top:2px}.case-meta{font-size:12px;color:var(--muted);margin-top:8px}.case-footer{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-top:9px;padding-top:8px;border-top:1px solid #e7eeeb}.staff-chip{font-size:11px;font-weight:850;background:#edf2f0;border-radius:999px;padding:4px 7px;color:#4b5b54}
+.badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:900;white-space:nowrap;background:#edf1ef;color:#53615b}.badge.green{background:#daf1e8;color:#075844}.badge.blue{background:var(--blue-soft);color:#245e96}.badge.amber{background:var(--amber-soft);color:#8a5700}.badge.red{background:var(--red-soft);color:#a5252c}.badge.gray{background:#edf0ef;color:#5b6963}
+.list{display:flex;flex-direction:column;gap:9px}.task{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:7px minmax(0,1fr) auto;gap:10px;align-items:start}.task-bar{width:7px;height:100%;min-height:52px;border-radius:99px;background:#65aa96}.task-bar.high{background:#dc8819}.task-bar.urgent{background:#c33b43}.task strong{font-size:14px}.task-meta{font-size:12px;color:var(--muted);margin-top:4px}.task-actions{display:flex;gap:6px}
+.schedule{display:flex;flex-direction:column}.schedule-row{display:grid;grid-template-columns:82px minmax(0,1fr) auto;gap:12px;padding:13px 0;border-bottom:1px solid #e7eeeb}.schedule-row:last-child{border-bottom:0}.schedule-time{font-weight:950;color:var(--green-dark)}.schedule-title{font-weight:900}.schedule-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.search-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.search-card{border:1px solid var(--line);border-radius:12px;padding:13px;background:#fff;cursor:pointer}.search-card:hover{border-color:#6cad99}.search-card strong{display:block}.search-card span{font-size:12px;color:var(--muted)}
+dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}dialog::backdrop{background:rgba(12,31,25,.62);backdrop-filter:blur(2px)}
+.detail-dialog{width:min(1250px,calc(100vw - 34px));height:min(880px,calc(100vh - 34px));background:var(--bg);border-radius:18px;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.32);display:flex;flex-direction:column}.action-dialog{width:min(690px,calc(100vw - 30px));max-height:calc(100vh - 34px);background:#fff;border-radius:17px;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.30);display:flex;flex-direction:column}
+.dialog-head{height:68px;padding:0 20px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto}.dialog-head h2{font-size:20px;margin:0}.close-x{width:42px;height:42px;border-radius:11px;border:1px solid var(--line);background:#fff;font-size:24px}.dialog-body{padding:17px 19px 28px;overflow:auto}.detail-summary{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(330px,.8fr);gap:14px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:13px}.summary-main h3{font-size:25px;margin:2px 0 8px}.summary-main .no{font-size:12px;color:var(--muted);font-weight:850}.summary-tags{display:flex;gap:6px;flex-wrap:wrap}.summary-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.kv{margin:0;border:1px solid var(--line);border-radius:10px;padding:9px 10px}.kv dt{font-size:11px;color:var(--muted);font-weight:850}.kv dd{margin:2px 0 0;font-weight:850;font-size:13px}
+.quick-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:13px}.progress-btn{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;font-weight:850;font-size:13px}.progress-btn:hover{border-color:#65aa96;background:var(--green-soft)}.progress-btn.current{background:var(--green);color:#fff;border-color:var(--green)}
+.detail-card{background:#fff;border:1px solid var(--line);border-radius:15px;margin-bottom:13px;overflow:hidden}.detail-card-head{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}.detail-card-head h3{margin:0;font-size:16px}.detail-card-body{padding:14px 15px}
+.detail-item{border:1px solid var(--line);border-radius:13px;margin-bottom:12px;overflow:hidden;background:#fff}.detail-item:last-child{margin-bottom:0}.detail-item-head{padding:11px 13px;background:#f6faf8;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}.detail-item-head h4{margin:0;font-size:16px}.detail-item-body{padding:13px}.item-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:14px}.photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.photo-box{aspect-ratio:1/1;border:1px dashed #b9d2c8;border-radius:10px;background:#f6faf8;display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:12px;text-align:center}.photo-box img{width:100%;height:100%;object-fit:cover}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.form-grid .full{grid-column:1/-1}.offer-strip{margin-top:9px;padding:10px 11px;border:1px solid #bcded2;border-radius:10px;background:#f0faf6}.offer-strip strong{font-size:19px;color:var(--green-dark)}
+.action-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.action-btn{border:1px solid var(--line);background:#fff;border-radius:11px;text-align:left;padding:11px}.action-btn strong{display:block}.action-btn span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.form-section{border:1px solid var(--line);border-radius:13px;padding:14px;margin-bottom:12px}.section-note{background:#eef7ff;border:1px solid #c7def2;color:#315d7b;border-radius:10px;padding:10px 11px;font-size:13px;margin-bottom:11px}.action-footer{display:flex;justify-content:flex-end;gap:8px;padding-top:14px;margin-top:14px;border-top:1px solid var(--line)}
+.amount-mode{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.amount-option{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-weight:850;cursor:pointer}.amount-option input{width:18px;height:18px;accent-color:var(--green)}.amount-option.active{background:var(--green-soft);border-color:#69ad99}.date-preview{font-size:12px;color:var(--green-dark);font-weight:850}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(145deg,#eef7f3,#e4efeb)}.login-card{width:min(560px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:28px}.login-card h1{margin:12px 0 5px;font-size:27px}.login-card p{color:var(--muted);margin:0 0 20px}.login-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px}.check{display:flex;gap:7px;align-items:center;margin-top:12px;font-size:14px}.check input{width:18px;height:18px;accent-color:var(--green)}.login-error{background:var(--red-soft);color:var(--red);padding:9px 11px;border-radius:9px;margin-top:11px;font-size:13px}
+.toast-wrap{position:fixed;right:18px;bottom:18px;z-index:100;display:flex;flex-direction:column;gap:8px}.toast{background:#173b31;color:#fff;border-radius:11px;padding:11px 14px;box-shadow:0 10px 30px rgba(0,0,0,.2);max-width:360px}.toast.error{background:#a62c33}.toast.warn{background:#8b5b08}
+.footer{text-align:center;color:var(--muted);font-size:11px;margin-top:28px}
+@media(max-width:1050px){.count-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.two-col{grid-template-columns:1fr}.board{grid-template-columns:repeat(4,300px)}.detail-summary{grid-template-columns:1fr}.item-layout{grid-template-columns:210px minmax(0,1fr)}}
+@media(max-width:720px){
+ .topbar{padding:0 12px}.brand-sub,.connection{display:none}.brand-title{font-size:14px}.staff-select{min-width:120px;max-width:150px}.top-actions .btn:not(.primary){display:none}
+ .navbar{padding:7px 9px}.nav-btn{padding:9px 11px;font-size:13px}.main{padding:17px 12px 80px}.view-head{display:block}.head-actions{margin-top:10px}.view-title{font-size:24px}
+ .count-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.count-card{min-height:100px}.board{grid-template-columns:repeat(4,86vw)}.search-results{grid-template-columns:1fr}
+ .detail-dialog{width:100vw;height:100vh;border-radius:0}.dialog-head{padding:0 13px}.dialog-body{padding:12px}.detail-summary{padding:12px}.summary-side{grid-template-columns:1fr}.quick-progress{grid-template-columns:1fr 1fr}.item-layout{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.action-grid{grid-template-columns:1fr}.amount-mode{grid-template-columns:1fr}.top-actions{gap:5px}.login-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<section id="loginScreen" class="login">
+  <div class="login-card">
+    <div class="brand"><div class="brandmark">D</div><div><div class="brand-title">DPRO総合買取センター</div><div class="brand-sub">査定スタッフ用業務画面</div></div></div>
+    <h1>査定業務を開始</h1>
+    <p>管理コードで接続後、担当スタッフを選択します。共有端末では管理コードを保存しないでください。</p>
+    <div class="login-row"><input id="adminCode" class="input" type="password" inputmode="numeric" placeholder="管理コード"><button id="loginBtn" class="btn primary">業務画面を開く</button></div>
+    <label class="check"><input id="saveCode" type="checkbox">この端末に管理コードを保存する</label>
+    <div style="display:flex;justify-content:flex-end;margin-top:9px"><button id="clearCodeBtn" class="btn small danger">保存した管理コードを削除</button></div>
+    <div id="loginError" class="login-error hidden"></div>
+  </div>
+</section>
+
+<div id="app" class="hidden">
+<header class="topbar">
+  <div class="brand"><div class="brandmark">D</div><div><div id="shopName" class="brand-title">DPRO総合買取センター</div><div class="brand-sub">査定スタッフ・商品確認・金額提示</div></div></div>
+  <div class="top-actions">
+    <span class="connection"><span id="connectionDot" class="dot"></span><span id="connectionText">接続済み</span></span>
+    <select id="staffSelect" class="staff-select" title="担当スタッフ"></select>
+    <button class="btn" onclick="refreshCurrent()">↻ 更新</button>
+    <button class="btn danger" onclick="logout()">ログアウト</button>
+  </div>
+</header>
+<nav class="navbar">
+  <button class="nav-btn active" data-view="home">自分の仕事<span id="badgeMine" class="nav-badge">0</span></button>
+  <button class="nav-btn" data-view="board">査定ボード<span id="badgeAll" class="nav-badge">0</span></button>
+  <button class="nav-btn" data-view="today">今日の予定<span id="badgeToday" class="nav-badge">0</span></button>
+  <button class="nav-btn" data-view="search">案件検索</button>
+</nav>
+
+<main class="main">
+<section id="view-home" class="view active">
+  <div class="view-head"><div><h1 class="view-title">自分の仕事</h1><p id="homeNote" class="view-note">担当案件と期限が近い対応をまとめて表示します。</p></div><div class="head-actions"><button class="btn soft" onclick="showView('board');setBoardScope('unassigned')">未担当案件を見る</button><button class="btn primary" onclick="loadAll(true)">最新情報に更新</button></div></div>
+  <div id="countGrid" class="grid count-grid"></div>
+  <div class="grid two-col">
+    <div class="card"><div class="card-head"><h2>担当中の査定案件</h2><button class="btn small" onclick="showView('board');setBoardScope('mine')">すべて見る</button></div><div id="mineCases" class="card-body"></div></div>
+    <div class="card"><div class="card-head"><h2>優先タスク</h2><button class="btn small" onclick="loadAll(true)">更新</button></div><div id="mineTasks" class="card-body"></div></div>
+  </div>
+</section>
+
+<section id="view-board" class="view">
+  <div class="view-head"><div><h1 class="view-title">査定ボード</h1><p class="view-note">案件を工程別に確認し、担当の引き受けや次工程への更新を行います。</p></div><div class="head-actions"><button class="btn primary" onclick="loadAll(true)">更新</button></div></div>
+  <div class="toolbar">
+    <div class="field grow"><label>受付番号・氏名・電話番号</label><input id="boardQ" class="input" placeholder="検索語を入力" oninput="renderBoard()"></div>
+    <div class="field"><label>表示範囲</label><select id="boardScope" class="select" onchange="renderBoard()"><option value="mine">自分の担当</option><option value="unassigned">未担当</option><option value="all">全案件</option></select></div>
+    <div class="field"><label>受付方法</label><select id="boardChannel" class="select" onchange="renderBoard()"><option value="">すべて</option><option value="photo_line">写真査定</option><option value="walk_in">店頭持込</option><option value="visit">来店予約</option><option value="phone">電話受付</option><option value="travel">出張査定</option><option value="event">催事査定</option></select></div>
+  </div>
+  <div id="board" class="board"></div>
+</section>
+
+<section id="view-today" class="view">
+  <div class="view-head"><div><h1 class="view-title">今日の予定</h1><p class="view-note">来店・出張・催事予定と当日のフォローを確認します。</p></div><div class="head-actions"><input id="todayDate" class="input" type="date" style="width:auto"><button class="btn primary" onclick="loadToday()">表示</button></div></div>
+  <div class="grid two-col">
+    <div class="card"><div class="card-head"><h2>来店・出張・催事</h2></div><div id="todaySchedule" class="card-body"></div></div>
+    <div class="card"><div class="card-head"><h2>当日のタスク</h2></div><div id="todayTasks" class="card-body"></div></div>
+  </div>
+</section>
+
+<section id="view-search" class="view">
+  <div class="view-head"><div><h1 class="view-title">案件検索</h1><p class="view-note">電話番号・氏名・顧客番号・査定受付番号から検索します。</p></div></div>
+  <div class="toolbar"><div class="field grow"><label>検索語</label><input id="searchQ" class="input" placeholder="例：09011112222、佐藤、BUYBACK-DEMO-001" onkeydown="if(event.key==='Enter')runSearch()"></div><button class="btn primary" onclick="runSearch()">検索</button></div>
+  <div class="grid two-col"><div class="card"><div class="card-head"><h2>査定案件</h2></div><div id="searchAssessments" class="card-body"></div></div><div class="card"><div class="card-head"><h2>顧客</h2></div><div id="searchCustomers" class="card-body"></div></div></div>
+</section>
+<div class="footer">STEP BUYBACK-7・STAFF APPRAISAL WORKSPACE</div>
+</main>
+</div>
+
+<dialog id="detailDialog"><div class="detail-dialog"><div class="dialog-head"><h2 id="detailTitle">査定案件詳細</h2><button class="close-x" onclick="closeDetail()">×</button></div><div id="detailBody" class="dialog-body"></div></div></dialog>
+<dialog id="actionDialog"><div class="action-dialog"><div class="dialog-head"><h2 id="actionTitle">操作</h2><button class="close-x" onclick="closeAction()">×</button></div><div id="actionBody" class="dialog-body"></div></div></dialog>
+<div id="toastWrap" class="toast-wrap"></div>
+
+<script>
+'use strict';
+const VERSION='BUYBACK-7-STAFF-APPRAISAL-WORKSPACE-20260715';
+const API_BASE='https://dpro-buyback-line-api.dpromstk2000.workers.dev';
+const SHOP_CODE='dpro_buyback_demo';
+const STORAGE={token:'dpro_buyback_staff_admin_token',code:'dpro_buyback_staff_admin_code',staff:'dpro_buyback_selected_staff'};
+const state={token:'',adminCode:'',settings:null,shop:null,staff:[],currentStaffId:'',assessments:[],dashboard:null,currentDetail:null,currentView:'home',photoUrls:[]};
+const labels={
+ assessment:{received:'受付済み',need_reply:'初回返信待ち',checking_items:'商品確認中',additional_info_needed:'追加情報待ち',external_appraisal:'本部・外部査定中',appointment_scheduled:'来店・相談予定あり',arrived:'来店済み',assessing:'実物査定中',price_presented:'概算額案内済み',deal_pending:'正式提示・回答待ち',partially_accepted:'一部商品を売却希望',accepted_intent:'売却希望',declined:'見送り',returned:'返却',completed:'完了',cancelled:'取消'},
+ external:{not_required:'不要',not_requested:'未依頼',preparing:'依頼準備中',requested:'依頼済み',additional_info_needed:'追加情報待ち',answered:'回答済み',not_supported:'対象外',cancelled:'取消'},
+ deal:{not_yet:'未確認',pending:'回答待ち',partially_accepted_intent:'一部売却希望',accepted_intent:'売却希望',declined:'見送り',contracted_external:'契約済み',paid_external:'支払済み',returned:'返却',closed:'完了'},
+ item:{pending:'確認待ち',checking:'確認中',external_appraisal:'本部査定中',offer_ready:'金額案内可能',accepted_intent:'売却希望',declined:'見送り',not_supported:'対象外',returned:'返却',completed:'完了'},
+ channel:{photo_line:'写真で事前査定',walk_in:'店頭持ち込み',visit:'来店予約',phone:'電話受付',staff_manual:'店頭・スタッフ受付',travel:'出張査定',event:'催事査定',delivery:'宅配相談'},
+ reservation:{visit:'来店予約',travel:'出張査定',event:'催事査定',delivery_consultation:'宅配相談'},
+ task:{first_reply:'初回返信',additional_photo:'追加写真',additional_info:'追加情報',external_request:'本部査定依頼',external_answer_check:'本部回答確認',estimate_notice:'概算額案内',visit_proposal:'来店提案',visit_reminder:'来店前案内',travel_schedule:'出張日程',event_guide:'催事案内',formal_offer:'正式金額提示',deal_intent_check:'売却意思確認',decline_reason:'見送り理由',reappraisal:'再査定',market_change:'相場変動案内',other_items:'ほかの商品提案',thanks:'お礼',other:'その他'}
+};
+const itemStatuses=['pending','checking','external_appraisal','offer_ready','accepted_intent','declined','not_supported','returned','completed'];
+document.addEventListener('DOMContentLoaded',init);
+
+function init(){
+ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+ const q=new URLSearchParams(location.search),demo=q.get('demo')==='1';
+ document.getElementById('adminCode').value=localStorage.getItem(STORAGE.code)||(demo?'1234':'');
+ document.getElementById('loginBtn').addEventListener('click',login);
+ document.getElementById('clearCodeBtn').addEventListener('click',clearCode);
+ document.getElementById('adminCode').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+ document.getElementById('staffSelect').addEventListener('change',()=>{state.currentStaffId=val('staffSelect');localStorage.setItem(STORAGE.staff,state.currentStaffId);renderAll()});
+ document.getElementById('todayDate').value=jstDate();
+ const token=sessionStorage.getItem(STORAGE.token)||'';if(token){state.token=token;boot().catch(()=>showLogin())}
+}
+async function login(){
+ const code=val('adminCode').trim(),btn=document.getElementById('loginBtn');if(!code){showError('管理コードを入力してください。');return}
+ btn.disabled=true;btn.textContent='確認中…';
+ try{const d=await api('/api/admin/login',{method:'POST',body:{shop_code:SHOP_CODE,admin_code:code},admin:false});state.token=d.admin_token;state.adminCode=code;sessionStorage.setItem(STORAGE.token,state.token);if(checked('saveCode'))localStorage.setItem(STORAGE.code,code);else localStorage.removeItem(STORAGE.code);await boot()}
+ catch(e){showError(e.message)}finally{btn.disabled=false;btn.textContent='業務画面を開く'}
+}
+function clearCode(){localStorage.removeItem(STORAGE.code);sessionStorage.removeItem(STORAGE.token);document.getElementById('adminCode').value='';toast('保存した管理コードを削除しました。')}
+function showError(msg){const el=document.getElementById('loginError');el.textContent=msg;el.classList.remove('hidden')}
+function showLogin(){document.getElementById('app').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden')}
+function logout(){sessionStorage.removeItem(STORAGE.token);state.token='';showLogin();toast('ログアウトしました。')}
+async function boot(){
+ document.getElementById('loginScreen').classList.add('hidden');document.getElementById('app').classList.remove('hidden');
+ await Promise.all([loadSettings(),loadAll(true)]);showView(state.currentView);
+}
+async function api(path,{method='GET',body=null,query=null,admin=true}={}){
+ const u=new URL(API_BASE+path);if(query)Object.entries(query).forEach(([k,v])=>{if(v!==''&&v!==null&&v!==undefined)u.searchParams.set(k,v)});if(!u.searchParams.has('shop_code'))u.searchParams.set('shop_code',SHOP_CODE);
+ const h={Accept:'application/json'};if(body!==null)h['Content-Type']='application/json';if(admin){if(state.token)h.Authorization='Bearer '+state.token;else if(state.adminCode)h['X-Admin-Code']=state.adminCode}
+ setConnection(true,'通信中');const r=await fetch(u,{method,headers:h,body:body===null?undefined:JSON.stringify(body)});let data;try{data=await r.json()}catch{data={ok:false,message:'APIの応答を読み取れませんでした。'}}
+ if(!r.ok||data.ok===false){setConnection(false,'接続エラー');if(r.status===401){sessionStorage.removeItem(STORAGE.token);state.token=''}throw new Error(data.message||`API error ${r.status}`)}setConnection(true,'接続済み');return data;
+}
+function setConnection(ok,text){document.getElementById('connectionDot')?.classList.toggle('off',!ok);document.getElementById('connectionText').textContent=text}
+async function loadSettings(){
+ const d=await api('/api/admin/settings');state.settings=d;state.shop=d.shop;state.staff=(d.staff||[]).filter(x=>x.is_active!==false);document.getElementById('shopName').textContent=d.shop?.shop_name||'DPRO総合買取センター';
+ const saved=localStorage.getItem(STORAGE.staff)||'';state.currentStaffId=state.staff.some(s=>s.id===saved)?saved:(state.staff[0]?.id||'');
+ document.getElementById('staffSelect').innerHTML=state.staff.length?state.staff.map(s=>`<option value="${s.id}" ${s.id===state.currentStaffId?'selected':''}>${esc(s.staff_name)}として操作</option>`).join(''):'<option value="">スタッフ未登録</option>';
+}
+async function loadAll(force=false){
+ try{
+  const [a,d]=await Promise.all([api('/api/admin/assessments',{query:{limit:200}}),api('/api/admin/dashboard')]);
+  state.assessments=a.assessments||[];state.dashboard=d;renderAll();
+ }catch(e){toast(e.message,'error')}
+}
+function renderAll(){renderHome();renderBoard();updateBadges()}
+function currentStaff(){return state.staff.find(s=>s.id===state.currentStaffId)}
+function myCases(){return state.assessments.filter(a=>a.assigned_staff_id===state.currentStaffId&&!['completed','cancelled','closed'].includes(a.assessment_status))}
+function unassignedCases(){return state.assessments.filter(a=>!a.assigned_staff_id&&!['completed','cancelled'].includes(a.assessment_status))}
+function myTasks(){
+ const rows=state.dashboard?.open_tasks||[];return rows.filter(t=>!t.assigned_staff_id||t.assigned_staff_id===state.currentStaffId).sort((a,b)=>new Date(a.due_at||0)-new Date(b.due_at||0));
+}
+function renderHome(){
+ const mine=myCases(),unassigned=unassignedCases(),tasks=myTasks(),external=mine.filter(a=>['requested','additional_info_needed'].includes(a.external_appraisal_status)),offer=mine.filter(a=>['assessing','price_presented','deal_pending'].includes(a.assessment_status)),partial=mine.filter(a=>a.deal_status==='partially_accepted_intent'||a.assessment_status==='partially_accepted');
+ const name=currentStaff()?.staff_name||'担当スタッフ';document.getElementById('homeNote').textContent=`${name}さんの担当案件と、期限が近い対応をまとめて表示します。`;
+ const cards=[['担当中',mine.length,'自分の査定案件','',()=>{showView('board');setBoardScope('mine')}],['未担当',unassigned.length,'引き受け可能','warn',()=>{showView('board');setBoardScope('unassigned')}],['本部回答待ち',external.length,'依頼・追加情報','warn',()=>{showView('board');setBoardScope('mine')}],['金額対応',offer.length,'査定・提示・回答','',()=>{showView('board');setBoardScope('mine')}],['優先タスク',tasks.length,'期限が近い対応',tasks.some(t=>t.priority==='urgent')?'danger':'',()=>{}]];
+ document.getElementById('countGrid').innerHTML=cards.map((x,i)=>`<button class="count-card ${x[3]}" onclick="homeCardAction(${i})"><div class="count-label">${x[0]}</div><div class="count-value">${x[1]}</div><div class="count-sub">${x[2]}</div></button>`).join('');state.homeActions=cards.map(x=>x[4]);
+ document.getElementById('mineCases').innerHTML=renderCaseList(mine.slice(0,8));
+ document.getElementById('mineTasks').innerHTML=renderTasks(tasks.slice(0,8));
+}
+function homeCardAction(i){state.homeActions?.[i]?.()}
+function renderCaseList(rows){if(!rows.length)return '<div class="empty">担当中の案件はありません。</div>';return `<div class="list">${rows.map(a=>`<div class="search-card" onclick="openAssessment('${a.id}')"><div style="display:flex;justify-content:space-between;gap:8px"><strong>${esc(a.customer_name||'お客様')}</strong>${statusBadge(a.assessment_status,'assessment')}</div><span>${esc(a.assessment_no)} ／ ${esc(a.category_summary||'商品未登録')} ／ ${fmtDateTime(a.updated_at)}</span></div>`).join('')}</div>`}
+function renderBoard(){
+ const q=val('boardQ').trim().toLowerCase(),scope=val('boardScope')||'mine',channel=val('boardChannel');
+ let rows=state.assessments.filter(a=>!['completed','cancelled'].includes(a.assessment_status));
+ if(scope==='mine')rows=rows.filter(a=>a.assigned_staff_id===state.currentStaffId);else if(scope==='unassigned')rows=rows.filter(a=>!a.assigned_staff_id);
+ if(channel)rows=rows.filter(a=>a.intake_channel_code===channel);
+ if(q)rows=rows.filter(a=>[a.assessment_no,a.customer_name,a.phone,a.category_summary,a.request_title].some(v=>String(v||'').toLowerCase().includes(q)));
+ const lanes=[
+  {key:'check',title:'受付・商品確認',statuses:['received','need_reply','checking_items','additional_info_needed']},
+  {key:'external',title:'本部・外部査定',statuses:['external_appraisal']},
+  {key:'price',title:'実物確認・金額',statuses:['appointment_scheduled','arrived','assessing','price_presented']},
+  {key:'answer',title:'回答・成約確認',statuses:['deal_pending','partially_accepted','accepted_intent','declined','returned']}
+ ];
+ document.getElementById('board').innerHTML=lanes.map(l=>{const laneRows=rows.filter(a=>l.statuses.includes(a.assessment_status));return `<section class="lane"><div class="lane-head"><h3>${l.title}</h3><span class="lane-count">${laneRows.length}</span></div><div class="lane-body">${laneRows.length?laneRows.map(caseCard).join(''):'<div class="empty" style="padding:24px 8px">案件なし</div>'}</div></section>`}).join('');
+}
+function caseCard(a){return `<article class="case-card" onclick="openAssessment('${a.id}')"><div class="case-top"><div><div class="case-no">${esc(a.assessment_no)}</div><div class="case-name">${esc(a.customer_name||'お客様')}</div></div>${statusBadge(a.assessment_status,'assessment')}</div><div class="case-meta">${esc(a.category_summary||'商品未登録')}<br>${esc(labels.channel[a.intake_channel_code]||a.intake_channel_code||'-')} ／ ${fmtDateTime(a.received_at)}</div><div class="case-footer"><span class="staff-chip">${esc(a.assigned_staff_name||'未担当')}</span>${!a.assigned_staff_id?`<button class="btn small soft" onclick="event.stopPropagation();claimCase('${a.id}')">引き受ける</button>`:'<span class="muted" style="font-size:11px">${fmtDateTime(a.next_action_due_at)}</span>'}</div></article>`}
+function setBoardScope(v){document.getElementById('boardScope').value=v;renderBoard()}
+async function claimCase(id){if(!state.currentStaffId){toast('担当スタッフを選択してください。','warn');return}try{await api('/api/admin/assessments/assign',{method:'POST',body:{assessment_id:id,assigned_staff_id:state.currentStaffId}});toast('案件を引き受けました。');await loadAll(true);openAssessment(id)}catch(e){toast(e.message,'error')}}
+function updateBadges(){document.getElementById('badgeMine').textContent=myCases().length;document.getElementById('badgeAll').textContent=state.assessments.filter(a=>!['completed','cancelled'].includes(a.assessment_status)).length;const today=(state.dashboard?.counts?.today_visits||0)+(state.dashboard?.counts?.today_travel||0)+(state.dashboard?.counts?.today_events||0);document.getElementById('badgeToday').textContent=today}
+function showView(name){state.currentView=name;document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+name));document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===name));if(name==='today')loadToday();window.scrollTo({top:0,behavior:'smooth'})}
+function refreshCurrent(){if(state.currentView==='today')loadToday();else loadAll(true)}
+async function loadToday(){
+ try{const d=await api('/api/admin/day',{query:{date:val('todayDate')||jstDate()}});const rows=d.schedule?.length?d.schedule:d.reservations||[];
+ document.getElementById('todaySchedule').innerHTML=rows.length?`<div class="schedule">${rows.map(r=>`<div class="schedule-row"><div class="schedule-time">${fmtTime(r.scheduled_start_at||r.requested_start_at)}</div><div><div class="schedule-title">${esc(r.customer_name||labels.reservation[r.reservation_type]||'予定')}</div><div class="schedule-meta">${esc(labels.reservation[r.reservation_type]||r.reservation_type)} ／ ${esc(r.assessment_no||'')} ${r.address?'／ '+esc(r.address):''}</div></div><button class="btn small" onclick="openAssessment('${r.assessment_id}')">詳細</button></div>`).join('')}</div>`:'<div class="empty">この日の予定はありません。</div>';
+ document.getElementById('todayTasks').innerHTML=renderTasks((d.tasks||[]).filter(t=>!t.assigned_staff_id||t.assigned_staff_id===state.currentStaffId));
+ }catch(e){toast(e.message,'error')}
+}
+function renderTasks(rows){if(!rows.length)return '<div class="empty">対象タスクはありません。</div>';return `<div class="list">${rows.map(t=>`<div class="task"><div class="task-bar ${t.priority||''}"></div><div><strong>${esc(t.title)}</strong><div class="task-meta">${esc(labels.task[t.task_type]||t.task_type||'')} ／ ${fmtDateTime(t.due_at)}${t.assessment_no?' ／ '+esc(t.assessment_no):''}</div></div><div class="task-actions">${t.assessment_id?`<button class="btn small" onclick="openAssessment('${t.assessment_id}')">案件</button>`:''}<button class="btn small primary" onclick="completeTask('${t.id}')">完了</button></div></div>`).join('')}</div>`}
+async function completeTask(id){try{await api('/api/admin/tasks/status',{method:'POST',body:{task_id:id,task_status:'completed'}});toast('タスクを完了しました。');await loadAll(true);if(state.currentDetail)await reopenCurrent()}catch(e){toast(e.message,'error')}}
+async function runSearch(){
+ const q=val('searchQ').trim();if(!q){toast('検索語を入力してください。','warn');return}
+ try{const d=await api('/api/admin/search',{query:{q}});document.getElementById('searchAssessments').innerHTML=renderCaseList(d.assessments||[]);const customers=d.customers||[];document.getElementById('searchCustomers').innerHTML=customers.length?`<div class="search-results">${customers.map(c=>`<div class="search-card"><strong>${esc(c.customer_name)}</strong><span>${esc(c.customer_no||'')} ／ ${esc(c.phone||'')}<br>査定履歴 ${Number(c.assessment_count||0)}件</span></div>`).join('')}</div>`:'<div class="empty">該当する顧客はいません。</div>'}catch(e){toast(e.message,'error')}
+}
+async function openAssessment(id){
+ const dlg=document.getElementById('detailDialog');document.getElementById('detailTitle').textContent='査定案件を読み込み中';document.getElementById('detailBody').innerHTML='<div class="empty">読み込み中…</div>';dlg.showModal();document.getElementById('detailBody').scrollTop=0;
+ try{const d=await api('/api/admin/assessment-detail',{query:{assessment_id:id}});state.currentDetail=d;renderDetail(d);hydratePhotos();requestAnimationFrame(()=>document.getElementById('detailBody').scrollTop=0)}catch(e){document.getElementById('detailBody').innerHTML=`<div class="empty">${esc(e.message)}</div>`;toast(e.message,'error')}
+}
+function closeDetail(){revokePhotos();document.getElementById('detailDialog').close();state.currentDetail=null}
+function renderDetail(d){
+ const a=d.assessment,c=d.customer,staff=d.staff||state.staff;document.getElementById('detailTitle').textContent=`${a.assessment_no}　${c.customer_name}`;
+ const staffOpts=`<option value="">未担当</option>`+staff.filter(s=>s.is_active!==false).map(s=>`<option value="${s.id}" ${a.assigned_staff_id===s.id?'selected':''}>${esc(s.staff_name)}</option>`).join('');
+ const html=`<div class="detail-summary"><div class="summary-main"><div class="no">査定受付番号</div><h3>${esc(a.assessment_no)}</h3><div class="summary-tags">${statusBadge(a.assessment_status,'assessment')}${statusBadge(a.external_appraisal_status,'external')}${statusBadge(a.deal_status,'deal')}</div></div><div class="summary-side"><dl class="kv"><dt>お客様</dt><dd>${esc(c.customer_name)}</dd></dl><dl class="kv"><dt>電話番号</dt><dd>${esc(c.phone||'-')}</dd></dl><dl class="kv"><dt>受付方法</dt><dd>${esc(labels.channel[a.intake_channel_code]||a.intake_channel_code||'-')}</dd></dl><dl class="kv"><dt>担当者</dt><dd>${esc(a.assigned_staff_name||'未担当')}</dd></dl></div></div>
+ <div class="quick-progress"><button class="progress-btn ${['received','need_reply','checking_items','additional_info_needed'].includes(a.assessment_status)?'current':''}" onclick="quickStatus('checking_items')">商品確認</button><button class="progress-btn ${a.assessment_status==='external_appraisal'?'current':''}" onclick="quickStatus('external_appraisal')">本部査定中</button><button class="progress-btn ${['appointment_scheduled','arrived','assessing'].includes(a.assessment_status)?'current':''}" onclick="quickStatus('assessing')">実物査定中</button><button class="progress-btn ${a.assessment_status==='price_presented'?'current':''}" onclick="quickStatus('price_presented')">概算額案内済み</button><button class="progress-btn ${['deal_pending','partially_accepted','accepted_intent'].includes(a.assessment_status)?'current':''}" onclick="quickStatus('deal_pending')">正式提示・回答待ち</button></div>
+ <div class="detail-card"><div class="detail-card-head"><h3>担当・次の対応</h3></div><div class="detail-card-body"><div class="form-grid"><div class="field"><label>担当者</label><select id="dStaff" class="select">${staffOpts}</select></div><div class="field"><label>次回対応日時</label><input id="dNextDue" class="input" type="datetime-local" value="${toLocalInput(a.next_action_due_at)}"></div><div class="field full"><label>内部メモ</label><textarea id="dMemo" class="textarea">${esc(a.internal_notes||'')}</textarea></div></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px"><button class="btn" onclick="saveAssignment()">担当・メモを保存</button><button class="btn soft" onclick="openExternalAction()">本部・外部査定</button></div></div></div>
+ <div class="detail-card"><div class="detail-card-head"><h3>査定商品（${d.items.length}点）</h3></div><div class="detail-card-body">${d.items.map((it,i)=>renderItem(it,i)).join('')}</div></div>
+ ${renderExternal(d.external_appraisals||[])}${renderReservations(d.reservations||[])}<div class="detail-card"><div class="detail-card-head"><h3>フォロータスク</h3></div><div class="detail-card-body">${renderTasks(d.tasks||[])}</div></div>`;
+ document.getElementById('detailBody').innerHTML=html;
+}
+function renderItem(it,i){
+ const estimate=currentResult(it,'photo_estimate'),formal=currentResult(it,'formal_offer'),deal=it.deal_responses?.find(x=>x.is_current)||it.deal_responses?.[0];
+ return `<div class="detail-item"><div class="detail-item-head"><div><h4>${i+1}. ${esc(it.item_name||it.brand||it.category_name_snapshot||it.category_code)}</h4><span class="muted" style="font-size:12px">${esc(it.category_name_snapshot||it.category_code)}</span></div>${statusBadge(it.item_result_status,'item')}</div><div class="detail-item-body"><div class="item-layout"><div class="photo-grid">${it.photos?.length?it.photos.map(p=>`<div class="photo-box" data-photo-id="${p.id}"><span>写真読込中</span></div>`).join(''):'<div class="photo-box" style="grid-column:1/-1"><span>写真未登録</span></div>'}</div><div><div class="form-grid"><div class="field"><label>ブランド</label><input id="brand-${it.id}" class="input" value="${esc(it.brand||'')}"></div><div class="field"><label>メーカー</label><input id="maker-${it.id}" class="input" value="${esc(it.maker||'')}"></div><div class="field"><label>商品名</label><input id="name-${it.id}" class="input" value="${esc(it.item_name||'')}"></div><div class="field"><label>型番</label><input id="model-${it.id}" class="input" value="${esc(it.model_no||'')}"></div><div class="field"><label>商品状態</label><select id="status-${it.id}" class="select">${options(itemStatuses,labels.item,it.item_result_status)}</select></div><div class="field"><label>製造番号</label><input id="serial-${it.id}" class="input" value="${esc(it.serial_no||'')}"></div><div class="field full"><label>状態・傷</label><textarea id="condition-${it.id}" class="textarea">${esc(it.condition_summary||'')}</textarea></div><div class="field full"><label>付属品</label><input id="accessories-${it.id}" class="input" value="${esc(it.accessories||'')}"></div></div><div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px"><button class="btn small" onclick="saveItem('${it.id}')">商品情報を保存</button><button class="btn small soft" onclick="openResult('${it.id}','photo_estimate')">概算査定</button><button class="btn small primary" onclick="openResult('${it.id}','formal_offer')">正式提示額</button><button class="btn small" onclick="openDeal('${it.id}')">売却状況</button></div>${estimate?`<div class="offer-strip"><span class="muted">写真による概算査定</span><br><strong>${resultAmount(estimate)}</strong>　<span class="muted">期限 ${fmtDate(estimate.valid_until)}</span></div>`:''}${formal?`<div class="offer-strip"><span class="muted">実物確認後の正式提示</span><br><strong>${resultAmount(formal)}</strong>　<span class="muted">期限 ${fmtDate(formal.valid_until)}</span></div>`:''}${deal?`<div class="section-note" style="margin-top:9px;margin-bottom:0">現在の回答：${esc(labels.deal[deal.response_status]||deal.response_status)}</div>`:''}</div></div></div></div>`;
+}
+async function hydratePhotos(){revokePhotos();for(const box of document.querySelectorAll('[data-photo-id]')){try{const u=new URL(API_BASE+'/api/admin/photo');u.searchParams.set('shop_code',SHOP_CODE);u.searchParams.set('photo_id',box.dataset.photoId);const r=await fetch(u,{headers:{Authorization:'Bearer '+state.token}});if(!r.ok)throw new Error();const blob=await r.blob(),src=URL.createObjectURL(blob);state.photoUrls.push(src);box.innerHTML=`<img src="${src}" alt="査定商品写真">`}catch{box.innerHTML='<span>写真を表示できません</span>'}}}
+function revokePhotos(){state.photoUrls.forEach(URL.revokeObjectURL);state.photoUrls=[]}
+async function quickStatus(status){const a=state.currentDetail.assessment;try{await api('/api/admin/assessments/status',{method:'POST',body:{assessment_id:a.id,assessment_status:status,external_appraisal_status:status==='external_appraisal'?'requested':a.external_appraisal_status,deal_status:status==='deal_pending'?'pending':a.deal_status,follow_status:a.follow_status,next_action_due_at:fromLocalInput(val('dNextDue')),internal_notes:val('dMemo')}});toast('次の工程へ更新しました。');await reopenCurrent()}catch(e){toast(e.message,'error')}}
+async function saveAssignment(){const a=state.currentDetail.assessment;try{await api('/api/admin/assessments/assign',{method:'POST',body:{assessment_id:a.id,assigned_staff_id:val('dStaff')||null}});await api('/api/admin/assessments/status',{method:'POST',body:{assessment_id:a.id,assessment_status:a.assessment_status,external_appraisal_status:a.external_appraisal_status,deal_status:a.deal_status,follow_status:a.follow_status,next_action_due_at:fromLocalInput(val('dNextDue')),internal_notes:val('dMemo')}});toast('担当・メモを保存しました。');await reopenCurrent()}catch(e){toast(e.message,'error')}}
+async function saveItem(id){try{await api('/api/admin/items/save',{method:'POST',body:{item_id:id,brand:val('brand-'+id),maker:val('maker-'+id),item_name:val('name-'+id),model_no:val('model-'+id),serial_no:val('serial-'+id),condition_summary:val('condition-'+id),accessories:val('accessories-'+id)}});await api('/api/admin/items/status',{method:'POST',body:{item_id:id,item_result_status:val('status-'+id)}});toast('商品情報を保存しました。');await reopenCurrent()}catch(e){toast(e.message,'error')}}
+function openResult(itemId,type){
+ const it=state.currentDetail.items.find(x=>x.id===itemId),r=currentResult(it,type)||{},mode=r.fixed_amount!=null?'fixed':'range',title=type==='photo_estimate'?'概算査定額を入力':'正式提示額を入力',defaultDays=type==='photo_estimate'?7:3;
+ openAction(title,`<form onsubmit="submitResult(event,'${itemId}','${type}')"><div class="section-note">${type==='photo_estimate'?'写真による金額は概算としてお客様に表示されます。':'実物確認後の正式な提示額として表示されます。'}</div><div class="form-grid"><div class="amount-mode"><label id="modeRangeLabel" class="amount-option ${mode==='range'?'active':''}"><input type="radio" name="amountMode" value="range" ${mode==='range'?'checked':''} onchange="updateAmountMode()">金額範囲で提示</label><label id="modeFixedLabel" class="amount-option ${mode==='fixed'?'active':''}"><input type="radio" name="amountMode" value="fixed" ${mode==='fixed'?'checked':''} onchange="updateAmountMode()">固定金額で提示</label></div><div id="lowerField" class="field"><label>下限金額</label><input id="rLower" class="input" type="number" min="0" value="${r.lower_amount??''}"></div><div id="upperField" class="field"><label>上限金額</label><input id="rUpper" class="input" type="number" min="0" value="${r.upper_amount??''}"></div><div id="fixedField" class="field"><label>固定金額</label><input id="rFixed" class="input" type="number" min="0" value="${r.fixed_amount??''}"></div><div class="field"><label>有効期限</label><input id="rValid" class="input" type="date" value="${r.valid_until||addDate(defaultDays)}" oninput="updateDatePreview()"><div id="datePreview" class="date-preview"></div></div><div class="field full"><label>お客様への説明</label><textarea id="rComment" class="textarea">${esc(r.customer_comment||'')}</textarea></div><div class="field full"><label>内部メモ</label><textarea id="rInternal" class="textarea">${esc(r.internal_comment||'')}</textarea></div></div><div class="action-footer"><button type="button" class="btn" onclick="closeAction()">閉じる</button><button class="btn primary">保存</button></div></form>`);requestAnimationFrame(()=>{updateAmountMode();updateDatePreview()})
+}
+function updateAmountMode(){const mode=document.querySelector('input[name="amountMode"]:checked')?.value||'range',range=mode==='range';['rLower','rUpper'].forEach(id=>document.getElementById(id).disabled=!range);document.getElementById('rFixed').disabled=range;document.getElementById('modeRangeLabel').classList.toggle('active',range);document.getElementById('modeFixedLabel').classList.toggle('active',!range)}
+function updateDatePreview(){const el=document.getElementById('datePreview');if(el)el.textContent=val('rValid')?`日本語表示：${fmtJapaneseDate(val('rValid'))}`:''}
+async function submitResult(e,itemId,type){e.preventDefault();const mode=document.querySelector('input[name="amountMode"]:checked')?.value||'range',low=numOrNull(val('rLower')),high=numOrNull(val('rUpper')),fixed=numOrNull(val('rFixed')),valid=val('rValid');if(mode==='range'&&(low==null||high==null)){toast('下限金額と上限金額を入力してください。','warn');return}if(mode==='range'&&low>high){toast('下限金額は上限金額以下にしてください。','warn');return}if(mode==='fixed'&&fixed==null){toast('固定金額を入力してください。','warn');return}if(!valid){toast('有効期限を入力してください。','warn');return}try{await api('/api/admin/assessment-results/save',{method:'POST',body:{item_id:itemId,result_type:type,lower_amount:mode==='range'?low:null,upper_amount:mode==='range'?high:null,fixed_amount:mode==='fixed'?fixed:null,valid_until:valid,customer_comment:val('rComment'),internal_comment:val('rInternal'),presented:true,presented_at:new Date().toISOString(),presented_by_staff_id:state.currentStaffId||null}});closeAction();toast('査定金額を保存しました。');await reopenCurrent()}catch(err){toast(err.message,'error')}}
+function openDeal(itemId){const it=state.currentDetail.items.find(x=>x.id===itemId),d=it.deal_responses?.find(x=>x.is_current)||it.deal_responses?.[0]||{};openAction('商品ごとの売却状況',`<form onsubmit="submitDeal(event,'${itemId}')"><div class="form-grid"><div class="field full"><label>お客様の回答</label><select id="dealStatus" class="select">${options(['pending','accepted_intent','declined'],{pending:'検討中・回答待ち',accepted_intent:'この金額で売却希望',declined:'今回は見送り'},d.response_status||'pending')}</select></div><div class="field full"><label>理由・補足</label><textarea id="dealReason" class="textarea">${esc(d.reason_text||'')}</textarea></div></div><div class="section-note">「売却希望」は正式契約・本人確認・支払い完了とは分けて管理します。</div><div class="action-footer"><button type="button" class="btn" onclick="closeAction()">閉じる</button><button class="btn primary">記録する</button></div></form>`)}
+async function submitDeal(e,itemId){e.preventDefault();try{await api('/api/admin/item-deals/status',{method:'POST',body:{item_id:itemId,response_status:val('dealStatus'),response_source:'staff_record',reason_text:val('dealReason'),recorded_by_staff_id:state.currentStaffId||null}});closeAction();toast('売却状況を記録しました。');await reopenCurrent()}catch(err){toast(err.message,'error')}}
+function openExternalAction(){const e=state.currentDetail.external_appraisals?.find(x=>x.is_current)||state.currentDetail.external_appraisals?.[0]||{};openAction('本部・外部査定',`<form onsubmit="submitExternal(event)"><input id="exId" type="hidden" value="${esc(e.id||'')}"><div class="form-grid"><div class="field"><label>査定先</label><input id="exName" class="input" value="${esc(e.provider_name||'デモ本部査定')}"></div><div class="field"><label>外部査定番号</label><input id="exRef" class="input" value="${esc(e.external_reference_no||'')}"></div><div class="field"><label>状態</label><select id="exStatus" class="select">${options(['not_requested','preparing','requested','additional_info_needed','answered','not_supported','cancelled'],labels.external,e.external_appraisal_status||'requested')}</select></div><div class="field"><label>回答有効期限</label><input id="exValid" class="input" type="date" value="${esc(e.response_valid_until||'')}"></div><div class="field"><label>回答下限</label><input id="exLow" class="input" type="number" min="0" value="${e.response_lower_total??''}"></div><div class="field"><label>回答上限</label><input id="exHigh" class="input" type="number" min="0" value="${e.response_upper_total??''}"></div><div class="field full"><label>依頼内容</label><textarea id="exRequest" class="textarea">${esc(e.request_summary||'')}</textarea></div><div class="field full"><label>回答内容・追加依頼</label><textarea id="exResponse" class="textarea">${esc(e.response_summary||e.additional_request||'')}</textarea></div></div><div class="action-footer"><button type="button" class="btn" onclick="closeAction()">閉じる</button><button class="btn primary">保存</button></div></form>`)}
+async function submitExternal(e){e.preventDefault();const st=val('exStatus');try{await api('/api/admin/external-appraisals/save',{method:'POST',body:{external_appraisal_id:val('exId')||null,assessment_id:state.currentDetail.assessment.id,provider_type:'headquarters',provider_name:val('exName'),external_reference_no:val('exRef'),external_appraisal_status:st,requested_at:['requested','additional_info_needed','answered'].includes(st)?new Date().toISOString():null,answered_at:st==='answered'?new Date().toISOString():null,response_lower_total:numOrNull(val('exLow')),response_upper_total:numOrNull(val('exHigh')),response_valid_until:val('exValid')||null,request_summary:val('exRequest'),response_summary:val('exResponse'),additional_request:st==='additional_info_needed'?val('exResponse'):'',requested_by_staff_id:state.currentStaffId||null,is_current:true}});closeAction();toast('本部・外部査定を保存しました。');await reopenCurrent()}catch(err){toast(err.message,'error')}}
+function renderExternal(rows){if(!rows.length)return '';return `<div class="detail-card"><div class="detail-card-head"><h3>本部・外部査定履歴</h3><button class="btn small" onclick="openExternalAction()">編集</button></div><div class="detail-card-body">${rows.map(e=>`<div class="search-card"><div style="display:flex;justify-content:space-between"><strong>${esc(e.provider_name||'査定先未設定')}</strong>${statusBadge(e.external_appraisal_status,'external')}</div><span>外部番号 ${esc(e.external_reference_no||'-')} ／ 回答 ${e.response_lower_total!=null?money(e.response_lower_total):'-'}～${e.response_upper_total!=null?money(e.response_upper_total):'-'} ／ ${fmtDateTime(e.answered_at||e.requested_at)}</span></div>`).join('')}</div></div>`}
+function renderReservations(rows){if(!rows.length)return '';return `<div class="detail-card"><div class="detail-card-head"><h3>来店・出張・催事予定</h3></div><div class="detail-card-body"><div class="schedule">${rows.map(r=>`<div class="schedule-row"><div class="schedule-time">${fmtTime(r.scheduled_start_at||r.requested_start_at)}</div><div><div class="schedule-title">${esc(labels.reservation[r.reservation_type]||r.reservation_type)}</div><div class="schedule-meta">${fmtDateTime(r.scheduled_start_at||r.requested_start_at)} ${r.address?'／ '+esc(r.address):''}</div></div><span class="badge blue">${esc(r.reservation_status||'')}</span></div>`).join('')}</div></div></div>`}
+async function reopenCurrent(){const id=state.currentDetail?.assessment?.id;if(!id)return;const d=await api('/api/admin/assessment-detail',{query:{assessment_id:id}});state.currentDetail=d;renderDetail(d);hydratePhotos();requestAnimationFrame(()=>document.getElementById('detailBody').scrollTop=0);await loadAll(true)}
+function openAction(title,body){document.getElementById('actionTitle').textContent=title;document.getElementById('actionBody').innerHTML=body;document.getElementById('actionDialog').showModal()}
+function closeAction(){document.getElementById('actionDialog').close()}
+function currentResult(it,type){return (it.results||[]).filter(r=>r.result_type===type&&r.is_current!==false).sort((a,b)=>(b.revision_no||0)-(a.revision_no||0))[0]}
+function resultAmount(r){if(r.fixed_amount!=null)return money(r.fixed_amount);if(r.lower_amount!=null&&r.upper_amount!=null)return `${money(r.lower_amount)} ～ ${money(r.upper_amount)}`;return money(r.lower_amount??r.upper_amount??0)}
+function statusBadge(v,map){const text=labels[map]?.[v]||v||'-';let c='gray';if(['completed','answered','accepted_intent','paid_external','offer_ready'].includes(v))c='green';else if(['received','checking_items','requested','appointment_scheduled'].includes(v))c='blue';else if(['need_reply','additional_info_needed','external_appraisal','deal_pending','pending','partially_accepted','partially_accepted_intent'].includes(v))c='amber';else if(['declined','cancelled','not_supported','no_show'].includes(v))c='red';return `<span class="badge ${c}">${esc(text)}</span>`}
+function options(values,map,current){return values.map(v=>`<option value="${v}" ${String(v)===String(current)?'selected':''}>${esc(map[v]||v)}</option>`).join('')}
+function val(id){return document.getElementById(id)?.value??''}function checked(id){return !!document.getElementById(id)?.checked}function numOrNull(v){return v===''||v==null?null:Number(v)}
+function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function money(v){if(v===null||v===undefined||v==='')return '-';return new Intl.NumberFormat('ja-JP',{style:'currency',currency:'JPY',maximumFractionDigits:0}).format(Number(v))}
+function fmtDateTime(v){if(!v)return '-';try{return new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(v))}catch{return v}}
+function fmtDate(v){if(!v)return '-';return fmtJapaneseDate(v)}
+function fmtJapaneseDate(v){if(!v)return '-';try{return new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'}).format(new Date(v+'T00:00:00+09:00'))}catch{return v}}
+function fmtTime(v){if(!v)return '--:--';try{return new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(v))}catch{return '--:--'}}
+function jstDate(){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
+function toLocalInput(v){if(!v)return '';return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(v)).replace(' ','T')}
+function fromLocalInput(v){if(!v)return null;return new Date(v+':00+09:00').toISOString()}
+function addDate(days){const d=new Date();d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+function toast(msg,type=''){const w=document.getElementById('toastWrap'),d=document.createElement('div');d.className='toast '+type;d.textContent=msg;w.appendChild(d);setTimeout(()=>d.remove(),3800)}
+window.addEventListener('unhandledrejection',e=>{console.error(e.reason);toast(e.reason?.message||'処理に失敗しました。','error')});
+</script>
+</body>
+</html>
