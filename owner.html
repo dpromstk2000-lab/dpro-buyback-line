@@ -99,7 +99,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
       <button class="nav-btn" data-view="tasks"><span class="nav-icon">✓</span>フォロータスク<span id="badgeTasks" class="nav-badge">0</span></button>
       <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span>店舗設定</button>
     </nav>
-    <div class="sidebar-foot">STEP BUYBACK-6-R1<br>AMOUNT / DATE SAFETY<br><span id="workerVersion">API確認中</span></div>
+    <div class="sidebar-foot">STEP BUYBACK-10-R1<br>DEMO AUTO LOGIN<br><span id="workerVersion">API確認中</span></div>
   </aside>
   <main class="main">
     <section id="view-dashboard" class="view active">
@@ -174,10 +174,13 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
 <div id="toastWrap" class="toast-wrap"></div>
 <script>
 'use strict';
-const VERSION='BUYBACK-6-R1-AMOUNT-DATE-SAFETY-20260715';
+const VERSION='BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716';
 const API_BASE='https://dpro-buyback-line-api.dpromstk2000.workers.dev';
 const SHOP_CODE='dpro_buyback_demo';
 const STORAGE={token:'dpro_buyback_admin_token',code:'dpro_buyback_admin_code'};
+const DEMO_MODE=new URLSearchParams(location.search).get('demo')==='1';
+const DEMO_ADMIN_CODE='1234';
+const tokenStorageKey=()=>DEMO_MODE?STORAGE.token+'_demo':STORAGE.token;
 const state={token:'',adminCode:'',shop:null,settingsData:null,dashboard:null,assessments:[],tasks:[],currentView:'dashboard',currentDetail:null,manualItems:[],settingTab:'basic',photoUrls:[]};
 const labels={
  assessment_status:{received:'受付済み',need_reply:'初回返信待ち',checking_items:'商品確認中',additional_info_needed:'追加情報待ち',external_appraisal:'本部・外部査定中',appointment_scheduled:'来店・相談予定あり',arrived:'来店済み',assessing:'実物査定中',price_presented:'概算額案内済み',deal_pending:'正式提示・回答待ち',partially_accepted:'一部商品を売却希望',accepted_intent:'売却希望',declined:'見送り',returned:'返却',completed:'完了',cancelled:'取消'},
@@ -202,29 +205,33 @@ function init(){
  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
  document.querySelectorAll('[data-setting-tab]').forEach(b=>b.addEventListener('click',()=>showSettingTab(b.dataset.settingTab)));
  fillStaticSelects();
- const q=new URLSearchParams(location.search); const demo=q.get('demo')==='1';
- const savedCode=localStorage.getItem(STORAGE.code)||''; document.getElementById('adminCode').value=savedCode||(demo?'1234':'');
+ const savedCode=DEMO_MODE?'':(localStorage.getItem(STORAGE.code)||'');
+ document.getElementById('adminCode').value=DEMO_MODE?DEMO_ADMIN_CODE:savedCode;
+ if(DEMO_MODE)document.getElementById('saveCode').checked=false;
  document.getElementById('clearCodeBtn').addEventListener('click',clearSavedCode);
  document.getElementById('loginBtn').addEventListener('click',login);
  document.getElementById('adminCode').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
  document.getElementById('todayDate').value=jstDate();
- const token=sessionStorage.getItem(STORAGE.token)||''; if(token){state.token=token;boot().catch(()=>showLogin())}
+ const token=sessionStorage.getItem(tokenStorageKey())||'';
+ if(token){state.token=token;boot().catch(()=>{sessionStorage.removeItem(tokenStorageKey());if(DEMO_MODE)autoDemoLogin();else showLogin()})}
+ else if(DEMO_MODE)setTimeout(autoDemoLogin,0);
  resetManualItems();
 }
+function autoDemoLogin(){document.getElementById('adminCode').value=DEMO_ADMIN_CODE;login({demoAuto:true})}
 function fillStaticSelects(){
  fillSelect('filterStatus',statusOptions,labels.assessment_status,true);fillSelect('filterExternal',externalOptions,labels.external,true);fillSelect('filterDeal',dealOptions,labels.deal,true);
 }
 function fillSelect(id,values,map,keepFirst=false){const el=document.getElementById(id);if(!el)return;const first=keepFirst?el.options[0]?.outerHTML:'';el.innerHTML=(first||'')+values.map(v=>`<option value="${v}">${esc(map[v]||v)}</option>`).join('')}
-async function login(){
+async function login(options={}){
  const btn=document.getElementById('loginBtn'),code=document.getElementById('adminCode').value.trim(),err=document.getElementById('loginError'); if(!code){showLoginError('管理コードを入力してください。');return}
  btn.disabled=true;btn.innerHTML='<span class="loading"></span>確認中';err.classList.add('hidden');
- try{const data=await api('/api/admin/login',{method:'POST',body:{shop_code:SHOP_CODE,admin_code:code},admin:false});state.token=data.admin_token;state.adminCode=code;sessionStorage.setItem(STORAGE.token,state.token);if(document.getElementById('saveCode').checked)localStorage.setItem(STORAGE.code,code);else localStorage.removeItem(STORAGE.code);await boot()}
+ try{const data=await api('/api/admin/login',{method:'POST',body:{shop_code:SHOP_CODE,admin_code:code},admin:false});state.token=data.admin_token;state.adminCode=code;sessionStorage.setItem(tokenStorageKey(),state.token);if(!DEMO_MODE){if(document.getElementById('saveCode').checked)localStorage.setItem(STORAGE.code,code);else localStorage.removeItem(STORAGE.code)}await boot()}
  catch(e){showLoginError(e.message||'管理コードを確認してください。')}finally{btn.disabled=false;btn.textContent='管理画面を開く'}
 }
 function showLoginError(msg){const e=document.getElementById('loginError');e.textContent=msg;e.classList.remove('hidden')}
-function clearSavedCode(){document.getElementById('adminCode').value='';localStorage.removeItem(STORAGE.code);sessionStorage.removeItem(STORAGE.token);state.adminCode='';toast('管理コードを削除しました。')}
+function clearSavedCode(){document.getElementById('adminCode').value='';localStorage.removeItem(STORAGE.code);sessionStorage.removeItem(STORAGE.token);sessionStorage.removeItem(STORAGE.token+'_demo');state.adminCode='';toast('管理コードを削除しました。')}
 function showLogin(){document.getElementById('app').classList.add('hidden');document.getElementById('mobileNav').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden')}
-function logout(){sessionStorage.removeItem(STORAGE.token);state.token='';state.currentDetail=null;showLogin();toast('ログアウトしました。')}
+function logout(){sessionStorage.removeItem(tokenStorageKey());state.token='';state.currentDetail=null;showLogin();toast('ログアウトしました。')}
 async function boot(){
  document.getElementById('loginScreen').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('mobileNav').classList.remove('hidden');
  await Promise.all([loadSettings(),loadDashboard()]);showView(state.currentView||'dashboard');
@@ -234,7 +241,7 @@ async function api(path,{method='GET',body=null,query=null,admin=true}={}){
  const h={'Accept':'application/json'};if(body!==null)h['Content-Type']='application/json';if(admin){if(state.token)h.Authorization='Bearer '+state.token;else if(state.adminCode)h['X-Admin-Code']=state.adminCode}
  setConnection(true,'通信中');
  const r=await fetch(u,{method,headers:h,body:body===null?undefined:JSON.stringify(body)});let data;try{data=await r.json()}catch{data={ok:false,message:'APIの応答を読み取れませんでした。'}}
- if(!r.ok||data.ok===false){setConnection(false,'接続エラー');if(r.status===401){sessionStorage.removeItem(STORAGE.token);state.token=''}throw new Error(data.message||`API error ${r.status}`)}setConnection(true,'接続済み');return data;
+ if(!r.ok||data.ok===false){setConnection(false,'接続エラー');if(r.status===401){sessionStorage.removeItem(tokenStorageKey());state.token=''}throw new Error(data.message||`API error ${r.status}`)}setConnection(true,'接続済み');return data;
 }
 function setConnection(ok,text){document.getElementById('connectionDot')?.classList.toggle('off',!ok);const t=document.getElementById('connectionText');if(t)t.textContent=text}
 function showView(name){
