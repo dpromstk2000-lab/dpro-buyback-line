@@ -1,0 +1,229 @@
+<!doctype html>
+<!-- DPRO LIVE DEMO COMMON TEMPLATE V1.0 LOCK / CONFIGURABLE TEMPLATE -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title id="pageTitle">DPRO 公開操作デモ・画面一覧</title>
+<style>
+:root{
+  --bg:#edf4f1;--card:#fff;--ink:#282522;--muted:#746d68;--line:#e2d9d2;
+  --brand:#0d5c4b;--deep:#083f34;--brand2:#c9962d;--soft:#eef8f4;
+  --shadow:0 16px 46px rgba(44,37,32,.10)
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Yu Gothic UI",Meiryo,sans-serif;line-height:1.65;background:linear-gradient(180deg,#fff 0%,var(--bg) 100%)}
+a{color:inherit}.page{width:min(1140px,calc(100% - 24px));margin:0 auto;padding:20px 0 48px}
+.hero{position:relative;overflow:hidden;padding:34px;border-radius:28px;color:#fff;background:linear-gradient(135deg,var(--deep),var(--brand) 63%,var(--brand2));box-shadow:0 23px 58px rgba(35,30,27,.20)}
+.hero:after{content:"";position:absolute;right:-95px;bottom:-150px;width:290px;height:290px;border-radius:50%;background:rgba(255,255,255,.07)}
+.kicker{position:relative;z-index:1;font-size:11px;font-weight:1000;letter-spacing:.14em;opacity:.9}
+.hero h1{position:relative;z-index:1;margin:10px 0 0;font-size:clamp(28px,5vw,49px);line-height:1.24}
+.hero p{position:relative;z-index:1;max-width:830px;margin:13px 0 0;font-size:14px;opacity:.93}
+.hero-actions{position:relative;z-index:1;display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.button{min-height:45px;display:inline-flex;align-items:center;justify-content:center;padding:9px 15px;border-radius:999px;text-decoration:none;font-size:12px;font-weight:950}
+.button-light{color:var(--deep);background:#fff}.button-ghost{color:#fff;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.09)}
+.notice{margin-top:15px;padding:15px 17px;border:1px solid #e5cda3;border-radius:15px;background:#fff5e5;color:#725013;font-size:12px;font-weight:760}
+.demo-info{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.demo-info>div{padding:14px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.96);box-shadow:var(--shadow)}
+.demo-info small{display:block;color:var(--brand);font-size:9px;font-weight:1000;letter-spacing:.08em}.demo-info strong{display:block;margin-top:4px;font-size:14px}
+.section-head{margin:32px 0 15px}.section-head small{color:var(--brand);font-size:10px;font-weight:1000;letter-spacing:.12em}.section-head h2{margin:5px 0 0;font-size:clamp(23px,4vw,34px)}.section-head p{max-width:840px;margin:7px 0 0;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.card{min-width:0;padding:20px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.98);box-shadow:var(--shadow)}
+.card-number{color:var(--brand);font-size:10px;font-weight:1000;letter-spacing:.1em}.card h3{margin:7px 0 0;font-size:21px;line-height:1.4}.card p{margin:8px 0 0;color:var(--muted);font-size:12px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.pills span{padding:5px 8px;border-radius:999px;background:var(--soft);color:var(--deep);font-size:9px;font-weight:900}
+.card-note{margin-top:13px;padding:11px;border-radius:12px;background:var(--soft);color:#675a54;font-size:11px}.card-note b{color:var(--deep)}
+.card-actions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:15px}
+.open,.official{min-height:44px;display:flex;align-items:center;justify-content:center;padding:9px 13px;border-radius:12px;text-decoration:none;font-size:10px;font-weight:950}
+.open{color:#fff;background:linear-gradient(135deg,var(--deep),var(--brand2))}.official{color:var(--deep);border:1px solid var(--line);background:var(--soft)}
+.flow{margin-top:14px;padding:19px;border:1px solid var(--line);border-radius:19px;background:#fff;box-shadow:var(--shadow)}
+.flow-grid{display:grid;grid-template-columns:repeat(var(--flow-cols,5),minmax(0,1fr));gap:8px}
+.flow-step{padding:12px;border-radius:12px;background:var(--soft)}.flow-step b{display:block;color:var(--brand);font-size:10px}.flow-step strong{display:block;margin-top:4px;font-size:11px}.flow-step.same{border:1px dashed #cdbfb6}
+.footer{margin-top:26px;color:#82736c;font-size:10px;text-align:center}
+@media(max-width:900px){.flow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.hero{padding:25px 20px}.demo-info,.grid,.flow-grid{grid-template-columns:1fr}}
+@media(max-width:420px){.page{width:min(100% - 16px,1140px)}.card-actions{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="page">
+<section class="hero">
+  <div class="kicker">PUBLIC OPERATION DEMO / V1.0</div>
+  <h1 id="heroTitle"></h1>
+  <p id="heroCopy"></p>
+  <div class="hero-actions">
+    <a class="button button-light" id="officialLink">公式の機能・料金説明を見る</a>
+    <a class="button button-ghost" id="primaryDemoLink">まず体験する</a>
+  </div>
+</section>
+
+<div class="notice" id="notice"></div>
+
+<section class="demo-info" id="quickInfo" aria-label="デモ利用情報"></section>
+
+<div class="section-head">
+  <small>CHOOSE A SCREEN</small>
+  <h2>確認する画面を選択</h2>
+  <p id="screenIntro"></p>
+</div>
+
+<section class="grid" id="screenGrid"></section>
+
+<div class="section-head">
+  <small>RECOMMENDED JOURNEY</small>
+  <h2>おすすめの確認順</h2>
+  <p id="journeyIntro"></p>
+</div>
+<section class="flow"><div class="flow-grid" id="flowGrid"></div></section>
+
+<div class="footer" id="footer"></div>
+</main>
+
+<script>
+/*
+  DPRO LIVE DEMO COMMON TEMPLATE V1.0
+  ------------------------------------------------------------
+  変更してよいのは CONFIG の値とCSS変数のブランド色のみ。
+  DOM骨格・セクション順・公開注意・CHOOSE A SCREEN・
+  RECOMMENDED JOURNEYはCOMMON TEMPLATE V1.0 LOCK対象。
+*/
+const CONFIG = {
+  "systemName": "DPRO 総合買取・査定 LINE",
+  "pageTitle": "DPRO 総合買取・査定 LINE｜公開操作デモ・画面一覧",
+  "heroCopy": "写真査定から売却回答までをひとつに。複数商品受付、商品別査定額、お客様の売却回答、担当・フォローまでを実画面で確認できます。",
+  "officialUrl": "https://dpro-shop.com/systems/buyback",
+  "primaryDemoUrl": "index.html?demo=1&v=buyback-10",
+  "notice": "公開デモでは実在する氏名・電話番号・メールアドレス・本人確認書類・商品写真などを入力・アップロードせず、必ず架空の内容を使用してください。身分証の写真は送信しないでください。",
+  "screenIntro": "01で写真査定・複数商品受付を確認し、02のお客様査定結果、03の商品別査定、04の担当・案件フォローへ進むと全体像が分かります。",
+  "journeyIntro": "受付した複数商品が、商品別の査定額、売却回答、店舗フォローへつながる流れを順番に確認します。",
+  "adminCode": "1234",
+  "quickInfo": [
+    {
+      "label": "CUSTOMER FLOW",
+      "text": "写真査定・複数商品 → 商品別金額 → 売却希望・見送り"
+    },
+    {
+      "label": "ADMIN CODE",
+      "text": "店舗側デモ管理コード：1234／demo=1は自動ログイン対応"
+    },
+    {
+      "label": "SCREEN STRUCTURE",
+      "text": "実在4画面で4ステップを確認"
+    }
+  ],
+  "screens": [
+    {
+      "step": "01 / PHOTO APPRAISAL",
+      "title": "お客様｜写真査定・複数商品受付",
+      "description": "受付方法・カテゴリーを選び、複数の商品情報と写真を商品単位でまとめて査定相談へ進めます。",
+      "tags": [
+        "写真査定",
+        "複数商品",
+        "商品写真"
+      ],
+      "note": "本人確認書類や実在する商品写真はアップロードせず、架空情報で確認してください。",
+      "url": "index.html?demo=1&v=buyback-10",
+      "cta": "写真査定を開く",
+      "officialUrl": "https://dpro-shop.com/systems/buyback"
+    },
+    {
+      "step": "02 / MEMBER RESPONSE",
+      "title": "お客様｜商品別査定額・売却回答",
+      "description": "商品ごとの査定額を確認し、一部商品のみ売却希望、相談、見送りを商品単位またはまとめて回答できます。",
+      "tags": [
+        "商品別金額",
+        "売却希望",
+        "見送り"
+      ],
+      "note": "「売却希望」は正式契約ではありません。demo=1で営業デモ用のお客様を選択できます。",
+      "url": "member.html?demo=1",
+      "cta": "お客様査定状況を開く",
+      "officialUrl": "https://dpro-shop.com/systems/buyback"
+    },
+    {
+      "step": "03 / STAFF APPRAISAL",
+      "title": "査定スタッフ｜商品別査定",
+      "description": "案件ごとの商品情報を確認し、概算・正式提示額、状態、担当メモなどを商品単位で更新します。",
+      "tags": [
+        "商品別査定",
+        "概算・正式額",
+        "スタッフ"
+      ],
+      "note": "demo=1は管理コード1234で自動ログインします。",
+      "url": "staff.html?demo=1",
+      "cta": "査定スタッフ画面を開く",
+      "officialUrl": "https://dpro-shop.com/systems/buyback"
+    },
+    {
+      "step": "04 / OWNER FOLLOW-UP",
+      "title": "オーナー管理｜担当・案件フォロー",
+      "description": "査定案件の担当、次回対応日時、売却状況、フォロータスク、対応履歴を管理します。",
+      "tags": [
+        "担当",
+        "フォロータスク",
+        "対応履歴"
+      ],
+      "note": "demo=1は管理コード1234で自動ログインします。",
+      "url": "owner.html?demo=1",
+      "cta": "オーナー管理を開く",
+      "officialUrl": "https://dpro-shop.com/systems/buyback"
+    }
+  ],
+  "journey": [
+    {
+      "step": "01",
+      "text": "写真査定で複数商品を受付"
+    },
+    {
+      "step": "02",
+      "text": "お客様が商品別金額・売却回答を確認"
+    },
+    {
+      "step": "03",
+      "text": "スタッフが商品別に査定額を管理"
+    },
+    {
+      "step": "04",
+      "text": "オーナーが担当・次回対応・フォローを管理"
+    }
+  ]
+};
+document.documentElement.style.setProperty("--flow-cols", String(Math.min(CONFIG.journey.length, 7)));
+document.title = CONFIG.pageTitle;
+document.getElementById("heroTitle").innerHTML = `${CONFIG.systemName}<br>公開操作デモ・画面一覧`;
+document.getElementById("heroCopy").textContent = CONFIG.heroCopy;
+document.getElementById("officialLink").href = CONFIG.officialUrl;
+document.getElementById("primaryDemoLink").href = CONFIG.primaryDemoUrl;
+document.getElementById("notice").textContent = CONFIG.notice;
+document.getElementById("screenIntro").textContent = CONFIG.screenIntro;
+document.getElementById("journeyIntro").textContent = CONFIG.journeyIntro;
+document.getElementById("footer").textContent = `${CONFIG.systemName}｜PUBLIC OPERATION DEMO V1.0`;
+
+document.getElementById("quickInfo").innerHTML = CONFIG.quickInfo.map(x =>
+  `<div><small>${x.label}</small><strong>${x.text}</strong></div>`
+).join("");
+
+document.getElementById("screenGrid").innerHTML = CONFIG.screens.map(x => `
+  <article class="card">
+    <div class="card-number">${x.step}</div>
+    <h3>${x.title}</h3>
+    <p>${x.description}</p>
+    <div class="pills">${x.tags.map(t => `<span>${t}</span>`).join("")}</div>
+    <div class="card-note">${x.note}</div>
+    <div class="card-actions">
+      <a class="open" href="${x.url}">${x.cta}</a>
+      <a class="official" href="${x.officialUrl}">説明</a>
+    </div>
+  </article>
+`).join("");
+
+document.getElementById("flowGrid").innerHTML = CONFIG.journey.map(x => `
+  <div class="flow-step${x.sameScreen ? " same" : ""}">
+    <b>${x.step}${x.sameScreen ? " / SAME SCREEN" : ""}</b>
+    <strong>${x.text}</strong>
+  </div>
+`).join("");
+</script>
+</body>
+</html>
