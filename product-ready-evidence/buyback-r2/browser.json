@@ -1,0 +1,197 @@
+{
+  "checkedAt": "2026-08-23T08:23:50.870Z",
+  "sourceHead": "248db01e13b6f767fec0dd5ae86f7e1b35c049bb",
+  "results": [
+    {
+      "key": "pc-owner",
+      "file": "owner.html?demo=1",
+      "width": 1440,
+      "height": 1000,
+      "httpStatus": 200,
+      "overflow": false,
+      "technical": false,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "adapterResponses": [
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/login?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/dashboard?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/settings?shop_code=dpro_buyback_demo",
+          "status": 200
+        }
+      ],
+      "staffSessionIssueOk": true,
+      "ok": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440
+      }
+    },
+    {
+      "key": "mobile390",
+      "file": "index.html?shop_code=dpro_buyback_demo&demo=1",
+      "width": 390,
+      "height": 844,
+      "httpStatus": 200,
+      "overflow": false,
+      "technical": false,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "adapterResponses": [
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/public/events?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/public/assessment-options?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/public/config?shop_code=dpro_buyback_demo",
+          "status": 200
+        }
+      ],
+      "staffSessionIssueOk": true,
+      "ok": true,
+      "metrics": {
+        "innerWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "mobile320-member",
+      "file": "member.html?shop_code=dpro_buyback_demo&demo=1&line_user_id=demo_buyback_line_001",
+      "width": 320,
+      "height": 720,
+      "httpStatus": 200,
+      "overflow": false,
+      "technical": false,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "adapterResponses": [
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/public/config?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/public/assessment-options?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/member/assessments?shop_code=dpro_buyback_demo&line_user_id=demo_buyback_line_001",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/member/assessment-detail?shop_code=dpro_buyback_demo&member_token=7b20385ed92f79dafa0d481bb2f9f5901a97d5d312c020a9&assessment_id=2ad9c84c-fe5f-4fe9-9540-d5ea31a388c5",
+          "status": 200
+        }
+      ],
+      "staffSessionIssueOk": true,
+      "ok": true,
+      "metrics": {
+        "innerWidth": 320,
+        "scrollWidth": 320,
+        "bodyScrollWidth": 320
+      }
+    },
+    {
+      "key": "ipad-owner",
+      "file": "owner-ipad.html?demo=1",
+      "width": 1024,
+      "height": 768,
+      "httpStatus": 200,
+      "overflow": false,
+      "technical": false,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "adapterResponses": [
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/login?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/settings?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/assessments?limit=200&shop_code=dpro_buyback_demo",
+          "status": 200
+        }
+      ],
+      "staffSessionIssueOk": true,
+      "ok": true,
+      "metrics": {
+        "innerWidth": 1024,
+        "scrollWidth": 1024,
+        "bodyScrollWidth": 1024
+      }
+    },
+    {
+      "key": "pc-staff",
+      "file": "staff.html?demo=1",
+      "width": 1440,
+      "height": 1000,
+      "httpStatus": 200,
+      "overflow": false,
+      "technical": false,
+      "pageErrors": [],
+      "consoleErrors": [],
+      "adapterResponses": [
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/login?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/settings?shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/staff/session/issue",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/assessments?limit=200&shop_code=dpro_buyback_demo",
+          "status": 200
+        },
+        {
+          "url": "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready/api/admin/dashboard?shop_code=dpro_buyback_demo",
+          "status": 200
+        }
+      ],
+      "staffSessionIssueOk": true,
+      "ok": true,
+      "metrics": {
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440
+      }
+    }
+  ],
+  "systemCheck": {
+    "fail": [
+      "×\nowner.html\nowner.html の版が一致しません\nNG",
+      "×\nstaff.html\nstaff.html の版が一致しません\nNG",
+      "×\nowner-ipad.html\nowner-ipad.html の版が一致しません\nNG"
+    ],
+    "warn": [
+      "!\n今日の予定\n本日の予定 0件 ／ タスク 0件\n注意"
+    ],
+    "pass": 13,
+    "all": 17,
+    "innerWidth": 1440,
+    "scrollWidth": 1440,
+    "httpStatus": 200,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "ok": false
+  },
+  "ok": false
+}
