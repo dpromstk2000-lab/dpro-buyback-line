@@ -218,6 +218,7 @@
       main{padding:14px 10px 80px}.hero-main{min-height:auto;padding:22px 20px;border-radius:20px}.hero h1{font-size:28px}.hero-point{font-size:10px}.card{border-radius:18px}.card-head,.card-body{padding:16px}.status-banner{padding:18px}.status-top{display:block}.status-top .tag-row{margin-top:8px}.status-main h2{font-size:20px}.progress{padding:17px 10px}.progress-step{font-size:9px}.progress-dot{width:28px;height:28px}.summary-grid{grid-template-columns:1fr 1fr}.summary-box:last-child{grid-column:1/-1}.section-title{align-items:flex-end}.item-head{padding:14px}.item-body{padding:14px}.item-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(4,1fr)}.detail-list{grid-template-columns:1fr}.detail-row.wide{grid-column:auto}.offer-amount{font-size:25px}.btn{width:100%}.item-actions .btn{width:auto;flex:1 1 145px}.btn-row .btn{flex:1 1 140px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.demo-grid{grid-template-columns:1fr}.reservation-card .reservation-row{grid-template-columns:1fr;gap:1px}.modal-backdrop{padding:8px;align-items:end}.modal{border-radius:20px 20px 0 0;max-height:92vh;width:100%}.floating-home{right:10px;bottom:10px}.photo-empty{aspect-ratio:4/1}
     }
   </style>
+  <script src="./product-ready-config.js?v=buyback-r2"></script>
 </head>
 <body>
   <header class="topbar">
@@ -304,7 +305,7 @@
     "use strict";
 
     const VERSION = "BUYBACK-5-MEMBER-ASSESSMENT-PORTAL-20260715";
-    const API_BASE = "https://dpro-buyback-line-api.dpromstk2000.workers.dev";
+    const API_BASE = "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready";
     const DEFAULT_SHOP_CODE = "dpro_buyback_demo";
     const params = new URLSearchParams(location.search);
     const SHOP_CODE = params.get("shop_code") || DEFAULT_SHOP_CODE;
@@ -318,7 +319,7 @@
       detail:null,
       memberToken:params.get("member_token") || "",
       assessmentId:params.get("assessment_id") || "",
-      lineUserId:params.get("line_user_id") || "",
+      lineUserId:(DEMO_MODE ? (params.get("line_user_id") || "") : ""),
       loading:false,
       modalFiles:[]
     };

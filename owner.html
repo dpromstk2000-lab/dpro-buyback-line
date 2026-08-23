@@ -51,6 +51,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
 @media(max-width:1120px){.count-grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.action-grid{grid-template-columns:repeat(2,1fr)}.detail-summary{grid-template-columns:1fr}.item-layout{grid-template-columns:180px 1fr}}
 @media(max-width:820px){:root{--sidebar:0px}.topbar{padding:0 12px}.brand-sub,.top-actions .btn span{display:none}.app-layout{display:block}.sidebar{display:none}.main{padding:15px 12px 80px}.view-title{font-size:23px}.count-grid{grid-template-columns:1fr 1fr;gap:10px}.count-card{padding:14px;min-height:98px}.count-value{font-size:27px}.form-grid,.search-result{grid-template-columns:1fr}.settings-row{grid-template-columns:1fr;gap:8px}.detail-dialog{width:100vw;height:100vh;border-radius:0}.dialog-body{padding:12px 10px 40px}.item-layout{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(3,1fr)}.action-grid{grid-template-columns:1fr 1fr}.kv{grid-template-columns:105px 1fr}.mobile-nav{display:flex;position:fixed;left:0;right:0;bottom:0;height:66px;background:#fff;border-top:1px solid var(--line);z-index:50;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom)}.mobile-nav button{border:0;background:transparent;font-size:11px;font-weight:800;color:#596861;min-width:60px}.mobile-nav button span{display:block;font-size:20px}.mobile-nav button.active{color:var(--green)}.toolbar{align-items:stretch}.field,.field.grow{min-width:100%}.head-actions{width:100%}.view-head{flex-direction:column}}
 </style>
+  <script src="./product-ready-config.js?v=buyback-r2"></script>
 </head>
 <body>
 <section id="loginScreen" class="login-screen">
@@ -175,7 +176,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
 <script>
 'use strict';
 const VERSION='BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716';
-const API_BASE='https://dpro-buyback-line-api.dpromstk2000.workers.dev';
+const API_BASE='https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready';
 const SHOP_CODE='dpro_buyback_demo';
 const STORAGE={token:'dpro_buyback_admin_token',code:'dpro_buyback_admin_code'};
 const DEMO_MODE=new URLSearchParams(location.search).get('demo')==='1';

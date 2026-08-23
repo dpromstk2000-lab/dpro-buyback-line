@@ -62,6 +62,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
  .schedule,.task{grid-template-columns:72px minmax(0,1fr);}.schedule .btn,.task .btn{grid-column:2}.sheet{width:100vw;height:100vh;border-radius:0}.small-sheet{width:100vw;max-height:100vh;border-radius:0}.detail-layout{grid-template-columns:1fr}.existing-photos{grid-template-columns:repeat(3,1fr)}.progress-grid{grid-template-columns:1fr 1fr}.amount-mode{grid-template-columns:1fr}.login-row{grid-template-columns:1fr}.action-bar{display:block}.action-bar .right{margin-top:9px;display:grid;grid-template-columns:1fr 1fr}.action-bar>.btn{width:100%}
 }
 </style>
+  <script src="./product-ready-config.js?v=buyback-r2"></script>
 </head>
 <body>
 <section id="loginScreen" class="login">
@@ -190,7 +191,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
 <script>
 'use strict';
 const VERSION='BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716';
-const API_BASE='https://dpro-buyback-line-api.dpromstk2000.workers.dev';
+const API_BASE='https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready';
 const SHOP_CODE='dpro_buyback_demo';
 const STORAGE={token:'dpro_buyback_ipad_token',code:'dpro_buyback_ipad_code',staff:'dpro_buyback_ipad_staff'};
 const DEMO_MODE=new URLSearchParams(location.search).get('demo')==='1';

@@ -53,6 +53,7 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
  .detail-dialog{width:100vw;height:100vh;border-radius:0}.dialog-head{padding:0 13px}.dialog-body{padding:12px}.detail-summary{padding:12px}.summary-side{grid-template-columns:1fr}.quick-progress{grid-template-columns:1fr 1fr}.item-layout{grid-template-columns:1fr}.photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.action-grid{grid-template-columns:1fr}.amount-mode{grid-template-columns:1fr}.top-actions{gap:5px}.login-row{grid-template-columns:1fr}
 }
 </style>
+  <script src="./product-ready-config.js?v=buyback-r2"></script>
 </head>
 <body>
 <section id="loginScreen" class="login">
@@ -128,13 +129,13 @@ dialog{border:0;padding:0;background:transparent;max-width:none;max-height:none}
 <script>
 'use strict';
 const VERSION='BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716';
-const API_BASE='https://dpro-buyback-line-api.dpromstk2000.workers.dev';
+const API_BASE='https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready';
 const SHOP_CODE='dpro_buyback_demo';
 const STORAGE={token:'dpro_buyback_staff_admin_token',code:'dpro_buyback_staff_admin_code',staff:'dpro_buyback_selected_staff'};
 const DEMO_MODE=new URLSearchParams(location.search).get('demo')==='1';
 const DEMO_ADMIN_CODE='1234';
 const tokenStorageKey=()=>DEMO_MODE?STORAGE.token+'_demo':STORAGE.token;
-const state={token:'',adminCode:'',settings:null,shop:null,staff:[],currentStaffId:'',assessments:[],dashboard:null,currentDetail:null,currentView:'home',photoUrls:[]};
+const state={token:'',staffToken:'',adminCode:'',settings:null,shop:null,staff:[],currentStaffId:'',assessments:[],dashboard:null,currentDetail:null,currentView:'home',photoUrls:[]};
 const labels={
  assessment:{received:'受付済み',need_reply:'初回返信待ち',checking_items:'商品確認中',additional_info_needed:'追加情報待ち',external_appraisal:'本部・外部査定中',appointment_scheduled:'来店・相談予定あり',arrived:'来店済み',assessing:'実物査定中',price_presented:'概算額案内済み',deal_pending:'正式提示・回答待ち',partially_accepted:'一部商品を売却希望',accepted_intent:'売却希望',declined:'見送り',returned:'返却',completed:'完了',cancelled:'取消'},
  external:{not_required:'不要',not_requested:'未依頼',preparing:'依頼準備中',requested:'依頼済み',additional_info_needed:'追加情報待ち',answered:'回答済み',not_supported:'対象外',cancelled:'取消'},
@@ -155,7 +156,7 @@ function init(){
  document.getElementById('loginBtn').addEventListener('click',login);
  document.getElementById('clearCodeBtn').addEventListener('click',clearCode);
  document.getElementById('adminCode').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
- document.getElementById('staffSelect').addEventListener('change',()=>{state.currentStaffId=val('staffSelect');localStorage.setItem(STORAGE.staff,state.currentStaffId);renderAll()});
+ document.getElementById('staffSelect').addEventListener('change',async()=>{state.currentStaffId=val('staffSelect');localStorage.setItem(STORAGE.staff,state.currentStaffId);try{await revokeStaffSession();await issueStaffSession();renderAll()}catch(e){toast(e.message,'error')}});
  document.getElementById('todayDate').value=jstDate();
  const token=sessionStorage.getItem(tokenStorageKey())||'';
  if(token){state.token=token;boot().catch(()=>{sessionStorage.removeItem(tokenStorageKey());if(DEMO_MODE)autoDemoLogin();else showLogin()})}
@@ -168,17 +169,31 @@ async function login(options={}){
  try{const d=await api('/api/admin/login',{method:'POST',body:{shop_code:SHOP_CODE,admin_code:code},admin:false});state.token=d.admin_token;state.adminCode=code;sessionStorage.setItem(tokenStorageKey(),state.token);if(!DEMO_MODE){if(checked('saveCode'))localStorage.setItem(STORAGE.code,code);else localStorage.removeItem(STORAGE.code)}await boot()}
  catch(e){showError(e.message)}finally{btn.disabled=false;btn.textContent='業務画面を開く'}
 }
+
+async function issueStaffSession(){
+ if(!state.token||!state.currentStaffId){state.staffToken='';return}
+ const r=await fetch(API_BASE+'/api/staff/session/issue',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+state.token},body:JSON.stringify({shop_code:SHOP_CODE,staff_id:state.currentStaffId})});
+ const d=await r.json().catch(()=>({}));
+ if(!r.ok||d.ok===false||!d.staff_token)throw new Error(d.message||d.error||'スタッフ権限セッションを開始できませんでした。');
+ state.staffToken=d.staff_token;
+}
+async function revokeStaffSession(){
+ if(!state.staffToken)return;
+ const tok=state.staffToken;state.staffToken='';
+ await fetch(API_BASE+'/api/staff/session/revoke',{method:'POST',headers:{Authorization:'Bearer '+tok}}).catch(()=>{});
+}
+
 function clearCode(){localStorage.removeItem(STORAGE.code);sessionStorage.removeItem(STORAGE.token);sessionStorage.removeItem(STORAGE.token+'_demo');document.getElementById('adminCode').value='';toast('保存した管理コードを削除しました。')}
 function showError(msg){const el=document.getElementById('loginError');el.textContent=msg;el.classList.remove('hidden')}
 function showLogin(){document.getElementById('app').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden')}
-function logout(){sessionStorage.removeItem(tokenStorageKey());state.token='';showLogin();toast('ログアウトしました。')}
+function logout(){revokeStaffSession();sessionStorage.removeItem(tokenStorageKey());state.token='';state.staffToken='';showLogin();toast('ログアウトしました。')}
 async function boot(){
  document.getElementById('loginScreen').classList.add('hidden');document.getElementById('app').classList.remove('hidden');
- await Promise.all([loadSettings(),loadAll(true)]);showView(state.currentView);
+ await loadSettings();await issueStaffSession();await loadAll(true);showView(state.currentView);
 }
 async function api(path,{method='GET',body=null,query=null,admin=true}={}){
  const u=new URL(API_BASE+path);if(query)Object.entries(query).forEach(([k,v])=>{if(v!==''&&v!==null&&v!==undefined)u.searchParams.set(k,v)});if(!u.searchParams.has('shop_code'))u.searchParams.set('shop_code',SHOP_CODE);
- const h={Accept:'application/json'};if(body!==null)h['Content-Type']='application/json';if(admin){if(state.token)h.Authorization='Bearer '+state.token;else if(state.adminCode)h['X-Admin-Code']=state.adminCode}
+ const h={Accept:'application/json'};if(body!==null)h['Content-Type']='application/json';if(admin){if(state.staffToken)h.Authorization='Bearer '+state.staffToken;else if(state.token)h.Authorization='Bearer '+state.token;else if(state.adminCode)h['X-Admin-Code']=state.adminCode}
  setConnection(true,'通信中');const r=await fetch(u,{method,headers:h,body:body===null?undefined:JSON.stringify(body)});let data;try{data=await r.json()}catch{data={ok:false,message:'APIの応答を読み取れませんでした。'}}
  if(!r.ok||data.ok===false){setConnection(false,'接続エラー');if(r.status===401){sessionStorage.removeItem(tokenStorageKey());state.token=''}throw new Error(data.message||`API error ${r.status}`)}setConnection(true,'接続済み');return data;
 }
@@ -262,7 +277,7 @@ function renderItem(it,i){
  const estimate=currentResult(it,'photo_estimate'),formal=currentResult(it,'formal_offer'),deal=it.deal_responses?.find(x=>x.is_current)||it.deal_responses?.[0];
  return `<div class="detail-item"><div class="detail-item-head"><div><h4>${i+1}. ${esc(it.item_name||it.brand||it.category_name_snapshot||it.category_code)}</h4><span class="muted" style="font-size:12px">${esc(it.category_name_snapshot||it.category_code)}</span></div>${statusBadge(it.item_result_status,'item')}</div><div class="detail-item-body"><div class="item-layout"><div class="photo-grid">${it.photos?.length?it.photos.map(p=>`<div class="photo-box" data-photo-id="${p.id}"><span>写真読込中</span></div>`).join(''):'<div class="photo-box" style="grid-column:1/-1"><span>写真未登録</span></div>'}</div><div><div class="form-grid"><div class="field"><label>ブランド</label><input id="brand-${it.id}" class="input" value="${esc(it.brand||'')}"></div><div class="field"><label>メーカー</label><input id="maker-${it.id}" class="input" value="${esc(it.maker||'')}"></div><div class="field"><label>商品名</label><input id="name-${it.id}" class="input" value="${esc(it.item_name||'')}"></div><div class="field"><label>型番</label><input id="model-${it.id}" class="input" value="${esc(it.model_no||'')}"></div><div class="field"><label>商品状態</label><select id="status-${it.id}" class="select">${options(itemStatuses,labels.item,it.item_result_status)}</select></div><div class="field"><label>製造番号</label><input id="serial-${it.id}" class="input" value="${esc(it.serial_no||'')}"></div><div class="field full"><label>状態・傷</label><textarea id="condition-${it.id}" class="textarea">${esc(it.condition_summary||'')}</textarea></div><div class="field full"><label>付属品</label><input id="accessories-${it.id}" class="input" value="${esc(it.accessories||'')}"></div></div><div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:9px"><button class="btn small" onclick="saveItem('${it.id}')">商品情報を保存</button><button class="btn small soft" onclick="openResult('${it.id}','photo_estimate')">概算査定</button><button class="btn small primary" onclick="openResult('${it.id}','formal_offer')">正式提示額</button><button class="btn small" onclick="openDeal('${it.id}')">売却状況</button></div>${estimate?`<div class="offer-strip"><span class="muted">写真による概算査定</span><br><strong>${resultAmount(estimate)}</strong>　<span class="muted">期限 ${fmtDate(estimate.valid_until)}</span></div>`:''}${formal?`<div class="offer-strip"><span class="muted">実物確認後の正式提示</span><br><strong>${resultAmount(formal)}</strong>　<span class="muted">期限 ${fmtDate(formal.valid_until)}</span></div>`:''}${deal?`<div class="section-note" style="margin-top:9px;margin-bottom:0">現在の回答：${esc(labels.deal[deal.response_status]||deal.response_status)}</div>`:''}</div></div></div></div>`;
 }
-async function hydratePhotos(){revokePhotos();for(const box of document.querySelectorAll('[data-photo-id]')){try{const u=new URL(API_BASE+'/api/admin/photo');u.searchParams.set('shop_code',SHOP_CODE);u.searchParams.set('photo_id',box.dataset.photoId);const r=await fetch(u,{headers:{Authorization:'Bearer '+state.token}});if(!r.ok)throw new Error();const blob=await r.blob(),src=URL.createObjectURL(blob);state.photoUrls.push(src);box.innerHTML=`<img src="${src}" alt="査定商品写真">`}catch{box.innerHTML='<span>写真を表示できません</span>'}}}
+async function hydratePhotos(){revokePhotos();for(const box of document.querySelectorAll('[data-photo-id]')){try{const u=new URL(API_BASE+'/api/admin/photo');u.searchParams.set('shop_code',SHOP_CODE);u.searchParams.set('photo_id',box.dataset.photoId);const r=await fetch(u,{headers:{Authorization:'Bearer '+(state.staffToken||state.token)}});if(!r.ok)throw new Error();const blob=await r.blob(),src=URL.createObjectURL(blob);state.photoUrls.push(src);box.innerHTML=`<img src="${src}" alt="査定商品写真">`}catch{box.innerHTML='<span>写真を表示できません</span>'}}}
 function revokePhotos(){state.photoUrls.forEach(URL.revokeObjectURL);state.photoUrls=[]}
 async function quickStatus(status){const a=state.currentDetail.assessment;try{await api('/api/admin/assessments/status',{method:'POST',body:{assessment_id:a.id,assessment_status:status,external_appraisal_status:status==='external_appraisal'?'requested':a.external_appraisal_status,deal_status:status==='deal_pending'?'pending':a.deal_status,follow_status:a.follow_status,next_action_due_at:fromLocalInput(val('dNextDue')),internal_notes:val('dMemo')}});toast('次の工程へ更新しました。');await reopenCurrent()}catch(e){toast(e.message,'error')}}
 async function saveAssignment(){const a=state.currentDetail.assessment;try{await api('/api/admin/assessments/assign',{method:'POST',body:{assessment_id:a.id,assigned_staff_id:val('dStaff')||null}});await api('/api/admin/assessments/status',{method:'POST',body:{assessment_id:a.id,assessment_status:a.assessment_status,external_appraisal_status:a.external_appraisal_status,deal_status:a.deal_status,follow_status:a.follow_status,next_action_due_at:fromLocalInput(val('dNextDue')),internal_notes:val('dMemo')}});toast('担当・メモを保存しました。');await reopenCurrent()}catch(e){toast(e.message,'error')}}

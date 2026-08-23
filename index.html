@@ -666,6 +666,7 @@
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
+  <script src="./product-ready-config.js?v=buyback-r2"></script>
 </head>
 <body>
   <div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
@@ -870,7 +871,7 @@
     "use strict";
 
     const VERSION = "BUYBACK-4-R1-CATEGORY-QUANTITY-RULES-20260715";
-    const DEFAULT_API_BASE = "https://dpro-buyback-line-api.dpromstk2000.workers.dev";
+    const DEFAULT_API_BASE = "https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready";
     const DEFAULT_SHOP_CODE = "dpro_buyback_demo";
     const STEP_TITLES = ["受付方法", "お客様情報", "査定商品", "商品詳細", "商品写真", "希望内容", "連絡事項", "入力確認", "受付完了"];
     const CHANNEL_ICONS = { photo_line: "📷", walk_in: "🏪", visit: "📅", travel: "🚙", event: "🏢", delivery: "📦" };
