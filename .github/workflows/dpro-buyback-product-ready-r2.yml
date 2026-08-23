@@ -1,0 +1,309 @@
+name: DPRO BUYBACK Product Ready R2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/dpro-buyback-product-ready-r2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: buyback-product-ready-r2
+  cancel-in-progress: false
+
+jobs:
+  remediate-and-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Confirm locked source baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          START_LOCK='20d08ce7efb5e406c797c5b6632c4f72d44e7996'
+          git merge-base --is-ancestor "$START_LOCK" HEAD
+
+      - name: Apply BUYBACK-only Product Ready bridge
+        shell: python
+        run: |
+          from pathlib import Path
+
+          legacy = 'https://dpro-buyback-line-api.dpromstk2000.workers.dev'
+          adapter = 'https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready'
+          front_version = 'BUYBACK-PRODUCT-READY-R2-20260823'
+          adapter_version = 'DPRO-CONTROL-ADAPTER-1.0-BUYBACK-R2-20260823'
+
+          Path('product-ready-config.js').write_text(f'''const FRONTEND_VERSION="{front_version}";
+          window.DPRO_PRODUCT_READY=Object.freeze({{
+            FRONTEND_VERSION,
+            ADAPTER_VERSION:"{adapter_version}",
+            ADAPTER_BASE:"{adapter}",
+            LEGACY_WORKER_VERSION:"BUYBACK-3-WORKER-API-COMPLETE-20260715",
+            DATABASE_VERSION:"BUYBACK-2-R1-SUPABASE-TASK-TYPE-FIX-20260715",
+            LINE_BINDING:"deferred_until_contract"
+          }});
+          ''', encoding='utf-8')
+
+          for name in ['index.html','member.html','owner.html','owner-ipad.html','staff.html']:
+              p=Path(name)
+              t=p.read_text(encoding='utf-8')
+              if legacy not in t:
+                  raise SystemExit(f'{name}: legacy API_BASE not found')
+              p.write_text(t.replace(legacy, adapter), encoding='utf-8')
+
+          p=Path('member.html')
+          t=p.read_text(encoding='utf-8')
+          old='lineUserId:params.get("line_user_id") || "",'
+          new='lineUserId:(DEMO_MODE ? (params.get("line_user_id") || "") : ""),'
+          if old not in t:
+              raise SystemExit('member.html: line_user_id anchor not found')
+          t=t.replace(old,new,1)
+          p.write_text(t,encoding='utf-8')
+
+          p=Path('staff.html')
+          t=p.read_text(encoding='utf-8')
+          replacements=[
+            ("const state={token:'',adminCode:'',settings:null,shop:null,staff:[],currentStaffId:'',assessments:[],dashboard:null,currentDetail:null,currentView:'home',photoUrls:[]};",
+             "const state={token:'',staffToken:'',adminCode:'',settings:null,shop:null,staff:[],currentStaffId:'',assessments:[],dashboard:null,currentDetail:null,currentView:'home',photoUrls:[]};"),
+            ("document.getElementById('staffSelect').addEventListener('change',()=>{state.currentStaffId=val('staffSelect');localStorage.setItem(STORAGE.staff,state.currentStaffId);renderAll()});",
+             "document.getElementById('staffSelect').addEventListener('change',async()=>{state.currentStaffId=val('staffSelect');localStorage.setItem(STORAGE.staff,state.currentStaffId);try{await revokeStaffSession();await issueStaffSession();renderAll()}catch(e){toast(e.message,'error')}});"),
+            ("await Promise.all([loadSettings(),loadAll(true)]);showView(state.currentView);",
+             "await loadSettings();await issueStaffSession();await loadAll(true);showView(state.currentView);"),
+            ("if(admin){if(state.token)h.Authorization='Bearer '+state.token;else if(state.adminCode)h['X-Admin-Code']=state.adminCode}",
+             "if(admin){if(state.staffToken)h.Authorization='Bearer '+state.staffToken;else if(state.token)h.Authorization='Bearer '+state.token;else if(state.adminCode)h['X-Admin-Code']=state.adminCode}"),
+            ("headers:{Authorization:'Bearer '+state.token}",
+             "headers:{Authorization:'Bearer '+(state.staffToken||state.token)}"),
+            ("function logout(){sessionStorage.removeItem(tokenStorageKey());state.token='';showLogin();toast('ログアウトしました。')}",
+             "function logout(){revokeStaffSession();sessionStorage.removeItem(tokenStorageKey());state.token='';state.staffToken='';showLogin();toast('ログアウトしました。')}")
+          ]
+          for old,new in replacements:
+              if old not in t:
+                  raise SystemExit('staff.html patch anchor missing: '+old[:80])
+              t=t.replace(old,new,1)
+
+          insertion=r'''
+          async function issueStaffSession(){
+           if(!state.token||!state.currentStaffId){state.staffToken='';return}
+           const r=await fetch(API_BASE+'/api/staff/session/issue',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+state.token},body:JSON.stringify({shop_code:SHOP_CODE,staff_id:state.currentStaffId})});
+           const d=await r.json().catch(()=>({}));
+           if(!r.ok||d.ok===false||!d.staff_token)throw new Error(d.message||d.error||'スタッフ権限セッションを開始できませんでした。');
+           state.staffToken=d.staff_token;
+          }
+          async function revokeStaffSession(){
+           if(!state.staffToken)return;
+           const tok=state.staffToken;state.staffToken='';
+           await fetch(API_BASE+'/api/staff/session/revoke',{method:'POST',headers:{Authorization:'Bearer '+tok}}).catch(()=>{});
+          }
+          '''
+          marker='function clearCode(){'
+          if marker not in t:
+              raise SystemExit('staff.html clearCode anchor missing')
+          t=t.replace(marker,insertion+'\n'+marker,1)
+          p.write_text(t,encoding='utf-8')
+
+          for name in ['index.html','member.html','owner.html','owner-ipad.html','staff.html','system-check.html']:
+              p=Path(name)
+              t=p.read_text(encoding='utf-8')
+              tag='<script src="./product-ready-config.js?v=buyback-r2"></script>'
+              if tag not in t:
+                  if '</head>' not in t:
+                      raise SystemExit(f'{name}: </head> missing')
+                  t=t.replace('</head>',f'  {tag}\n</head>',1)
+              p.write_text(t,encoding='utf-8')
+
+      - name: Static source assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'BUYBACK-PRODUCT-READY-R2-20260823' product-ready-config.js
+          grep -q 'buyback-product-ready' index.html member.html owner.html owner-ipad.html staff.html
+          grep -q 'lineUserId:(DEMO_MODE' member.html
+          grep -q 'issueStaffSession' staff.html
+          grep -q 'state.staffToken' staff.html
+          grep -q 'BUYBACK-9-R1-PUBLIC-MASTER-CATEGORY-CHECK-FIX-20260715' system-check.html
+          ! grep -R -E 'SUPABASE_SERVICE_ROLE_KEY|LINE_CHANNEL_ACCESS_TOKEN|DPRO_BUYBACK_LINE_CHANNEL_ID' -- index.html member.html owner.html owner-ipad.html staff.html product-ready-config.js
+
+      - name: Commit R2 remediation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DPRO Product Ready QA'
+          git config user.email 'actions@users.noreply.github.com'
+          git add product-ready-config.js index.html member.html owner.html owner-ipad.html staff.html system-check.html
+          if ! git diff --cached --quiet; then
+            git commit -m 'BUYBACK Product Ready R2: enforce adapter security boundaries'
+            git push
+          fi
+          git rev-parse HEAD > /tmp/remediation-head.txt
+
+      - name: Wait for GitHub Pages R2 publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://dpromstk2000-lab.github.io/dpro-buyback-line/product-ready-config.js'
+          ok=0
+          for i in $(seq 1 36); do
+            body=$(curl -fsSL --max-time 15 "$URL?probe=$(date +%s)-$i" || true)
+            if printf '%s' "$body" | grep -q 'BUYBACK-PRODUCT-READY-R2-20260823'; then ok=1; break; fi
+            sleep 5
+          done
+          test "$ok" = 1
+
+      - name: Runtime security and version evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p product-ready-evidence/buyback-r2
+          python3 - <<'PY'
+          import json, urllib.request, urllib.error, datetime
+          base='https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready'
+          def req(path, method='GET', headers=None, body=None):
+              r=urllib.request.Request(base+path,method=method,headers=headers or {},data=(json.dumps(body).encode() if body is not None else None))
+              try:
+                  with urllib.request.urlopen(r,timeout=25) as x:
+                      raw=x.read().decode()
+                      return {'status':x.status,'headers':dict(x.headers),'data':json.loads(raw) if raw else {}}
+              except urllib.error.HTTPError as e:
+                  raw=e.read().decode()
+                  try:d=json.loads(raw) if raw else {}
+                  except:d={'raw':raw}
+                  return {'status':e.code,'headers':dict(e.headers),'data':d}
+          product=req('/api/product-ready/check')
+          line=req('/api/line/capability')
+          staff=req('/api/staff/capability')
+          prod_line=req('/api/member/assessments?shop_code=production_probe&line_user_id=client_supplied_probe')
+          cors=req('/api/product-ready/check',method='OPTIONS',headers={'Origin':'https://evil.example','Access-Control-Request-Method':'GET'})
+          out={
+            'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'source_head':open('/tmp/remediation-head.txt').read().strip(),
+            'productReady':product,
+            'line':line,
+            'staff':staff,
+            'clientSuppliedProductionLineId':prod_line,
+            'disallowedCors':cors
+          }
+          out['ok']=(
+            product['status']==200 and product['data'].get('ok') is True and
+            product['data'].get('versions',{}).get('versionsAligned') is True and
+            line['status']==200 and line['data'].get('clientSuppliedIdentityAccepted') is False and
+            staff['status']==200 and staff['data'].get('ownerMutationAuthority') is False and
+            prod_line['status']==403 and cors['status']==403
+          )
+          open('product-ready-evidence/buyback-r2/runtime.json','w').write(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          if not out['ok']:
+              print(json.dumps(out,ensure_ascii=False,indent=2))
+              raise SystemExit(1)
+          PY
+
+      - name: Install Chromium QA runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/buyback-browser
+          cd /tmp/buyback-browser
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null
+
+      - name: Fresh Chromium browser QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/buyback-browser/qa.js <<'JS'
+          const {chromium}=require('playwright');
+          const fs=require('fs');
+          const path=require('path');
+          const base='https://dpromstk2000-lab.github.io/dpro-buyback-line/';
+          const outDir=process.env.GITHUB_WORKSPACE+'/product-ready-evidence/buyback-r2/screens';
+          fs.mkdirSync(outDir,{recursive:true});
+          const cases=[
+            {key:'pc-owner',file:'owner.html?demo=1',width:1440,height:1000},
+            {key:'mobile390',file:'index.html?shop_code=dpro_buyback_demo&demo=1',width:390,height:844},
+            {key:'mobile320-member',file:'member.html?shop_code=dpro_buyback_demo&demo=1&line_user_id=demo_buyback_line_001',width:320,height:720},
+            {key:'ipad-owner',file:'owner-ipad.html?demo=1',width:1024,height:768},
+            {key:'pc-staff',file:'staff.html?demo=1',width:1440,height:1000}
+          ];
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const results=[];
+            for(const c of cases){
+              const page=await browser.newPage({viewport:{width:c.width,height:c.height}});
+              const pageErrors=[],consoleErrors=[],responses=[];
+              page.on('pageerror',e=>pageErrors.push(String(e)));
+              page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
+              page.on('response',r=>{if(r.url().includes('buyback-product-ready'))responses.push({url:r.url(),status:r.status()})});
+              const main=await page.goto(base+c.file,{waitUntil:'networkidle',timeout:45000});
+              await page.waitForTimeout(2500);
+              const metrics=await page.evaluate(()=>({
+                innerWidth:window.innerWidth,
+                scrollWidth:document.documentElement.scrollWidth,
+                bodyScrollWidth:document.body.scrollWidth,
+                text:(document.body.innerText||'').slice(0,30000)
+              }));
+              const technical=/SUPABASE_SERVICE_ROLE|service_role|DPRO_BUYBACK_LINE_CHANNEL_ID|LINE_CHANNEL_ACCESS_TOKEN|ReferenceError|TypeError|stack trace/i.test(metrics.text);
+              const overflow=Math.max(metrics.scrollWidth,metrics.bodyScrollWidth)>metrics.innerWidth+1;
+              const sessionIssueOk=c.key!=='pc-staff'||responses.some(x=>x.url.includes('/api/staff/session/issue')&&x.status===200);
+              const ok=main&&main.status()===200&&!overflow&&!technical&&pageErrors.length===0&&consoleErrors.length===0&&sessionIssueOk;
+              await page.screenshot({path:path.join(outDir,c.key+'.png'),fullPage:true});
+              results.push({...c,httpStatus:main?.status()||0,overflow,technical,pageErrors,consoleErrors,adapterResponses:responses,staffSessionIssueOk:sessionIssueOk,ok,metrics:{innerWidth:metrics.innerWidth,scrollWidth:metrics.scrollWidth,bodyScrollWidth:metrics.bodyScrollWidth}});
+              await page.close();
+            }
+
+            const sc=await browser.newPage({viewport:{width:1440,height:1100}});
+            const scErrors=[],scConsole=[];
+            sc.on('pageerror',e=>scErrors.push(String(e)));
+            sc.on('console',m=>{if(m.type()==='error')scConsole.push(m.text())});
+            const scMain=await sc.goto(base+'system-check.html?demo=1',{waitUntil:'networkidle',timeout:45000});
+            await sc.click('#headerRunBtn');
+            await sc.waitForFunction(()=>{
+              const b=document.querySelector('#headerRunBtn');
+              return b && !b.disabled && !String(document.querySelector('#rawOutput')?.textContent||'').includes('チェック実行中');
+            },{timeout:60000});
+            await sc.waitForTimeout(1000);
+            const system=await sc.evaluate(()=>({
+              fail:[...document.querySelectorAll('.check-row.fail')].map(x=>x.innerText),
+              warn:[...document.querySelectorAll('.check-row.warn')].map(x=>x.innerText),
+              pass:[...document.querySelectorAll('.check-row.pass')].length,
+              all:[...document.querySelectorAll('.check-row')].length,
+              innerWidth:window.innerWidth,
+              scrollWidth:document.documentElement.scrollWidth
+            }));
+            system.httpStatus=scMain?.status()||0;
+            system.pageErrors=scErrors;
+            system.consoleErrors=scConsole;
+            system.ok=system.httpStatus===200&&system.fail.length===0&&system.warn.length===0&&system.pageErrors.length===0&&system.consoleErrors.length===0&&system.scrollWidth<=system.innerWidth+1;
+            await sc.screenshot({path:path.join(outDir,'system-check.png'),fullPage:true});
+            await sc.close();
+            await browser.close();
+
+            const output={checkedAt:new Date().toISOString(),sourceHead:fs.readFileSync('/tmp/remediation-head.txt','utf8').trim(),results,systemCheck:system};
+            output.ok=results.every(x=>x.ok)&&system.ok;
+            fs.writeFileSync(process.env.GITHUB_WORKSPACE+'/product-ready-evidence/buyback-r2/browser.json',JSON.stringify(output,null,2)+'\n');
+            if(!output.ok){
+              console.error(JSON.stringify(output,null,2));
+              process.exit(1);
+            }
+          })();
+          JS
+          cd /tmp/buyback-browser
+          node qa.js
+
+      - name: Commit fresh R2 evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          git config user.name 'DPRO Product Ready QA'
+          git config user.email 'actions@users.noreply.github.com'
+          git add product-ready-evidence/buyback-r2 || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'BUYBACK Product Ready R2: publish runtime and browser evidence'
+            git push
+          fi
