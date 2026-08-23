@@ -1,0 +1,265 @@
+{
+  "checked_at": "2026-08-23T08:52:44.471225+00:00",
+  "source_head": "693c504c88300a6362ce1c3817fe3eabd1d56fb7",
+  "ok": true,
+  "productReady": {
+    "status": 200,
+    "headers": {
+      "Date": "Sun, 23 Aug 2026 08:52:43 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "CF-Ray": "a2f8e1e51f1969f9-DFW",
+      "CF-Cache-Status": "DYNAMIC",
+      "Cache-Control": "no-store",
+      "set-cookie": "__cf_bm=tkkMxUXtopVZpzfYExtPR2ZH.z3ZLAY5fFex1LgGYMU-1787475159.8605509-1.0.1.1-CKD1Rhb1yW7cY3hRJaMg_jbajrjmV3ZEzYElQl.BCDJbpol.TdOOVurv4HB3y6o0K.96lDGEJiEX9wxGnwQuVM.J5rhq06C6RtJzrPQLVEn9JQ2WIwc9s78rYgjYUcWr; HttpOnly; SameSite=None; Secure; Path=/; Domain=supabase.co; Expires=Sun, 23 Aug 2026 09:22:43 GMT",
+      "Server": "cloudflare",
+      "Vary": "Accept-Encoding, Origin",
+      "X-Content-Type-Options": "nosniff",
+      "access-control-allow-headers": "Content-Type,Authorization,X-DPRO-Staff-Session,X-Admin-Code,X-Idempotency-Key",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-max-age": "86400",
+      "endpoint-load-metrics": "application_utilization:7,named_metrics.queue_depth:7",
+      "sb-gateway-version": "1",
+      "sb-project-ref": "cbknucemarcpbscirzyv",
+      "sb-request-id": "01a02dd2-6b3a-78aa-8388-2cfa09bddf5e",
+      "x-deno-execution-id": "9a2651fb-005e-46e9-9512-ece509d681ef",
+      "x-sb-edge-region": "us-east-2",
+      "x-served-by": "supabase-edge-runtime",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "data": {
+      "ok": true,
+      "systemCode": "BUYBACK",
+      "adapterVersion": "DPRO-CONTROL-ADAPTER-1.0-BUYBACK-R2-20260823",
+      "legacyHealth": {
+        "status": 200,
+        "ok": true,
+        "supabase": null
+      },
+      "versions": {
+        "expected": {
+          "worker": "BUYBACK-3-WORKER-API-COMPLETE-20260715",
+          "database": "BUYBACK-2-R1-SUPABASE-TASK-TYPE-FIX-20260715",
+          "frontend": "BUYBACK-PRODUCT-READY-R2-20260823",
+          "adapter": "DPRO-CONTROL-ADAPTER-1.0-BUYBACK-R2-20260823"
+        },
+        "observed": {
+          "worker": "BUYBACK-3-WORKER-API-COMPLETE-20260715",
+          "database": "BUYBACK-2-R1-SUPABASE-TASK-TYPE-FIX-20260715",
+          "frontend": "BUYBACK-PRODUCT-READY-R2-20260823",
+          "adapter": "DPRO-CONTROL-ADAPTER-1.0-BUYBACK-R2-20260823"
+        },
+        "versionsAligned": true
+      },
+      "security": {
+        "corsAllowlist": [
+          "https://dpromstk2000-lab.github.io",
+          "https://dpro-shop.com"
+        ],
+        "wildcardCors": false,
+        "serviceRoleBrowserExposed": false,
+        "demoCodeProductionFallback": false,
+        "dbServerBoundary": true
+      },
+      "line": {
+        "serverVerifiedIdTokenCapability": true,
+        "clientSuppliedIdentityAccepted": false,
+        "tenantBinding": "deferred_until_contract",
+        "failClosedWithoutBinding": true,
+        "channelConfigured": false
+      },
+      "phoneNormalization": {
+        "ok": true,
+        "samples": [
+          "09011112222",
+          "09011112222",
+          "09011112222",
+          "09011112222",
+          "09011112222"
+        ]
+      },
+      "reservationGuard": {
+        "pastRejected": true,
+        "exact30Accepted": true,
+        "wrongDurationRejected": true
+      },
+      "photo": {
+        "privateBucket": true,
+        "memberTokenBoundary": true,
+        "signedStorageAccessSeconds": 60
+      },
+      "staff": {
+        "signedEncryptedSession": true,
+        "expiryHours": 8,
+        "revokeViaOperationLog": true,
+        "serverCapabilityMap": true,
+        "ownerMutationAuthority": false,
+        "auditLog": true
+      },
+      "counts": {
+        "staff": 3,
+        "publicCategories": 11
+      },
+      "time": "2026-08-23T08:52:43.770Z"
+    }
+  },
+  "line": {
+    "status": 200,
+    "headers": {
+      "Date": "Sun, 23 Aug 2026 08:52:44 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "CF-Ray": "a2f8e1fdfaae873d-DFW",
+      "CF-Cache-Status": "DYNAMIC",
+      "Cache-Control": "no-store",
+      "set-cookie": "__cf_bm=Xuokov27ecLRvMEcygkFXpj2k9nge_ClcVoBlZw2WrQ-1787475163.8390832-1.0.1.1-NocfgSnrIIKg6SSOaMasRcgTb8L.2uqIHFz_t4lO.QI2Xl.C6WPalrn_lJAZr69IDB6qIejNrhrR79dIaMlhwLCwfMbEgeZ4uCMj4Z.aV0IMDxfzRpnq2nKs2SPewbKq; HttpOnly; SameSite=None; Secure; Path=/; Domain=supabase.co; Expires=Sun, 23 Aug 2026 09:22:43 GMT",
+      "Server": "cloudflare",
+      "Vary": "Accept-Encoding, Origin",
+      "X-Content-Type-Options": "nosniff",
+      "access-control-allow-headers": "Content-Type,Authorization,X-DPRO-Staff-Session,X-Admin-Code,X-Idempotency-Key",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-max-age": "86400",
+      "endpoint-load-metrics": "application_utilization:7,named_metrics.queue_depth:7",
+      "sb-gateway-version": "1",
+      "sb-project-ref": "cbknucemarcpbscirzyv",
+      "sb-request-id": "01a02dd2-7ac8-743d-93d5-9adf20585d13",
+      "x-deno-execution-id": "7300bcc4-d4a2-4b0d-a88d-fac188948e53",
+      "x-sb-edge-region": "us-east-2",
+      "x-served-by": "supabase-edge-runtime",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "data": {
+      "ok": true,
+      "serverVerifiedIdTokenCapability": true,
+      "clientSuppliedIdentityAccepted": false,
+      "tenantBinding": "deferred_until_contract",
+      "failClosedWithoutBinding": true,
+      "channelConfigured": false
+    }
+  },
+  "staff": {
+    "status": 200,
+    "headers": {
+      "Date": "Sun, 23 Aug 2026 08:52:44 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "CF-Ray": "a2f8e1ff5f2af058-DFW",
+      "CF-Cache-Status": "DYNAMIC",
+      "Cache-Control": "no-store",
+      "set-cookie": "__cf_bm=AdGRovaWhNzi3nrgeolS3x83VQxamfnJVM911jB.KEc-1787475164.0537696-1.0.1.1-.IdiD9E0rEQsjQfdZDpRaPaeSKUVouYCtudf2JKtJXMjGV6NRN61DAZn.nji7k114rNZWvmnMuh_9m50Evq.t4ovJzA6F4RWpQCj2noKvw7ZBy4AG6pQnCYGdLC749sz; HttpOnly; SameSite=None; Secure; Path=/; Domain=supabase.co; Expires=Sun, 23 Aug 2026 09:22:44 GMT",
+      "Server": "cloudflare",
+      "Vary": "Accept-Encoding, Origin",
+      "X-Content-Type-Options": "nosniff",
+      "access-control-allow-headers": "Content-Type,Authorization,X-DPRO-Staff-Session,X-Admin-Code,X-Idempotency-Key",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-max-age": "86400",
+      "endpoint-load-metrics": "application_utilization:6,named_metrics.queue_depth:6",
+      "sb-gateway-version": "1",
+      "sb-project-ref": "cbknucemarcpbscirzyv",
+      "sb-request-id": "01a02dd2-7b9b-7aa9-98a5-90d9895a01d3",
+      "x-deno-execution-id": "d66b39e5-43c5-4a38-b7cb-e239af4c7ae1",
+      "x-sb-edge-region": "us-east-2",
+      "x-served-by": "supabase-edge-runtime",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "data": {
+      "ok": true,
+      "signedEncryptedSession": true,
+      "expiryHours": 8,
+      "revoke": true,
+      "serverRoleAuthorization": true,
+      "ownerMutationAuthority": false,
+      "auditLog": true,
+      "roles": {
+        "appraiser": [
+          "read",
+          "assign",
+          "status",
+          "item",
+          "offer",
+          "deal",
+          "external",
+          "task"
+        ],
+        "front": [
+          "read",
+          "assign",
+          "status",
+          "task"
+        ],
+        "travel": [
+          "read",
+          "status",
+          "task"
+        ]
+      }
+    }
+  },
+  "clientSuppliedProductionLineId": {
+    "status": 403,
+    "headers": {
+      "Date": "Sun, 23 Aug 2026 08:52:44 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      "Connection": "close",
+      "CF-Ray": "a2f8e2003fa9f0a6-DFW",
+      "CF-Cache-Status": "DYNAMIC",
+      "Cache-Control": "no-store",
+      "set-cookie": "__cf_bm=MhrbCYz_.VGYIVXMk.BtlMY92.rVeKuYKpbBAJTJeXU-1787475164.1985035-1.0.1.1-Xii7LkiHbJeALOnM911Lfsh.fUU1LfpmtbYxTAt.C3ZS7hb2B3cHkI2wCvun0g38lJH.msdScW0XthQ25v3jDbjJmWDSeZPaRXIurMVjs1PVnbxtdHMV8LRn_SBOYkJT; HttpOnly; SameSite=None; Secure; Path=/; Domain=supabase.co; Expires=Sun, 23 Aug 2026 09:22:44 GMT",
+      "Server": "cloudflare",
+      "Vary": "Accept-Encoding, Origin",
+      "X-Content-Type-Options": "nosniff",
+      "access-control-allow-headers": "Content-Type,Authorization,X-DPRO-Staff-Session,X-Admin-Code,X-Idempotency-Key",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-max-age": "86400",
+      "endpoint-load-metrics": "application_utilization:6,named_metrics.queue_depth:6",
+      "sb-gateway-version": "1",
+      "sb-project-ref": "cbknucemarcpbscirzyv",
+      "sb-request-id": "01a02dd2-7c2c-7bc5-8df1-c4795227ac3f",
+      "x-deno-execution-id": "8a25b127-d176-4aeb-95a0-30b7065c7892",
+      "x-sb-edge-region": "us-east-2",
+      "x-served-by": "supabase-edge-runtime",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "data": {
+      "ok": false,
+      "error": "verified_line_identity_required",
+      "tenantBinding": "deferred_until_contract",
+      "failClosed": true
+    }
+  },
+  "disallowedCors": {
+    "status": 403,
+    "headers": {
+      "Date": "Sun, 23 Aug 2026 08:52:44 GMT",
+      "Content-Length": "0",
+      "Connection": "close",
+      "CF-Ray": "a2f8e2013f1311da-DFW",
+      "CF-Cache-Status": "DYNAMIC",
+      "Cache-Control": "no-store",
+      "Server": "cloudflare",
+      "Vary": "Accept-Encoding, Origin",
+      "access-control-allow-headers": "Content-Type,Authorization,X-DPRO-Staff-Session,X-Admin-Code,X-Idempotency-Key",
+      "access-control-allow-methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
+      "access-control-max-age": "86400",
+      "endpoint-load-metrics": "application_utilization:8,named_metrics.queue_depth:8",
+      "sb-gateway-version": "1",
+      "sb-project-ref": "cbknucemarcpbscirzyv",
+      "sb-request-id": "01a02dd2-7cc9-7bae-8271-a4561c356675",
+      "x-deno-execution-id": "27580305-d3cd-455a-8cca-f32998b7d84f",
+      "x-sb-edge-region": "us-east-2",
+      "x-served-by": "supabase-edge-runtime",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "set-cookie": "__cf_bm=kwdPFVilLs160So6tMf7S4VbxaA08DubXmpvuPzTaU8-1787475164.354727-1.0.1.1-qum34iUBAXriWLdDY7GEKsDxC0lup6MkeLdH9k4oxcMsHyp_LUQsN1k_SJc0qgcOr_Az_lDmXRqbu_vt1EYSmHNUdoWhEafqVgktzHg2uFjvB88vd8L91WJlVSiKlRwP; HttpOnly; SameSite=None; Secure; Path=/; Domain=supabase.co; Expires=Sun, 23 Aug 2026 09:22:44 GMT",
+      "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "data": {}
+  }
+}
