@@ -1,0 +1,217 @@
+name: DPRO BUYBACK Product Ready R3
+
+on:
+  push:
+    paths:
+      - '.github/workflows/dpro-buyback-product-ready-r3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: buyback-product-ready-r3
+  cancel-in-progress: false
+
+jobs:
+  refresh-and-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Confirm R2 baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'BUYBACK-PRODUCT-READY-R2-20260823' product-ready-config.js
+          grep -q 'buyback-product-ready' owner.html staff.html owner-ipad.html index.html member.html
+          grep -q 'issueStaffSession' staff.html
+          grep -q 'lineUserId:(DEMO_MODE' member.html
+
+      - name: Refresh stale system-check page markers
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('system-check.html')
+          t=p.read_text(encoding='utf-8')
+          replacements={
+            "BUYBACK-6-R1-AMOUNT-DATE-SAFETY-20260715":"BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716",
+            "BUYBACK-7-R1-STAFF-NEXT-ACTION-DATETIME-FIX-20260715":"BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716",
+            "BUYBACK-8-R1-IPAD-CATEGORY-SELECTION-FIX-20260715":"BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716"
+          }
+          for old,new in replacements.items():
+              if old not in t:
+                  raise SystemExit('system-check stale marker anchor missing: '+old)
+              t=t.replace(old,new,1)
+          p.write_text(t,encoding='utf-8')
+
+      - name: Commit system-check refresh
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DPRO Product Ready QA'
+          git config user.email 'actions@users.noreply.github.com'
+          git add system-check.html
+          if ! git diff --cached --quiet; then
+            git commit -m 'BUYBACK Product Ready R3: align system-check page markers'
+            git push
+          fi
+          git rev-parse HEAD > /tmp/r3-head.txt
+
+      - name: Wait for GitHub Pages R3 publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://dpromstk2000-lab.github.io/dpro-buyback-line/system-check.html'
+          ok=0
+          for i in $(seq 1 36); do
+            body=$(curl -fsSL --max-time 15 "$URL?probe=$(date +%s)-$i" || true)
+            if printf '%s' "$body" | grep -q 'BUYBACK-10-R1-DEMO-AUTO-LOGIN-20260716'; then ok=1; break; fi
+            sleep 5
+          done
+          test "$ok" = 1
+
+      - name: Runtime security evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p product-ready-evidence/buyback-r3
+          python3 - <<'PY'
+          import json, urllib.request, urllib.error, datetime
+          base='https://cbknucemarcpbscirzyv.supabase.co/functions/v1/buyback-product-ready'
+          def req(path, method='GET', headers=None, body=None):
+              data=None if body is None else json.dumps(body).encode()
+              r=urllib.request.Request(base+path,method=method,headers=headers or {},data=data)
+              try:
+                  with urllib.request.urlopen(r,timeout=25) as x:
+                      raw=x.read().decode()
+                      return {'status':x.status,'headers':dict(x.headers),'data':json.loads(raw) if raw else {}}
+              except urllib.error.HTTPError as e:
+                  raw=e.read().decode()
+                  try:d=json.loads(raw) if raw else {}
+                  except:d={'raw':raw}
+                  return {'status':e.code,'headers':dict(e.headers),'data':d}
+          checks={
+            'productReady':req('/api/product-ready/check'),
+            'line':req('/api/line/capability'),
+            'staff':req('/api/staff/capability'),
+            'clientSuppliedProductionLineId':req('/api/member/assessments?shop_code=production_probe&line_user_id=client_supplied_probe'),
+            'disallowedCors':req('/api/product-ready/check',method='OPTIONS',headers={'Origin':'https://evil.example','Access-Control-Request-Method':'GET'})
+          }
+          ok=(checks['productReady']['status']==200 and checks['productReady']['data'].get('ok') is True and
+              checks['productReady']['data'].get('versions',{}).get('versionsAligned') is True and
+              checks['line']['data'].get('clientSuppliedIdentityAccepted') is False and
+              checks['staff']['data'].get('ownerMutationAuthority') is False and
+              checks['clientSuppliedProductionLineId']['status']==403 and
+              checks['disallowedCors']['status']==403)
+          out={'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+               'source_head':open('/tmp/r3-head.txt').read().strip(),'ok':ok,**checks}
+          open('product-ready-evidence/buyback-r3/runtime.json','w').write(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
+          if not ok:
+              raise SystemExit(1)
+          PY
+
+      - name: Install Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/buyback-r3-browser
+          cd /tmp/buyback-r3-browser
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null
+
+      - name: Fresh Chromium QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/buyback-r3-browser/qa.js <<'JS'
+          const {chromium}=require('playwright');
+          const fs=require('fs'), path=require('path');
+          const base='https://dpromstk2000-lab.github.io/dpro-buyback-line/';
+          const outDir=process.env.GITHUB_WORKSPACE+'/product-ready-evidence/buyback-r3/screens';
+          fs.mkdirSync(outDir,{recursive:true});
+          const cases=[
+            ['pc-owner','owner.html?demo=1',1440,1000],
+            ['mobile390','index.html?shop_code=dpro_buyback_demo&demo=1',390,844],
+            ['mobile320-member','member.html?shop_code=dpro_buyback_demo&demo=1&line_user_id=demo_buyback_line_001',320,720],
+            ['ipad-owner','owner-ipad.html?demo=1',1024,768],
+            ['pc-staff','staff.html?demo=1',1440,1000]
+          ];
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const results=[];
+            for(const [key,file,width,height] of cases){
+              const page=await browser.newPage({viewport:{width,height}}), pageErrors=[], consoleErrors=[], responses=[];
+              page.on('pageerror',e=>pageErrors.push(String(e)));
+              page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
+              page.on('response',r=>{if(r.url().includes('buyback-product-ready'))responses.push({url:r.url(),status:r.status()})});
+              const main=await page.goto(base+file,{waitUntil:'networkidle',timeout:45000});
+              await page.waitForTimeout(2000);
+              const metrics=await page.evaluate(()=>({
+                innerWidth:window.innerWidth,
+                scrollWidth:document.documentElement.scrollWidth,
+                bodyScrollWidth:document.body.scrollWidth,
+                text:(document.body.innerText||'').slice(0,30000)
+              }));
+              const overflow=Math.max(metrics.scrollWidth,metrics.bodyScrollWidth)>metrics.innerWidth+1;
+              const technical=/SUPABASE_SERVICE_ROLE|service_role|DPRO_BUYBACK_LINE_CHANNEL_ID|LINE_CHANNEL_ACCESS_TOKEN|ReferenceError|TypeError|stack trace/i.test(metrics.text);
+              const staffSession=key!=='pc-staff'||responses.some(x=>x.url.includes('/api/staff/session/issue')&&x.status===200);
+              const ok=main?.status()===200&&!overflow&&!technical&&!pageErrors.length&&!consoleErrors.length&&staffSession;
+              await page.screenshot({path:path.join(outDir,key+'.png'),fullPage:true});
+              results.push({key,file,width,height,httpStatus:main?.status()||0,overflow,technical,pageErrors,consoleErrors,staffSession,adapterResponses:responses,ok});
+              await page.close();
+            }
+
+            const sc=await browser.newPage({viewport:{width:1440,height:1100}}), scErrors=[], scConsole=[];
+            sc.on('pageerror',e=>scErrors.push(String(e)));
+            sc.on('console',m=>{if(m.type()==='error')scConsole.push(m.text())});
+            const main=await sc.goto(base+'system-check.html?demo=1',{waitUntil:'networkidle',timeout:45000});
+            await sc.click('#headerRunBtn');
+            await sc.waitForFunction(()=>{
+              const b=document.querySelector('#headerRunBtn');
+              return b&&!b.disabled&&!String(document.querySelector('#rawOutput')?.textContent||'').includes('チェック実行中');
+            },{timeout:60000});
+            const system=await sc.evaluate(()=>({
+              fail:[...document.querySelectorAll('.check-row.fail')].map(x=>x.innerText),
+              warn:[...document.querySelectorAll('.check-row.warn')].map(x=>x.innerText),
+              pass:[...document.querySelectorAll('.check-row.pass')].length,
+              all:[...document.querySelectorAll('.check-row')].length,
+              innerWidth:window.innerWidth,
+              scrollWidth:document.documentElement.scrollWidth
+            }));
+            system.httpStatus=main?.status()||0;
+            system.pageErrors=scErrors;
+            system.consoleErrors=scConsole;
+            system.ok=system.httpStatus===200&&!system.fail.length&&!system.warn.length&&!scErrors.length&&!scConsole.length&&system.scrollWidth<=system.innerWidth+1;
+            await sc.screenshot({path:path.join(outDir,'system-check.png'),fullPage:true});
+            await sc.close();
+            await browser.close();
+
+            const out={checkedAt:new Date().toISOString(),sourceHead:fs.readFileSync('/tmp/r3-head.txt','utf8').trim(),results,systemCheck:system};
+            out.ok=results.every(x=>x.ok)&&system.ok;
+            fs.writeFileSync(process.env.GITHUB_WORKSPACE+'/product-ready-evidence/buyback-r3/browser.json',JSON.stringify(out,null,2)+'\n');
+            if(!out.ok){
+              console.error(JSON.stringify(out,null,2));
+              process.exit(1);
+            }
+          })();
+          JS
+          cd /tmp/buyback-r3-browser
+          node qa.js
+
+      - name: Commit R3 evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DPRO Product Ready QA'
+          git config user.email 'actions@users.noreply.github.com'
+          git add product-ready-evidence/buyback-r3 || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'BUYBACK Product Ready R3: publish fresh QA evidence'
+            git push
+          fi
