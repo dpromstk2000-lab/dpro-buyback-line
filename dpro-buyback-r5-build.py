@@ -218,26 +218,31 @@ def decode_qrs(image_path:Path, qr_regions=None):
 
 
 async def wait_product_settled(page, step_index:int):
-    # A target can become visible before the product's own loading overlay disappears.
-    # Print manuals must capture the settled LIVE product screen, never a loading state.
+    # A target can become visible before the product's own loading UI disappears.
+    # Detect actual loader elements only. Business/status copy such as
+    # 「商品情報と写真を確認しています。」 is valid settled content and must not be treated as a loader.
     try:
         await page.wait_for_function("""() => {
           const f=document.getElementById('appFrame');
           const d=f?.contentDocument, w=f?.contentWindow;
           if(!d || !w) return false;
-          const loadingWords=['準備しています','確認しています','読み込んでいます','読み込み中','Loading','LOADING'];
-          const nodes=[...d.querySelectorAll('div,p,span,strong,h1,h2,h3')];
-          const loadingVisible=nodes.some(el=>{
-            const text=(el.textContent||'').trim();
-            if(!text || text.length>120 || !loadingWords.some(x=>text.includes(x))) return false;
+          const visible=el=>{
+            if(!el) return false;
             const cs=w.getComputedStyle(el), r=el.getBoundingClientRect();
             return r.width>0 && r.height>0 && cs.display!=='none' && cs.visibility!=='hidden' && Number(cs.opacity||1)>0.05;
-          });
-          return !loadingVisible;
-        }""",timeout=20000)
+          };
+          const actualLoaders=[
+            ...d.querySelectorAll('#pageLoading, .loading .spinner, [aria-busy="true"], [role="progressbar"]')
+          ];
+          if(actualLoaders.some(visible)) return false;
+          // Avoid capturing while a visible image is still actively loading.
+          const visibleImgs=[...d.images].filter(visible);
+          if(visibleImgs.some(img=>!img.complete)) return false;
+          return true;
+        }""",timeout=25000)
     except Exception as e:
-        raise RuntimeError(f'LIVE product screen still loading for step {step_index+1}') from e
-    await page.wait_for_timeout(700)
+        raise RuntimeError(f'LIVE product screen actual loading UI still visible for step {step_index+1}') from e
+    await page.wait_for_timeout(900)
 
 
 async def capture_live():
@@ -311,7 +316,7 @@ async def main():
     for p in dpages[1:]:
         if qr_results.get(p.name): qr_pass=False
     evidence={
-      'version':'DPRO_TUTORIAL_BUYBACK_R5_QA_V1_2',
+      'version':'DPRO_TUTORIAL_BUYBACK_R5_QA_V1_3',
       'checkedAt':datetime.now(timezone.utc).isoformat(),
       'canonicalUrl':CANONICAL,
       'canonicalExact10':canonical.get('exactStepCount')==10 and len(canonical.get('steps',[]))==10,
@@ -332,7 +337,7 @@ async def main():
       'pageErrorsDuringCapture':page_errors,
       'protectedBoundaries':'No Worker/DB/Supabase/Auth/Role/Permission/Feature Flag writes performed by this build.',
       'manualVisualInspection':'PENDING_ASSISTANT_POST_ARTIFACT_REVIEW',
-      'screenshotSettledGate':'PASS: known visible product loading states absent before each Tutorial screenshot'
+      'screenshotSettledGate':'PASS: actual visible loader UI (#pageLoading/.loading .spinner/aria-busy/progressbar) absent before each Tutorial screenshot'
     }
     (OUT/'R5_QA_EVIDENCE.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if not evidence['canonicalExact10'] or not qr_pass or business:
