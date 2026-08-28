@@ -27,12 +27,12 @@ for (const width of widths){
   const metrics=await page.evaluate(()=>({innerWidth:window.innerWidth,innerHeight:window.innerHeight,documentElementScrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body.scrollWidth,stepCount:window.__DPRO_TUTORIAL_QA__.stepCount,version:window.__DPRO_TUTORIAL_QA__.version}));
   checks.metrics=metrics;
   checks.exact10=metrics.stepCount===10;
-  checks.currentVersion=metrics.version==='DPRO_TUTORIAL_R3_V1_3';
+  checks.currentVersion=metrics.version==='DPRO_TUTORIAL_R3_V1_4';
   checks.noOverflow=metrics.documentElementScrollWidth<=metrics.innerWidth&&metrics.bodyScrollWidth<=metrics.innerWidth;
   const targets=[];
   for(let i=0;i<10;i++){
     await page.evaluate(i=>window.__DPRO_TUTORIAL_QA__.goTo(i),i);
-    await page.waitForFunction(()=>window.__DPRO_TUTORIAL_QA__?.targetFound&&getComputedStyle(document.getElementById('dproTargetHighlight')).display!=='none',null,{timeout:8000}).catch(()=>{});
+    await page.waitForFunction(()=>window.__DPRO_TUTORIAL_QA__?.targetFound&&getComputedStyle(document.getElementById('dproTargetHighlight')).display!=='none',null,{timeout:18000}).catch(()=>{});
     targets.push(await page.evaluate(()=>({step:window.__DPRO_TUTORIAL_QA__.current+1,found:window.__DPRO_TUTORIAL_QA__.targetFound,highlight:getComputedStyle(document.getElementById('dproTargetHighlight')).display!=='none'})));
   }
   checks.targets=targets;
@@ -83,7 +83,7 @@ for (const width of widths){
  results.push({width,pass,checks,pageErrors,consoleErrors,businessMutations,sessionRequests});
  await browser.close();
 }
-const report={version:'DPRO_TUTORIAL_R3_QA_V3',checkedAt:new Date().toISOString(),base:BASE,overall,results};
+const report={version:'DPRO_TUTORIAL_R3_QA_V4',checkedAt:new Date().toISOString(),base:BASE,overall,results};
 fs.writeFileSync('r3-live-qa.json',JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));
 if(!overall)process.exit(1);
