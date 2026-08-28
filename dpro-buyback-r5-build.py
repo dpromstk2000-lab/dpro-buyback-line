@@ -217,39 +217,69 @@ def decode_qrs(image_path:Path, qr_regions=None):
     return sorted(set(values))
 
 
+async def _frame_capture_state(page):
+    return await page.evaluate("""() => {
+      const f=document.getElementById('appFrame');
+      const d=f?.contentDocument, w=f?.contentWindow;
+      if(!d || !w) return {ready:false,reason:'iframe unavailable'};
+      const visible=el=>{
+        if(!el) return false;
+        const cs=w.getComputedStyle(el), r=el.getBoundingClientRect();
+        return r.width>0 && r.height>0 && cs.display!=='none' && cs.visibility!=='hidden' && Number(cs.opacity||1)>0.05;
+      };
+      const actualLoaders=[
+        ...d.querySelectorAll('#pageLoading, #loadingScreen, .loading .spinner, [aria-busy="true"], [role="progressbar"]')
+      ];
+      const loaderVisible=actualLoaders.some(visible);
+      const retry=[...d.querySelectorAll('button')].find(el=>visible(el) && (el.textContent||'').trim()==='再読み込み');
+      const connectionError=[...d.querySelectorAll('.connection-badge.error,.connection.error')].some(visible);
+      const visibleImgs=[...d.images].filter(visible);
+      const imagesLoading=visibleImgs.some(img=>!img.complete);
+      const bodyText=(d.body?.innerText||'');
+      const databaseError=/Database request failed/i.test(bodyText);
+      return {
+        ready:!loaderVisible && !imagesLoading && !connectionError && !databaseError,
+        loaderVisible,imagesLoading,connectionError,databaseError,
+        retryVisible:!!retry,
+        bodySample:bodyText.slice(0,600)
+      };
+    }""")
+
+
 async def wait_product_settled(page, step_index:int):
-    # A target can become visible before the product's own loading UI disappears.
-    # Detect actual loader elements only. Business/status copy such as
-    # 「商品情報と写真を確認しています。」 is valid settled content and must not be treated as a loader.
-    try:
-        await page.wait_for_function("""() => {
-          const f=document.getElementById('appFrame');
-          const d=f?.contentDocument, w=f?.contentWindow;
-          if(!d || !w) return false;
-          const visible=el=>{
-            if(!el) return false;
-            const cs=w.getComputedStyle(el), r=el.getBoundingClientRect();
-            return r.width>0 && r.height>0 && cs.display!=='none' && cs.visibility!=='hidden' && Number(cs.opacity||1)>0.05;
-          };
-          const actualLoaders=[
-            ...d.querySelectorAll('#pageLoading, .loading .spinner, [aria-busy="true"], [role="progressbar"]')
-          ];
-          if(actualLoaders.some(visible)) return false;
-          // Avoid capturing while a visible image is still actively loading.
-          const visibleImgs=[...d.images].filter(visible);
-          if(visibleImgs.some(img=>!img.complete)) return false;
-          return true;
-        }""",timeout=25000)
-    except Exception as e:
-        raise RuntimeError(f'LIVE product screen actual loading UI still visible for step {step_index+1}') from e
-    await page.wait_for_timeout(900)
+    # Capture only a settled LIVE product page. Customer can occasionally receive a
+    # transient read-only database error; an iframe reload is safe because it does not
+    # click or submit any product/business control. At most two retries are allowed.
+    retries=0
+    deadline=asyncio.get_running_loop().time()+65
+    while asyncio.get_running_loop().time()<deadline:
+        state=await _frame_capture_state(page)
+        if state.get('ready'):
+            await page.wait_for_timeout(900)
+            state2=await _frame_capture_state(page)
+            if state2.get('ready'):
+                return retries
+        if state.get('retryVisible') or state.get('databaseError') or state.get('connectionError'):
+            if retries>=2:
+                raise RuntimeError(f'LIVE product read error persisted for step {step_index+1}: '+json.dumps(state,ensure_ascii=False))
+            retries+=1
+            await page.evaluate("""() => { const f=document.getElementById('appFrame'); if(f?.contentWindow) f.contentWindow.location.reload(); }""")
+            await page.wait_for_timeout(1400)
+            try:
+                await page.wait_for_function(f"window.__DPRO_TUTORIAL_QA__?.current==={step_index} && window.__DPRO_TUTORIAL_QA__.targetFound",timeout=25000)
+            except Exception as e:
+                raise RuntimeError(f'LIVE Tutorial target not recovered after safe reload for step {step_index+1}') from e
+            continue
+        await page.wait_for_timeout(500)
+    state=await _frame_capture_state(page)
+    raise RuntimeError(f'LIVE product screen did not settle for step {step_index+1}: '+json.dumps(state,ensure_ascii=False))
 
 
 async def capture_live():
     canonical=fetch_json(CANONICAL)
     if canonical.get('exactStepCount')!=10 or len(canonical.get('steps',[]))!=10:
         raise RuntimeError('canonical First10 is not exactly 10')
-    business=[]; sessions=[]; errors=[]
+    business=[]; sessions=[]; errors=[]; capture_retries={}
     async with async_playwright() as p:
         browser=await p.chromium.launch(headless=True)
         page=await browser.new_page(viewport={'width':1440,'height':900},device_scale_factor=1)
@@ -273,18 +303,18 @@ async def capture_live():
                 await page.wait_for_function(f"window.__DPRO_TUTORIAL_QA__?.current==={step_index} && window.__DPRO_TUTORIAL_QA__.targetFound",timeout=25000)
             except Exception:
                 raise RuntimeError(f'LIVE Tutorial target not found for step {step_index+1}')
-            await wait_product_settled(page,step_index)
+            capture_retries[str(step_index+1)]=await wait_product_settled(page,step_index)
             pth=SHOT/f'tutorial-step-{step_index+1:02d}-live.png'
             await page.screenshot(path=str(pth),full_page=False)
             shots[key]=pth
         await browser.close()
     if business:
         raise RuntimeError('business mutation request detected: '+json.dumps(business,ensure_ascii=False))
-    return canonical,shots,business,sessions,errors
+    return canonical,shots,business,sessions,errors,capture_retries
 
 
 async def main():
-    canonical,shots,business,sessions,page_errors=await capture_live()
+    canonical,shots,business,sessions,page_errors,capture_retries=await capture_live()
     qrs={'guide':qr_png(GUIDE,'qr-guide.png'),'tutorial':qr_png(TUTORIAL,'qr-tutorial.png')}
     quick=OUT/'DPRO_TUTORIAL_BUYBACK_QUICK_START_V1.0.pdf'
     detail=OUT/'DPRO_TUTORIAL_BUYBACK_DETAILED_MANUAL_V1.0.pdf'
@@ -316,7 +346,7 @@ async def main():
     for p in dpages[1:]:
         if qr_results.get(p.name): qr_pass=False
     evidence={
-      'version':'DPRO_TUTORIAL_BUYBACK_R5_QA_V1_3',
+      'version':'DPRO_TUTORIAL_BUYBACK_R5_QA_V1_4',
       'checkedAt':datetime.now(timezone.utc).isoformat(),
       'canonicalUrl':CANONICAL,
       'canonicalExact10':canonical.get('exactStepCount')==10 and len(canonical.get('steps',[]))==10,
@@ -335,9 +365,10 @@ async def main():
       'businessMutation0':len(business)==0,
       'sessionRequests':sessions,
       'pageErrorsDuringCapture':page_errors,
+      'captureReloadRetries':capture_retries,
       'protectedBoundaries':'No Worker/DB/Supabase/Auth/Role/Permission/Feature Flag writes performed by this build.',
       'manualVisualInspection':'PENDING_ASSISTANT_POST_ARTIFACT_REVIEW',
-      'screenshotSettledGate':'PASS: actual visible loader UI (#pageLoading/.loading .spinner/aria-busy/progressbar) absent before each Tutorial screenshot'
+      'screenshotSettledGate':'PASS: loader/error UI absent before capture; transient read-only Customer errors may be iframe-reloaded at most twice'
     }
     (OUT/'R5_QA_EVIDENCE.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if not evidence['canonicalExact10'] or not qr_pass or business:
