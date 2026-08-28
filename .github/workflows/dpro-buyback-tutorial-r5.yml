@@ -1,0 +1,43 @@
+name: DPRO BUYBACK Tutorial R5 Manual Build
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dpro-buyback-r5-build.py'
+      - '.github/workflows/dpro-buyback-tutorial-r5.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-manuals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser and PDF dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright reportlab qrcode pillow opencv-python-headless pymupdf
+          python -m playwright install --with-deps chromium
+      - name: Confirm accepted R4 is present on current checkout
+        run: |
+          grep -q 'DPRO_TUTORIAL_R4_GUIDE_CENTER_V1_0' guide-center.html
+          grep -q 'DPRO_TUTORIAL_R3_V1_4' tutorial.html
+          python - <<'PY'
+          import json
+          x=json.load(open('tutorial-first10.json',encoding='utf-8'))
+          assert x['exactStepCount']==10 and len(x['steps'])==10
+          print('R4/First10 preflight PASS')
+          PY
+      - name: Build manuals from current LIVE Pages
+        run: python dpro-buyback-r5-build.py
+      - name: Upload R5 manual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: buyback-r5-manual-build-${{ github.sha }}
+          path: r5-manual-output/
+          if-no-files-found: error
