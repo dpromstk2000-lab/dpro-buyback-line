@@ -167,17 +167,77 @@ def render_pdf(pdf:Path, prefix:str):
     return pages
 
 
-def decode_qrs(image_path:Path):
-    img=cv2.imread(str(image_path))
+def _decode_img(img):
     det=cv2.QRCodeDetector()
     values=[]
-    ok, decoded, points, _ = det.detectAndDecodeMulti(img)
-    if ok:
-        values=[x for x in decoded if x]
-    else:
-        v,_,_=det.detectAndDecode(img)
-        if v: values=[v]
+    try:
+        ok, decoded, points, _ = det.detectAndDecodeMulti(img)
+        if ok:
+            values.extend(x for x in decoded if x)
+    except Exception:
+        pass
+    if not values:
+        try:
+            v,_,_=det.detectAndDecode(img)
+            if v: values.append(v)
+        except Exception:
+            pass
+    return values
+
+
+def _crop_pdf_region(img, x_pt, y_pt, size_pt=70, pad_pt=10):
+    # ReportLab uses bottom-left PDF coordinates; rendered PNG uses top-left pixels.
+    h,w=img.shape[:2]
+    sx=w/PAGE_W; sy=h/PAGE_H
+    x0=max(0,int((x_pt-pad_pt)*sx)); x1=min(w,int((x_pt+size_pt+pad_pt)*sx))
+    y0=max(0,int((PAGE_H-(y_pt+size_pt+pad_pt))*sy)); y1=min(h,int((PAGE_H-(y_pt-pad_pt))*sy))
+    return img[y0:y1,x0:x1]
+
+
+def decode_qrs(image_path:Path, qr_regions=None):
+    img=cv2.imread(str(image_path))
+    if img is None:
+        return []
+    values=[]
+    # Decode from the actual rendered QR regions when their PDF placement is known.
+    # This verifies the embedded/rendered QR itself rather than the source PNG.
+    for reg in (qr_regions or []):
+        crop=_crop_pdf_region(img,**reg)
+        values.extend(_decode_img(crop))
+    # Also scan the full page and overlapping tiles so unexpected QR codes are detectable.
+    values.extend(_decode_img(img))
+    h,w=img.shape[:2]
+    rows,cols=4,3
+    overlap=.10
+    for r in range(rows):
+        for c in range(cols):
+            x0=int(max(0,(c/cols-overlap/cols)*w)); x1=int(min(w,((c+1)/cols+overlap/cols)*w))
+            y0=int(max(0,(r/rows-overlap/rows)*h)); y1=int(min(h,((r+1)/rows+overlap/rows)*h))
+            values.extend(_decode_img(img[y0:y1,x0:x1]))
     return sorted(set(values))
+
+
+async def wait_product_settled(page, step_index:int):
+    # A target can become visible before the product's own loading overlay disappears.
+    # Print manuals must capture the settled LIVE product screen, never a loading state.
+    try:
+        await page.wait_for_function("""() => {
+          const f=document.getElementById('appFrame');
+          const d=f?.contentDocument, w=f?.contentWindow;
+          if(!d || !w) return false;
+          const loadingWords=['準備しています','確認しています','読み込んでいます','読み込み中','Loading','LOADING'];
+          const nodes=[...d.querySelectorAll('div,p,span,strong,h1,h2,h3')];
+          const loadingVisible=nodes.some(el=>{
+            const text=(el.textContent||'').trim();
+            if(!text || text.length>120 || !loadingWords.some(x=>text.includes(x))) return false;
+            const cs=w.getComputedStyle(el), r=el.getBoundingClientRect();
+            return r.width>0 && r.height>0 && cs.display!=='none' && cs.visibility!=='hidden' && Number(cs.opacity||1)>0.05;
+          });
+          return !loadingVisible;
+        }""",timeout=20000)
+    except Exception as e:
+        raise RuntimeError(f'LIVE product screen still loading for step {step_index+1}') from e
+    await page.wait_for_timeout(700)
 
 
 async def capture_live():
@@ -208,7 +268,7 @@ async def capture_live():
                 await page.wait_for_function(f"window.__DPRO_TUTORIAL_QA__?.current==={step_index} && window.__DPRO_TUTORIAL_QA__.targetFound",timeout=25000)
             except Exception:
                 raise RuntimeError(f'LIVE Tutorial target not found for step {step_index+1}')
-            await page.wait_for_timeout(500)
+            await wait_product_settled(page,step_index)
             pth=SHOT/f'tutorial-step-{step_index+1:02d}-live.png'
             await page.screenshot(path=str(pth),full_page=False)
             shots[key]=pth
@@ -227,7 +287,19 @@ async def main():
     build_detailed(canonical,shots,qrs,detail)
     qpages=render_pdf(quick,'quick')
     dpages=render_pdf(detail,'detail')
-    qr_results={str(p.name):decode_qrs(p) for p in qpages+dpages}
+    quick_regions=[
+      {'x_pt':PAGE_W-196,'y_pt':45,'size_pt':70,'pad_pt':10},
+      {'x_pt':PAGE_W-105,'y_pt':45,'size_pt':70,'pad_pt':10},
+    ]
+    detail_regions=[
+      {'x_pt':PAGE_W-196,'y_pt':78,'size_pt':70,'pad_pt':10},
+      {'x_pt':PAGE_W-105,'y_pt':78,'size_pt':70,'pad_pt':10},
+    ]
+    qr_results={}
+    qr_results[qpages[0].name]=decode_qrs(qpages[0],quick_regions)
+    qr_results[dpages[0].name]=decode_qrs(dpages[0],detail_regions)
+    for p in dpages[1:]:
+        qr_results[p.name]=decode_qrs(p)
     expected={
       qpages[0].name:sorted([GUIDE,TUTORIAL]),
       dpages[0].name:sorted([GUIDE,TUTORIAL]),
@@ -239,7 +311,7 @@ async def main():
     for p in dpages[1:]:
         if qr_results.get(p.name): qr_pass=False
     evidence={
-      'version':'DPRO_TUTORIAL_BUYBACK_R5_QA_V1',
+      'version':'DPRO_TUTORIAL_BUYBACK_R5_QA_V1_2',
       'checkedAt':datetime.now(timezone.utc).isoformat(),
       'canonicalUrl':CANONICAL,
       'canonicalExact10':canonical.get('exactStepCount')==10 and len(canonical.get('steps',[]))==10,
@@ -252,13 +324,15 @@ async def main():
       'detailedManual':{'pdf':detail.name,'preview':'DPRO_TUTORIAL_BUYBACK_DETAILED_MANUAL_V1.0.png','pages':[p.name for p in dpages]},
       'qrExpected':expected,
       'qrDecoded':qr_results,
+      'qrDecodeMethod':'Rendered PDF page: exact QR-region decode plus full-page/tiled scan',
       'qrPass':qr_pass,
       'businessMutations':business,
       'businessMutation0':len(business)==0,
       'sessionRequests':sessions,
       'pageErrorsDuringCapture':page_errors,
       'protectedBoundaries':'No Worker/DB/Supabase/Auth/Role/Permission/Feature Flag writes performed by this build.',
-      'manualVisualInspection':'PENDING_ASSISTANT_POST_ARTIFACT_REVIEW'
+      'manualVisualInspection':'PENDING_ASSISTANT_POST_ARTIFACT_REVIEW',
+      'screenshotSettledGate':'PASS: known visible product loading states absent before each Tutorial screenshot'
     }
     (OUT/'R5_QA_EVIDENCE.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if not evidence['canonicalExact10'] or not qr_pass or business:
