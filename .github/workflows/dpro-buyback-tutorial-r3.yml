@@ -24,13 +24,13 @@ jobs:
           npm init -y
           npm install playwright
           npx playwright install --with-deps chromium
-      - name: Wait for GitHub Pages R3 V1.3
+      - name: Wait for GitHub Pages R3 V1.4
         run: |
           for i in $(seq 1 30); do
-            if curl -fsSL "https://dpromstk2000-lab.github.io/dpro-buyback-line/tutorial.html?sha=${GITHUB_SHA}&n=${i}" | grep -q 'DPRO_TUTORIAL_R3_V1_3'; then exit 0; fi
+            if curl -fsSL "https://dpromstk2000-lab.github.io/dpro-buyback-line/tutorial.html?sha=${GITHUB_SHA}&n=${i}" | grep -q 'DPRO_TUTORIAL_R3_V1_4'; then exit 0; fi
             sleep 10
           done
-          echo 'R3 Tutorial V1.3 marker did not appear on LIVE Pages' >&2
+          echo 'R3 Tutorial V1.4 marker did not appear on LIVE Pages' >&2
           exit 1
       - name: Run exact-width LIVE QA
         run: node tutorial-qa.mjs
