@@ -1,0 +1,128 @@
+{
+  "system": "BUYBACK",
+  "standard": "DPRO TUTORIAL STANDARD V1.1",
+  "version": "R3_V1.1",
+  "exactStepCount": 10,
+  "steps": [
+    {
+      "step": 1,
+      "role": "guide",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/demo-guide.html",
+      "target": "#screenGrid",
+      "fallback": "#heroTitle",
+      "title": "4つの画面で全体像を確認",
+      "guidance": "お客様受付→査定結果→スタッフ査定→オーナー管理の順で流れを確認します。",
+      "expectedFocus": "公開デモの4画面とおすすめ確認順",
+      "safety": "画面リンクを見るだけ。入力や業務データ変更は行いません。",
+      "transitionOnNext": "customer_intake"
+    },
+    {
+      "step": 2,
+      "role": "customer",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/index.html?demo=1&v=buyback-10",
+      "target": "#heroTitle",
+      "fallback": ".hero-main",
+      "title": "複数商品をまとめて査定相談",
+      "guidance": "写真査定や来店・出張などの受付入口です。複数の商品を1件にまとめられます。",
+      "expectedFocus": "顧客向け受付の目的と安全注意",
+      "safety": "First10では入力・写真選択・送信をしません。",
+      "transitionOnNext": null
+    },
+    {
+      "step": 3,
+      "role": "customer",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/index.html?demo=1&v=buyback-10",
+      "target": "#progressWrap",
+      "fallback": "#methodGrid",
+      "title": "9ステップの受付導線",
+      "guidance": "受付方法から商品、写真、希望内容、確認まで進む構成です。First10では構造だけ確認します。",
+      "expectedFocus": "進捗表示と受付方法の入口",
+      "safety": "#submitBtnを含む送信系操作は絶対に自動実行しません。",
+      "transitionOnNext": "member_status"
+    },
+    {
+      "step": 4,
+      "role": "member",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/member.html?demo=1",
+      "target": "#assessmentList",
+      "fallback": "#customerLabel",
+      "title": "お客様の査定履歴",
+      "guidance": "受付済みの査定案件を一覧で確認し、現在の案件を追えます。",
+      "expectedFocus": "査定履歴の一覧",
+      "safety": "履歴確認はGET/read-only。追加情報・写真・売却回答などの送信は行いません。",
+      "transitionOnNext": null
+    },
+    {
+      "step": 5,
+      "role": "member",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/member.html?demo=1",
+      "target": "#detailPanel",
+      "fallback": ".main-panel",
+      "title": "商品別の査定状況を確認",
+      "guidance": "案件詳細では商品ごとの査定額、状態、進行状況を確認できます。",
+      "expectedFocus": "商品別オファー・査定状況の表示領域",
+      "safety": "売却回答、補足送信、写真追加、日程変更、キャンセル、商品追加は押しません。",
+      "transitionOnNext": "staff_home"
+    },
+    {
+      "step": 6,
+      "role": "staff",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/staff.html?demo=1",
+      "target": "#view-home",
+      "fallback": "#countGrid",
+      "title": "査定スタッフの自分の仕事",
+      "guidance": "担当中案件、未担当案件、本部回答待ち、金額対応、優先タスクの概要を確認します。",
+      "expectedFocus": "スタッフの業務サマリー",
+      "safety": "引き受け・完了・保存などの業務更新は実行しません。",
+      "transitionOnNext": null
+    },
+    {
+      "step": 7,
+      "role": "staff",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/staff.html?demo=1",
+      "target": "[data-view=\"board\"]",
+      "fallback": "#view-home",
+      "title": "査定ボードへの入口",
+      "guidance": "査定案件を工程別に見るためのボード入口です。First10ではボタンの場所と役割を覚えます。",
+      "expectedFocus": "スタッフナビの査定ボード",
+      "safety": "Tutorialはproduct clickを代理実行しません。ステータス変更や担当引受も実行しません。",
+      "transitionOnNext": "owner_dashboard"
+    },
+    {
+      "step": 8,
+      "role": "owner",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/owner.html?demo=1",
+      "target": "#countGrid",
+      "fallback": "#view-dashboard",
+      "title": "オーナーダッシュボード",
+      "guidance": "初回返信、本部査定、金額提示後、タスク、来店・出張など店舗全体の状況を俯瞰します。",
+      "expectedFocus": "店舗全体の件数カード",
+      "safety": "件数を見るだけ。案件状態や担当は変更しません。",
+      "transitionOnNext": null
+    },
+    {
+      "step": 9,
+      "role": "owner",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/owner.html?demo=1",
+      "target": "[data-view=\"assessments\"]",
+      "fallback": "#view-dashboard",
+      "title": "査定案件一覧への入口",
+      "guidance": "LINE・電話・店頭・来店・出張・催事の案件を一覧で管理する入口です。",
+      "expectedFocus": "オーナー左ナビの査定案件",
+      "safety": "Tutorialはナビの位置を示すだけ。状態更新・担当更新・商品保存は行いません。",
+      "transitionOnNext": null
+    },
+    {
+      "step": 10,
+      "role": "owner",
+      "url": "https://dpromstk2000-lab.github.io/dpro-buyback-line/owner.html?demo=1",
+      "target": "[data-view=\"tasks\"]",
+      "fallback": "#view-dashboard",
+      "title": "フォロータスクで次の対応を管理",
+      "guidance": "未返信、追加写真、本部回答、査定額案内、来店誘導、再査定などのフォローを管理します。",
+      "expectedFocus": "オーナー左ナビのフォロータスク",
+      "safety": "First10完了時もタスク完了・追加・保存は実行しません。Tutorial状態だけを完了扱いにします。",
+      "transitionOnNext": "tutorial_complete"
+    }
+  ]
+}
