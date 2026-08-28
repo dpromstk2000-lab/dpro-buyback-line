@@ -27,6 +27,7 @@ for (const width of widths){
   const metrics=await page.evaluate(()=>({innerWidth:window.innerWidth,innerHeight:window.innerHeight,documentElementScrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body.scrollWidth,stepCount:window.__DPRO_TUTORIAL_QA__.stepCount,version:window.__DPRO_TUTORIAL_QA__.version}));
   checks.metrics=metrics;
   checks.exact10=metrics.stepCount===10;
+  checks.currentVersion=metrics.version==='DPRO_TUTORIAL_R3_V1_3';
   checks.noOverflow=metrics.documentElementScrollWidth<=metrics.innerWidth&&metrics.bodyScrollWidth<=metrics.innerWidth;
   const targets=[];
   for(let i=0;i<10;i++){
@@ -77,12 +78,12 @@ for (const width of widths){
   checks.pageErrors0=pageErrors.length===0;
   checks.consoleErrors0=consoleErrors.length===0;
  }catch(e){checks.exception=String(e)}
- const pass=!checks.exception&&checks.exact10&&checks.noOverflow&&checks.targetFallback&&checks.mouseDrag&&checks.touchPointerDrag&&checks.viewportClamp&&checks.keyboardNext&&checks.back&&checks.focus&&checks.escClose&&checks.resumeReopen&&checks.crossPageResume&&checks.replay&&checks.skip&&checks.businessControlsNoDrag&&checks.businessMutation0&&checks.pageErrors0&&checks.consoleErrors0;
+ const pass=!checks.exception&&checks.exact10&&checks.currentVersion&&checks.noOverflow&&checks.targetFallback&&checks.mouseDrag&&checks.touchPointerDrag&&checks.viewportClamp&&checks.keyboardNext&&checks.back&&checks.focus&&checks.escClose&&checks.resumeReopen&&checks.crossPageResume&&checks.replay&&checks.skip&&checks.businessControlsNoDrag&&checks.businessMutation0&&checks.pageErrors0&&checks.consoleErrors0;
  overall=overall&&pass;
  results.push({width,pass,checks,pageErrors,consoleErrors,businessMutations,sessionRequests});
  await browser.close();
 }
-const report={version:'DPRO_TUTORIAL_R3_QA_V2',checkedAt:new Date().toISOString(),base:BASE,overall,results};
+const report={version:'DPRO_TUTORIAL_R3_QA_V3',checkedAt:new Date().toISOString(),base:BASE,overall,results};
 fs.writeFileSync('r3-live-qa.json',JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));
 if(!overall)process.exit(1);
