@@ -1,0 +1,44 @@
+name: DPRO BUYBACK Tutorial R4 LIVE QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'guide-center.html'
+      - 'guide-center-qa.mjs'
+      - 'tutorial.html'
+      - 'tutorial-first10.json'
+      - '.github/workflows/dpro-buyback-tutorial-r4.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install --with-deps chromium
+      - name: Wait for GitHub Pages R4 Guide Center V1.0
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsSL "https://dpromstk2000-lab.github.io/dpro-buyback-line/guide-center.html?sha=${GITHUB_SHA}&n=${i}" | grep -q 'DPRO_TUTORIAL_R4_GUIDE_CENTER_V1_0'; then exit 0; fi
+            sleep 10
+          done
+          echo 'R4 Guide Center V1.0 marker did not appear on LIVE Pages' >&2
+          exit 1
+      - name: Run exact-width R4 LIVE QA
+        run: node guide-center-qa.mjs
+      - name: Upload R4 QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: buyback-r4-live-qa-${{ github.sha }}
+          path: r4-live-qa.json
+          if-no-files-found: warn
