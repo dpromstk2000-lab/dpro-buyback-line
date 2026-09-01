@@ -24,6 +24,9 @@
       </div>
       <div class="state" aria-live="polite"><small>TUTORIAL STATE</small><strong id="stateText">確認中…</strong></div>
     </div>
+    <div data-dpro-chat-b-owner-return hidden style="margin-top:12px">
+      <a class="guide-link" href="owner.html">Owner PCへ戻る</a>
+    </div>
     <div class="controls" aria-label="Tutorial controls">
       <button class="control" id="startBtn" type="button">Start / 最初から開始</button>
       <button class="control secondary" id="resumeBtn" type="button">Resume / 続きから再開</button>
@@ -49,6 +52,9 @@ const STORAGE='dpro_tutorial_buyback_v1_1';
 const TUTORIAL='tutorial.html';
 let canonical=null;
 const $=id=>document.getElementById(id);
+const FROM_OWNER=new URLSearchParams(location.search).get('from')==='owner';
+const ownerReturn=document.querySelector('[data-dpro-chat-b-owner-return]');
+if(ownerReturn) ownerReturn.hidden=!FROM_OWNER;
 function readState(){try{return JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch{return {}}}
 function stateLabel(){const s=readState();if(s.completed&&s.skipped)return 'スキップ済み';if(s.completed)return 'First10 完了';const step=Number(s.step);if(Number.isFinite(step)&&step>=0)return `進行中：${Math.min(step+1,10)} / 10`;return '未開始'}
 function refreshState(){ $('stateText').textContent=stateLabel() }
