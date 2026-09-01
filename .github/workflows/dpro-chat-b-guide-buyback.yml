@@ -26,43 +26,130 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Add Owner return path to Guide Center
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path("guide-center.html")
+          if not p.exists():
+              raise SystemExit("guide-center.html not found")
+
+          s = p.read_text(encoding="utf-8")
+          before = s
+
+          if "data-dpro-chat-b-owner-return" not in s:
+              marker = """    <div class="controls" aria-label="Tutorial controls">"""
+              if marker not in s:
+                  raise SystemExit("Guide Center controls marker missing")
+
+              owner_return = """    <div data-dpro-chat-b-owner-return hidden style="margin-top:12px">
+                <a class="guide-link" href="owner.html">Owner PCへ戻る</a>
+              </div>
+          """
+              s = s.replace(marker, owner_return + marker, 1)
+
+              js_marker = """const $=id=>document.getElementById(id);"""
+              if js_marker not in s:
+                  raise SystemExit("Guide Center JS marker missing")
+
+              js_insert = """const $=id=>document.getElementById(id);
+          const FROM_OWNER=new URLSearchParams(location.search).get('from')==='owner';
+          const ownerReturn=document.querySelector('[data-dpro-chat-b-owner-return]');
+          if(ownerReturn) ownerReturn.hidden=!FROM_OWNER;"""
+              s = s.replace(js_marker, js_insert, 1)
+
+          required = [
+              "data-dpro-chat-b-owner-return",
+              'href="owner.html"',
+              "Owner PCへ戻る",
+              "FROM_OWNER=new URLSearchParams(location.search).get('from')==='owner'",
+              "startBtn",
+              "resumeBtn",
+              "replayBtn",
+          ]
+          for token in required:
+              if token not in s:
+                  raise SystemExit(f"Guide Center result missing: {token}")
+
+          if s != before:
+              p.write_text(s, encoding="utf-8")
+
+          print("BUYBACK GUIDE CENTER OWNER RETURN:", "CHANGED" if s != before else "ALREADY_OK")
+          PY
+
       - name: Add restrained owner guide entry
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-          p=Path('owner.html')
-          if not p.exists(): raise SystemExit('owner.html not found')
-          guide=Path('guide-center.html')
+
+          p = Path("owner.html")
+          if not p.exists():
+              raise SystemExit("owner.html not found")
+
+          guide = Path("guide-center.html")
           if not guide.exists():
-              raise SystemExit('guide-center.html not found. Do not fall back silently; role-correct Guide Center is required.')
-          gs=guide.read_text(encoding='utf-8')
-          if 'owner.html' not in gs:
-              raise SystemExit('guide-center.html has no Owner PC return path')
-          if not any(token in gs.lower() for token in ['tutorial','replay','restart','resume']):
-              raise SystemExit('guide-center.html has no Tutorial Resume/Replay path')
-          s=p.read_text(encoding='utf-8'); before=s
-          if 'data-dpro-chat-b-guide' not in s:
-              style="""\n<style id="dpro-chat-b-guide-style">\n.dpro-chat-b-guide-link{position:fixed;right:12px;bottom:12px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 13px;border:1px solid rgba(0,0,0,.12);border-radius:999px;background:#fff;color:#17352c;text-decoration:none;font:800 13px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.12)}\n.dpro-chat-b-guide-link:focus-visible{outline:3px solid #ffbf47;outline-offset:3px}\n@media(max-width:700px){.dpro-chat-b-guide-link{bottom:72px;right:10px;min-height:40px;padding:7px 11px;font-size:12px}}\n</style>\n"""
-              link="""\n<a class="dpro-chat-b-guide-link" data-dpro-chat-b-guide href="guide-center.html" aria-label="操作ガイドを開く">操作ガイド</a>\n"""
-              if '</head>' not in s or '</body>' not in s: raise SystemExit('safe HTML insertion markers missing')
-              s=s.replace('</head>',style+'</head>',1)
-              s=s.replace('</body>',link+'</body>',1)
-              p.write_text(s,encoding='utf-8')
-          out=p.read_text(encoding='utf-8')
-          if out.count('data-dpro-chat-b-guide') != 1: raise SystemExit('guide entry count is not exactly 1')
-          if 'href="guide-center.html"' not in out: raise SystemExit('guide href missing')
-          print('OWNER GUIDE PATCH:', 'CHANGED' if out!=before else 'ALREADY_OK')
+              raise SystemExit("guide-center.html not found")
+
+          gs = guide.read_text(encoding="utf-8")
+          for token in [
+              'data-dpro-chat-b-owner-return',
+              'href="owner.html"',
+              "Owner PCへ戻る",
+              "startBtn",
+              "resumeBtn",
+              "replayBtn",
+          ]:
+              if token not in gs:
+                  raise SystemExit(f"Guide Center role/replay requirement missing: {token}")
+
+          s = p.read_text(encoding="utf-8")
+          before = s
+
+          # Normalize a previous CHAT B link if one somehow exists.
+          s = s.replace('href="guide-center.html"', 'href="guide-center.html?from=owner"')
+
+          if "data-dpro-chat-b-guide" not in s:
+              style = """
+          <style id="dpro-chat-b-guide-style">
+          .dpro-chat-b-guide-link{position:fixed;right:12px;bottom:12px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 13px;border:1px solid rgba(0,0,0,.12);border-radius:999px;background:#fff;color:#083f34;text-decoration:none;font:800 13px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+          .dpro-chat-b-guide-link:focus-visible{outline:3px solid #f3bf4b;outline-offset:3px}
+          @media(max-width:700px){.dpro-chat-b-guide-link{bottom:72px;right:10px;min-height:40px;padding:7px 11px;font-size:12px}}
+          </style>
+          """
+              link = """
+          <a class="dpro-chat-b-guide-link" data-dpro-chat-b-guide href="guide-center.html?from=owner" aria-label="操作ガイドを開く">操作ガイド</a>
+          """
+              if "</head>" not in s or "</body>" not in s:
+                  raise SystemExit("safe HTML insertion markers missing")
+              s = s.replace("</head>", style + "</head>", 1)
+              s = s.replace("</body>", link + "</body>", 1)
+
+          if s.count("data-dpro-chat-b-guide") != 1:
+              raise SystemExit("guide entry count is not exactly 1")
+          if 'href="guide-center.html?from=owner"' not in s:
+              raise SystemExit("owner-aware guide href missing")
+
+          if s != before:
+              p.write_text(s, encoding="utf-8")
+
+          print("BUYBACK OWNER GUIDE ENTRY:", "CHANGED" if s != before else "ALREADY_OK")
           PY
 
       - name: Static guide QA
         shell: bash
         run: |
           grep -q 'data-dpro-chat-b-guide' owner.html
-          grep -q 'href="guide-center.html"' owner.html
-          grep -q 'owner.html' guide-center.html
-          grep -Eqi 'tutorial|replay|restart|resume' guide-center.html
-          echo 'OWNER GUIDE static QA: PASS'
+          grep -q 'href="guide-center.html?from=owner"' owner.html
+          grep -q 'data-dpro-chat-b-owner-return' guide-center.html
+          grep -q 'href="owner.html"' guide-center.html
+          grep -q 'Owner PCへ戻る' guide-center.html
+          grep -q 'resumeBtn' guide-center.html
+          grep -q 'replayBtn' guide-center.html
+          grep -q 'startBtn' guide-center.html
+          echo 'BUYBACK OWNER GUIDE static QA: PASS'
 
       - name: Commit forward-only fix
         shell: bash
@@ -70,10 +157,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm --ignore-unmatch ".github/workflows/dpro-chat-b-guide-buyback.yml"
-          git add "owner.html"
+          git add "owner.html" "guide-center.html"
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
-          git commit -m "Add CHAT B owner 操作ガイド entry for BUYBACK"
+          git commit -m "Fix CHAT B BUYBACK owner guide return path"
           git push
